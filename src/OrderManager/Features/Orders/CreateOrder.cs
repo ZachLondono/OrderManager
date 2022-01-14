@@ -7,7 +7,7 @@ namespace OrderManager.ApplicationCore.Features.Orders;
 
 public class CreateOrder {
     
-    public record Command(string RefNum, DateTime OrderDate, IEnumerable<Order.LineItem> LineItems) : IRequest<Order>;
+    public record Command(string RefNum, DateTime OrderDate, IEnumerable<LineItem> LineItems) : IRequest<Order>;
 
     public class Validator : AbstractValidator<Command> {
         public Validator(ILogger<Validator> logger) {
