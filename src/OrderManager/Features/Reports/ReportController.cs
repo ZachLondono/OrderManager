@@ -14,4 +14,8 @@ public class ReportController {
         return _sender.Send(new GenerateReport.Command(report, order, fileName));
     }
 
+    public Task<ReportsEnvelope> GenerateReport(Report report, List<Order> orders, string fileName) {
+        return _sender.Send(new GenerateBatchReport.Command(report, orders, fileName));
+    }
+
 }

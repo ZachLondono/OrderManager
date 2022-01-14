@@ -4,7 +4,6 @@ using MediatR;
 using OrderManager.ApplicationCore.Domain;
 
 namespace OrderManager.ApplicationCore.Features.Reports;
-
 public class GenerateReport {
 
     public record Command(Report Report, Order Order, string Filename) : IRequest<ReportEnvelope> ;
