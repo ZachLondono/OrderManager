@@ -1,4 +1,4 @@
-﻿namespace WinFormsUI;
+﻿namespace OrderManager.WinFormsUI;
 
 partial class Products {
     /// <summary>

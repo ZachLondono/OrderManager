@@ -1,8 +1,8 @@
-using OrderManagment;
+using OrderManager.ApplicationCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace WinFormsUI;
+namespace OrderManager.WinFormsUI;
 
 internal static class Program {
     
@@ -18,7 +18,7 @@ internal static class Program {
     static void ConfigureServices() {
         var services = new ServiceCollection();
         services.AddLogging(c => c.AddConsole());
-        services.AddOrderManagment();
+        services.AddAppplicationCore();
         ServiceProvider =  services.BuildServiceProvider();
     }
 

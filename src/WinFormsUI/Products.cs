@@ -1,9 +1,9 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using OrderManagment.Features.Products;
-using OrderManagment.Models;
+using OrderManager.ApplicationCore.Features.Products;
+using OrderManager.ApplicationCore.Domain;
 
-namespace WinFormsUI;
+namespace OrderManager.WinFormsUI;
 
 public partial class Products : Form {
     
