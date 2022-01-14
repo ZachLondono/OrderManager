@@ -1,6 +1,8 @@
-﻿namespace OrderManagment.Models;
+﻿namespace OrderManager.ApplicationCore.Domain;
 
 public class Order {
+
+    public int OrderId { get; set; }
 
     public string RefNum { get; set; } = string.Empty;
 

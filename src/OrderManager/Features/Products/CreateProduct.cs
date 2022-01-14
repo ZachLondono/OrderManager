@@ -1,15 +1,15 @@
 ﻿using MediatR;
 using FluentValidation;
-using OrderManagment.Models;
+using OrderManager.ApplicationCore.Domain;
 using Microsoft.Extensions.Logging;
 
-namespace OrderManagment.Features.Products;
+namespace OrderManager.ApplicationCore.Features.Products;
 
-public class Create { 
+public class CreateProduct { 
     
-    internal record Command(string Name, string Description, IEnumerable<string> Attributes) : IRequest<Product>;
+    public record Command(string Name, string Description, IEnumerable<string> Attributes) : IRequest<Product>;
 
-    internal class Validator : AbstractValidator<Command> {
+    public class Validator : AbstractValidator<Command> {
         public Validator() {
             RuleFor(p => p.Name)
                 .NotNull()
@@ -19,7 +19,7 @@ public class Create {
             RuleFor(p => p.Description)
                 .NotNull()
                 .NotEmpty()
-                .WithMessage("Product Description must not be null");
+                .WithMessage("Product Description must not be empty");
             
             RuleFor(p => p.Attributes)
                 .NotNull()

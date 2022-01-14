@@ -1,15 +1,15 @@
 ﻿using MediatR;
 using FluentValidation;
-using OrderManagment.Models;
+using OrderManager.ApplicationCore.Domain;
 using Microsoft.Extensions.Logging;
 
-namespace OrderManagment.Features.Orders;
+namespace OrderManager.ApplicationCore.Features.Orders;
 
-public class Create {
+public class CreateOrder {
     
-    internal record Command(string RefNum, DateTime OrderDate, IEnumerable<Order.LineItem> LineItems) : IRequest<Order>;
+    public record Command(string RefNum, DateTime OrderDate, IEnumerable<Order.LineItem> LineItems) : IRequest<Order>;
 
-    internal class Validator : AbstractValidator<Command> {
+    public class Validator : AbstractValidator<Command> {
         public Validator(ILogger<Validator> logger) {
             RuleFor(p => p.RefNum).NotNull().NotEmpty();
             RuleFor(p => p.OrderDate).NotNull();

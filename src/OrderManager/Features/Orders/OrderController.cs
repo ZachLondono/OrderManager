@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using OrderManagment.Models;
+using OrderManager.ApplicationCore.Domain;
 
-namespace OrderManagment.Features.Orders;
+namespace OrderManager.ApplicationCore.Features.Orders;
 
 public class OrderController {
 
@@ -12,7 +12,7 @@ public class OrderController {
     }
 
     public async Task<Order> CreateOrder(string refNum, DateTime orderDate, IEnumerable<Order.LineItem> lineItems) {
-        Order order = await _sender.Send(new Create.Command(refNum, orderDate, lineItems));
+        Order order = await _sender.Send(new CreateOrder.Command(refNum, orderDate, lineItems));
         return order;
     }
 

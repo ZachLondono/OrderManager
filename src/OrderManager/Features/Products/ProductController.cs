@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using OrderManagment.Models;
+using OrderManager.ApplicationCore.Domain;
 
-namespace OrderManagment.Features.Products;
+namespace OrderManager.ApplicationCore.Features.Products;
 
 public class ProductController {
     
@@ -11,9 +11,8 @@ public class ProductController {
         _sender = sender;
     }
 
-    public async Task<Product> CreateProduct(string name, string description, IEnumerable<string> attributes) {
-        Product product = await _sender.Send(new Create.Command(name, description, attributes));
-        return product;
+    public Task<Product> CreateProduct(string name, string description, IEnumerable<string> attributes, CancellationToken cancellationToken = default) {
+        return _sender.Send(new CreateProduct.Command(name, description, attributes), cancellationToken);
     }
 
 }
