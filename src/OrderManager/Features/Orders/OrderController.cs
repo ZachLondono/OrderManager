@@ -11,7 +11,7 @@ public class OrderController {
         _sender = sender;
     }
 
-    public async Task<Order> CreateOrder(string refNum, DateTime orderDate, IEnumerable<Order.LineItem> lineItems) {
+    public async Task<Order> CreateOrder(string refNum, DateTime orderDate, IEnumerable<LineItem> lineItems) {
         Order order = await _sender.Send(new CreateOrder.Command(refNum, orderDate, lineItems));
         return order;
     }
