@@ -1,6 +1,6 @@
 ﻿namespace OrderManager.ApplicationCore.Domain;
 
-public class Order {
+public partial class Order {
 
     public int OrderId { get; set; }
 
@@ -8,16 +8,6 @@ public class Order {
 
     public DateTime OrderDate { get; set; } = DateTime.Today;
 
-    public IList<LineItem> LineItems { get; set; } = new List<LineItem>();
-
-    public class LineItem {
-
-        public int Line { get; set; }
-
-        public int ProductId { get; set; }
-
-        public IReadOnlyDictionary<string, string>? Attributes { get; set; }
-
-    }
+    public List<LineItem> LineItems { get; set; } = new();
 
 }
