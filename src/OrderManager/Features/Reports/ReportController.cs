@@ -10,12 +10,8 @@ public class ReportController {
         _sender = sender;
     }
 
-    public Task<ReportEnvelope> GenerateReport(Report report, Order order, string fileName) {
-        return _sender.Send(new GenerateReport.Command(report, order, fileName));
-    }
-
-    public Task<ReportsEnvelope> GenerateReport(Report report, List<Order> orders, string fileName) {
-        return _sender.Send(new GenerateBatchReport.Command(report, orders, fileName));
+    public Task<ReportEnvelope> GenerateReport(Report report, object reportData, string fileName) {
+        return _sender.Send(new GenerateExcelReport.Command(report, reportData, fileName));
     }
 
 }

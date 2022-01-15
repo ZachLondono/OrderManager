@@ -2,11 +2,13 @@
 using FluentValidation;
 using MediatR;
 using OrderManager.ApplicationCore.Domain;
+using OrderManager.ApplicationCore.Infrastructure;
 
 namespace OrderManager.ApplicationCore.Features.Reports;
-public class GenerateReport {
 
-    public record Command(Report Report, Order Order, string Filename) : IRequest<ReportEnvelope> ;
+public class GenerateExcelReport {
+
+    public record Command(Report Report, object ReporData, string Filename) : IRequest<ReportEnvelope> ;
 
     public class Validator : AbstractValidator<Command> { 
         public Validator() {
@@ -15,7 +17,7 @@ public class GenerateReport {
                 .NotEmpty()
                 .NotNull();
 
-            RuleFor(c => c.Order).NotNull();
+            RuleFor(c => c.ReporData).NotNull();
 
             RuleFor(c => c.Filename)
                 .NotNull()
@@ -24,22 +26,28 @@ public class GenerateReport {
     }
 
     public class Handler : IRequestHandler<Command, ReportEnvelope> {
+
+        private readonly IConfigurationProfile _profile;
+
+        public Handler(IConfigurationProfile profile) {
+            _profile = profile;
+        }
+
         public Task<ReportEnvelope> Handle(Command request, CancellationToken cancellationToken) {
 
-            // Get outputfile from profile
-            const string outputFile = "";
+            string outputdir = _profile?.OutputDirectory ?? "";
 
             return Task.Run<ReportEnvelope>(() => {
 
                 XLTemplate template = new(request.Report.Template);
 
-                template.AddVariable(request.Order);
+                template.AddVariable(request.ReporData);
                 template.Generate();
-                template.SaveAs(outputFile);
+                template.SaveAs(outputdir);
 
                 return new() {
                     CreationDate = DateTime.Now,
-                    Output = outputFile,
+                    Output = outputdir,
                     Report = request.Report
                 };
 

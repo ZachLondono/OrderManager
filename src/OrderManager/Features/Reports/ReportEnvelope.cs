@@ -6,5 +6,5 @@ public class ReportEnvelope {
     public DateTime CreationDate { get; set; }
     public string? Output { get; set; }
     public Report? Report { get; set; }
-    public Order? Order { get; set; }
+    public object? ReportData { get; set; }
 }
