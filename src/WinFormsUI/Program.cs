@@ -1,6 +1,7 @@
 using OrderManager.ApplicationCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OrderManager.ApplicationCore.Domain;
 
 namespace OrderManager.WinFormsUI;
 
@@ -10,16 +11,19 @@ internal static class Program {
 
     [STAThread]
     static void Main() {
-        ConfigureServices();
+        ServiceProvider = new ServiceCollection()
+            .AddLogging(c => c.AddConsole())
+            .AddAppplicationCore()
+            .BuildServiceProvider();
+
         ApplicationConfiguration.Initialize();
         Application.Run(new Products());
     }
 
-    static void ConfigureServices() {
-        var services = new ServiceCollection();
-        services.AddLogging(c => c.AddConsole());
-        services.AddAppplicationCore();
-        ServiceProvider =  services.BuildServiceProvider();
+    static void SetProfile(ConfigurationProfile profile) {
+
+
+
     }
 
 }
