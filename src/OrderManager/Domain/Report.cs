@@ -8,5 +8,7 @@ public class Report {
     
     public string Template { get; set; } = string.Empty;
 
+    public string OutputDirectory { get; set; } = string.Empty;
+
 }
 
