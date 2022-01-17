@@ -34,7 +34,7 @@ public partial class Products : Form {
 
         try {
             Product product = await controller.CreateProduct(productName, productDescription, attributes);
-            MessageBox.Show($"Product created, new id: {product.Id}");
+            MessageBox.Show($"Product created, new id: {product}");
         } catch (Exception ex) {
             MessageBox.Show(ex.Message);
         }

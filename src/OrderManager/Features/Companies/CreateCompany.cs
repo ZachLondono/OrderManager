@@ -1,6 +1,9 @@
-﻿using FluentValidation;
+﻿using Dapper;
+using FluentValidation;
 using MediatR;
 using OrderManager.ApplicationCore.Domain;
+using OrderManager.ApplicationCore.Infrastructure;
+using System.Data.OleDb;
 
 namespace OrderManager.ApplicationCore.Features.Companies;
 
@@ -16,14 +19,20 @@ public class CreateCompany {
             string AddressLine3,
             string City,
             string State,
-            string PostalCode) : IRequest<Company>;
+            string PostalCode) : IRequest<Company?>;
 
     public class Validator : AbstractValidator<Command> {
-        public Validator() {
+        
+        private readonly AppConfiguration _config;
+
+        public Validator(AppConfiguration config) {
+            _config = config;
+
 
             RuleFor(c => c.CompanyName)
                 .NotEmpty()
-                .NotNull();
+                .NotNull()
+                .Must(IsNameUnique);
 
             RuleFor(c => c.ContactName).NotNull();
             RuleFor(c => c.ContactEmail).NotNull();
@@ -36,12 +45,48 @@ public class CreateCompany {
             RuleFor(c => c.PostalCode).NotNull();
 
         }
+
+        public bool IsNameUnique(string name) {
+            const string query = "SELECT COUNT(CompanyName) FROM Companies WHERE CompanyName = @CompanyName;";
+            using var connection = new OleDbConnection(_config.ConnectionString);
+            connection.Open();
+            int count = connection.QuerySingle<int>(query, new { CompanyName = name });
+            connection.Close();
+            return count == 0;
+        }
+
     }
 
-    public class Handler : IRequestHandler<Command, Company> {
-        
-        public Task<Company> Handle(Command request, CancellationToken cancellationToken) {
-            throw new NotImplementedException();
+    public class Handler : IRequestHandler<Command, Company?> {
+
+        private readonly AppConfiguration _config;
+
+        public Handler(AppConfiguration config) {
+            _config = config;
+        }
+
+        public async Task<Company?> Handle(Command request, CancellationToken cancellationToken) {
+
+            const string sql = @"INSERT INTO [Companies] 
+                                (CompanyName, ContactName, ContactEmail, ContactPhone, AddressLine1, AddressLine2, AddressLine3, City, State, PostalCode)
+                                VALUES (@CompanyName, @ContactName, @ContactEmail, @ContactPhone, @AddressLine1, @AddressLine2, @AddressLine3, @City, @State, @PostalCode);";
+
+            const string query = "SELECT * FROM Companies WHERE CompanyName = @CompanyName;";
+
+            using var connection = new OleDbConnection(_config.ConnectionString);
+            connection.Open();
+
+            int rowsAffected = await connection.ExecuteAsync(sql, request);
+
+            Company? company = null;
+            if (rowsAffected > 0) {
+                company = await connection.QuerySingleAsync<Company>(query, new { request.CompanyName });
+            }
+
+            connection.Close();
+
+            return company;
+
         }
 
     }

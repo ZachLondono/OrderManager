@@ -13,12 +13,22 @@ public class GenerateExcelReport {
     public class Validator : AbstractValidator<Command> { 
         public Validator() {
             RuleFor(c => c.Report).NotNull();
+            
             RuleFor(c => c.Report.Template)
                 .NotEmpty()
-                .NotNull();
-
+                .NotNull()
+                .Must(c => File.Exists(c))
+                .Must(c => Path.GetExtension(c).Equals(".xlsx"))
+                .WithMessage("Report template must be a valid path to an excel file");
+            
+            RuleFor(c => c.Report.OutputDirectory)
+                .NotEmpty()
+                .NotNull()
+                .Must(c => Directory.Exists(c))
+                .WithMessage("Report output directory must be a valid directory");
+            
             RuleFor(c => c.ReporData).NotNull();
-
+            
             RuleFor(c => c.Filename)
                 .NotNull()
                 .NotEmpty();
@@ -27,15 +37,12 @@ public class GenerateExcelReport {
 
     public class Handler : IRequestHandler<Command, ReportEnvelope> {
 
-        private readonly IConfigurationProfile _profile;
-
-        public Handler(IConfigurationProfile profile) {
-            _profile = profile;
-        }
-
         public Task<ReportEnvelope> Handle(Command request, CancellationToken cancellationToken) {
 
-            string outputdir = _profile?.OutputDirectory ?? "";
+            string outputdir = Path.Combine(request.Report.OutputDirectory, request.Filename);
+
+            if (!Path.GetExtension(outputdir).Equals(".xlsx"))
+                outputdir = $"{outputdir}.xlsx";
 
             return Task.Run<ReportEnvelope>(() => {
 
