@@ -1,17 +1,14 @@
 ﻿using MediatR;
 using OrderManager.ApplicationCore.Domain;
+using OrderManager.ApplicationCore.Infrastructure;
 
 namespace OrderManager.ApplicationCore.Features.Companies;
 
-public class CompanyController {
+public class CompanyController : BaseController {
 
-    private readonly ISender _sender;
+    public CompanyController(ISender sender) : base(sender) { }
 
-    public CompanyController(ISender sender) {
-        _sender = sender;
-    }
-
-    public Task<Company> CreateCompany(string name,
+    public Task<Company?> CreateCompany(string name,
                                         string contactName,
                                         string contactEmail,
                                         string contactPhone,
@@ -21,8 +18,15 @@ public class CompanyController {
                                         string city,
                                         string state,
                                         string postalCode) {
-        return _sender.Send(new CreateCompany.Command(name, contactName, contactEmail, contactPhone, addressLine1, addressLine2, addressLine3, city, state, postalCode));
+        return Sender.Send(new CreateCompany.Command(name, contactName, contactEmail, contactPhone, addressLine1, addressLine2, addressLine3, city, state, postalCode));
     }
 
+    public Task<Company?> GetCompanyByName(string name) {
+        return Sender.Send(new GetCompanyByName.Query(name));
+    }
+
+    public Task<IEnumerable<Company>> GetAllCompanies() {
+        return Sender.Send(new GetAllCompanies.Query());
+    }
 
 }

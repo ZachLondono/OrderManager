@@ -1,19 +1,19 @@
 ﻿using MediatR;
 using OrderManager.ApplicationCore.Domain;
+using OrderManager.ApplicationCore.Infrastructure;
 
 namespace OrderManager.ApplicationCore.Features.Orders;
 
-public class OrderController {
+public class OrderController : BaseController {
 
-    private readonly ISender _sender;
+    public OrderController(ISender sender) : base(sender) { }
 
-    public OrderController(ISender sender) {
-        _sender = sender;
+    public async Task<Order?> CreateOrder(string refNum, DateTime orderDate) {
+        return await Sender.Send(new CreateOrder.Command(refNum, orderDate));
     }
 
-    public async Task<Order> CreateOrder(string refNum, DateTime orderDate, IEnumerable<LineItem> lineItems) {
-        Order order = await _sender.Send(new CreateOrder.Command(refNum, orderDate, lineItems));
-        return order;
+    public async Task<IEnumerable<Order>> GetAllOrders() {
+        return await Sender.Send(new GetAllOrders.Query());
     }
 
 }

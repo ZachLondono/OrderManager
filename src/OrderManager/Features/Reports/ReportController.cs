@@ -1,17 +1,15 @@
 ﻿using MediatR;
 using OrderManager.ApplicationCore.Domain;
+using OrderManager.ApplicationCore.Infrastructure;
 
 namespace OrderManager.ApplicationCore.Features.Reports;
 
-public class ReportController {
+public class ReportController : BaseController {
 
-    private readonly ISender _sender;
-    public ReportController(ISender sender) {
-        _sender = sender;
-    }
+    public ReportController(ISender sender) : base(sender) { }
 
     public Task<ReportEnvelope> GenerateReport(Report report, object reportData, string fileName) {
-        return _sender.Send(new GenerateExcelReport.Command(report, reportData, fileName));
+        return Sender.Send(new GenerateExcelReport.Command(report, reportData, fileName));
     }
 
 }
