@@ -13,12 +13,19 @@ namespace OrderManager.ApplicationCore;
 
 public static class DependencyInjection {
 
-    public static IServiceCollection AddAppplicationCore(this IServiceCollection services) {
+    public static IServiceCollection AddAppplicationCore(this IServiceCollection services, IConfiguration config) {
         return services
             .AddValidatorsFromAssemblyContaining(typeof(DependencyInjection))
             .AddMediatR(typeof(DependencyInjection).Assembly)
             .AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipeline<,>))
-            .AddControllers();
+            .AddControllers()
+            .AddTransient(c => {
+                return new AppConfiguration() {
+                    ConnectionString = config.GetConnectionString("AccessDB") ?? "",
+                    ScriptDirectory = config.GetConnectionString("ScriptDir") ?? ""
+                };
+            });
+            
     }
 
     private static IServiceCollection AddControllers(this IServiceCollection services) {
