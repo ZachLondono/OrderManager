@@ -7,4 +7,6 @@ public class AppConfiguration {
 
     public string? ScriptDirectory { get; set; }
 
+    public string? ExcelPrinterExecutable { get; set; }
+
 }
