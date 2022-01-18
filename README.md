@@ -28,4 +28,5 @@ Contains domain entities and main applicationlogic
       * Public OrderReleaseNotification when user pushes the 'Release' button
       * Multiple handlers will then do some operation on the Order to prepare it for release
 4. Create production reports for a given time period
-      * ClosedXML.Report for generating excel reports 
+      * ClosedXML.Report for generating reports from excel templates
+      * Razor for generating reports from HTML tempaltes
