@@ -1,38 +1,72 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.IO;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace ExcelToPDFConverter {
 
     internal class Program {
+
+        struct PrintParameters {
+            public string FilePath;
+            public string ExportPath;
+            public string SheetName;
+        };
+
         static void Main(string[] args) {
 
-            var start = DateTime.Now;
+            if (args.Length != 6) {
+                Console.Error.WriteLine("Invalid number of arguments");
+                return;
+            }
 
-            const string filePath = @"C:\Users\Zachary Londono\Desktop\report.xlsx";
-            const string exportPath = @"C:\Users\Zachary Londono\Desktop\report.pdf";
-            const string sheetName = "Sheet1";
+            PrintParameters settings = new PrintParameters();
+            for (int i = 0; i < args.Length - 1; i++) {
+                switch (args[i]) {
+                    case "--FilePath":
+                        settings.FilePath = args[++i];
+                        break;
+                    case "--ExportPath":
+                        settings.ExportPath = args[++i];
+                        break;
+                    case "--SheetName":
+                        settings.SheetName = args[++i];
+                        break;
+                    default:
+                        Console.Error.WriteLine($"Unexpected token near {args[i]}");
+                        return;
+                }
+            }
+
+            if (string.IsNullOrEmpty(settings.FilePath)
+                || string.IsNullOrEmpty(settings.SheetName)
+                || string.IsNullOrEmpty(settings.ExportPath)) {
+                Console.Error.WriteLine("Unexpected blank parameter");
+                return;
+            }
+
+            File.Exists(settings.FilePath);
 
             Excel.Application app = new Excel.Application {
                 Visible = false
             };
 
-            Excel.Workbook wb = app.Workbooks.Open(filePath);
+            var wb = app.Workbooks
+                .Open(settings.FilePath);
 
-            Excel.Worksheet ws = wb.Worksheets[sheetName];
+            Excel.Worksheet ws;
+            try { 
+                ws = wb.Worksheets[settings.SheetName];
+            } catch {
+                Console.Error.WriteLine($"Sheet '{settings.SheetName}' not found in workbook");
+                return;
+            }
 
-            ws.ExportAsFixedFormat(Excel.XlFixedFormatType.xlTypePDF, Filename: exportPath);
+            ws.ExportAsFixedFormat(Excel.XlFixedFormatType.xlTypePDF, Filename: settings.ExportPath);
+
             wb.Close(SaveChanges: false);
 
-            var end = DateTime.Now;
-
-            Console.ReadLine();
-
         }
+
     }
 
 }
