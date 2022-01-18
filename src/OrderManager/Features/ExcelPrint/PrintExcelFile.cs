@@ -7,7 +7,14 @@ namespace OrderManager.ApplicationCore.Features.ExcelPrint;
 
 public class PrintExcelFile {
 
-    public record Command(string FilePath, string SheetName, string Printer, string ExportFile) : IRequest<bool>;
+    public enum ProcessStatus {
+        Success,
+        Failed
+    }
+
+    public record ProcessResult(ProcessStatus Status, List<string> Errors);
+
+    public record Command(string FilePath, string SheetName, string ExportPath) : IRequest<ProcessResult>;
 
     public class Validator : AbstractValidator<Command> {
         public Validator() {
@@ -20,16 +27,13 @@ public class PrintExcelFile {
                 .NotNull()
                 .NotEmpty();
 
-            RuleFor(c => c.Printer)
+            RuleFor(c => c.ExportPath)
                 .NotNull()
                 .NotEmpty();
-
-            RuleFor(c => c.ExportFile)
-                .NotNull();
         }
     }
 
-    public class Handler : IRequestHandler<Command, bool> {
+    public class Handler : IRequestHandler<Command, ProcessResult> {
 
         private readonly AppConfiguration _config;
 
@@ -37,14 +41,57 @@ public class PrintExcelFile {
             _config = config;
         }
 
-        public Task<bool> Handle(Command request, CancellationToken cancellationToken) {
+        public async Task<ProcessResult> Handle(Command request, CancellationToken cancellationToken) {
+
+            string args = $"--FilePath \"{request.FilePath}\" --SheetName \"{request.SheetName}\" --ExportPath \"{request.ExportPath}\"";
+
             try {
-                Process.Start(_config.ExcelPrinterExecutable, $"--file {request.FilePath} --sheet {request.SheetName} {(string.IsNullOrEmpty(request.ExportFile) ? "" : $"--export {request.ExportFile}")} --printer {request.Printer}");
-                return Task.FromResult(true);
-            } catch {
-                return Task.FromResult(false);
+
+                List<string> errors = new();
+
+                // Check if the program writes an error to StdError
+                Action<String> onStdErr = s => {
+                    errors.Add(s);
+                };
+
+                var process = new Process {
+                    StartInfo = {
+                        FileName = _config.ExcelPrinterExecutable,
+                        Arguments = args,
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = false,
+                        RedirectStandardError = true,
+                    }
+                };
+
+                process.Start();
+
+                // Read from std error
+                Task.Run(() => ReadStream(process.StandardError, onStdErr));
+
+                await Task.Run(() => process.WaitForExit());
+
+                ProcessStatus status = errors.Any() ? ProcessStatus.Failed : ProcessStatus.Success;
+
+                return new ProcessResult(status, errors);
+
+            } catch (Exception e) {
+                List<string> errors = new() { e.ToString() };
+                return new ProcessResult(ProcessStatus.Failed, errors);
             }
         }
+
+        private static void ReadStream(TextReader textReader, Action<String> callback) {
+            while (true) {
+                var line = textReader.ReadLine();
+                if (line == null)
+                    break;
+
+                callback(line);
+            }
+        }
+
     }
 
 }
