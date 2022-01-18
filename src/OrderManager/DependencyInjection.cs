@@ -22,7 +22,8 @@ public static class DependencyInjection {
             .AddTransient(c => {
                 return new AppConfiguration() {
                     ConnectionString = config.GetConnectionString("AccessDB") ?? "",
-                    ScriptDirectory = config.GetConnectionString("ScriptDir") ?? ""
+                    ScriptDirectory = config["ScriptDir"] ?? "",
+                    ExcelPrinterExecutable = config["ConverterPath"] ?? ""
                 };
             });
             
