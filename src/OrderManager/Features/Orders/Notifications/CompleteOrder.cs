@@ -5,7 +5,7 @@ namespace OrderManager.ApplicationCore.Features.Orders;
 
 public class CompleteOrder {
 
-    public record Notification(Order order) : INotification;
+    public record Notification(Order Order) : INotification;
 
     internal class ShippingHandler : INotificationHandler<Notification> {
         public Task Handle(Notification notification, CancellationToken cancellationToken) {

@@ -5,7 +5,7 @@ namespace OrderManager.ApplicationCore.Features.Orders;
 
 public class ReleaseOrder {
 
-    public record Notification(Order order) : INotification;
+    public record Notification(Order Order) : INotification;
 
     internal class DBCutListHandler : INotificationHandler<Notification> {
         public Task Handle(Notification notification, CancellationToken cancellationToken) {
