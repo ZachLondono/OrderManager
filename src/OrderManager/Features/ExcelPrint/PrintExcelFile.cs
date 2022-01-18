@@ -21,15 +21,21 @@ public class PrintExcelFile {
             RuleFor(c => c.FilePath)
                 .NotNull()
                 .NotEmpty()
-                .Must(File.Exists);
+                .WithMessage(c => $"Invalid file path '{c.FilePath}'");
+
+            RuleFor(c => c.FilePath)
+                .Must(File.Exists)
+                .WithMessage(c => $"File does not exist or cannot be accessed '{c.FilePath}'");
 
             RuleFor(c => c.SheetName)
                 .NotNull()
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage(c => $"Invalid sheet name '{c.SheetName}'");
 
             RuleFor(c => c.ExportPath)
                 .NotNull()
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage(c => $"Invalid export path '{c.ExportPath}'");
         }
     }
 
