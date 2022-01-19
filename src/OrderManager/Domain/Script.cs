@@ -2,9 +2,9 @@
 
 public class Script {
 
-    public int Id { get; set; }
+    public int ScriptId { get; set; }
 
-    public string Name { get; set; } = string.Empty;
+    public string ScriptName { get; set; } = string.Empty;
 
     public string Source { get; set; } = string.Empty;
 

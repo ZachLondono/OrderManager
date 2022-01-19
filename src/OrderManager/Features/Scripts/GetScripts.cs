@@ -33,7 +33,7 @@ public class GetScripts {
                 foreach (string file in files) {
                     if (Path.GetExtension(file) != ".py") continue;
                     scripts.Add(new Script() {
-                        Name = Path.GetFileNameWithoutExtension(file),
+                        ScriptName = Path.GetFileNameWithoutExtension(file),
                         Source = Path.Combine(directory, file)
                     });
                 }

@@ -15,14 +15,6 @@ public class ScriptController : BaseController {
         _engine = Python.CreateEngine();
     }
 
-    public Task<Script> CreateScript(string name, string source) {
-        return Sender.Send(new CreateScript.Command(name, source));
-    }
-
-    public Task<bool> DeleteScript(string name) {
-        return Sender.Send(new DeleteScript.Command(name));
-    }
-
     public async Task LoadScripts() {
         _availableScripts = await Sender.Send(new GetScripts.Query());
     }
@@ -38,7 +30,7 @@ public class ScriptController : BaseController {
         if (_availableScripts is null) await LoadScripts();
 
         Script? script = _availableScripts?
-                                .Where(s => s.Name.Equals(name))
+                                .Where(s => s.ScriptName.Equals(name))
                                 .FirstOrDefault();
 
         if (script is null) 
@@ -51,7 +43,7 @@ public class ScriptController : BaseController {
     public async Task<ScriptResult> ExceuteScript(Script script, dynamic data) {
 
         if (!File.Exists(script.Source)) {
-            return new(ScriptStatus.Failure, $"'{script.Name}' script source does not exist '{script.Source}'");
+            return new(ScriptStatus.Failure, $"'{script.ScriptName}' script source does not exist '{script.Source}'");
         }
 
         return await Task.Run<ScriptResult>(() => {
@@ -61,7 +53,7 @@ public class ScriptController : BaseController {
             const string functionName = "Script";
 
             if (!scope.TryGetVariable(functionName, out dynamic func)) {
-                return new(ScriptStatus.Failure, $"'{script.Name}' script entry point not found '{functionName}'");
+                return new(ScriptStatus.Failure, $"'{script.ScriptName}' script entry point not found '{functionName}'");
             }
 
             try { 
