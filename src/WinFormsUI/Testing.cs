@@ -1,13 +1,16 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Dynamic;
+using MediatR;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.Extensions.DependencyInjection;
 using OrderManager.ApplicationCore.Domain;
 using OrderManager.ApplicationCore.Features.Companies;
+using OrderManager.ApplicationCore.Features.ExcelPrint;
 using OrderManager.ApplicationCore.Features.Products;
 using OrderManager.ApplicationCore.Features.Reports;
 using OrderManager.ApplicationCore.Features.Scripts;
+using static OrderManager.ApplicationCore.Features.ExcelPrint.PrintExcelFile;
 
 namespace OrderManager.WinFormsUI;
 
@@ -35,7 +38,7 @@ public partial class Testing : Form {
         await _scriptController.LoadScripts();
         IEnumerable<Script> availableScripts = await _scriptController.GetAvailableScripts();
         foreach (Script script in availableScripts) {
-            ScriptList.Items.Add(new ListViewItem(script.Name));
+            ScriptList.Items.Add(new ListViewItem(script.ScriptName));
         }
 
     }
@@ -137,6 +140,33 @@ public partial class Testing : Form {
 
     }
 
+    private void Testing_Load(object s, EventArgs e) {
+    }
+
+    private async void RptPDFBtn_Click(object s, EventArgs e) {
+
+        ISender sender = Program.ServiceProvider?.GetService<ISender>();
+
+        var result = await sender.Send(new PrintExcelFile.Command(
+                FilePath: @"C:\Users\Zachary Londono\Desktop\report123.xlsx",
+                SheetName: "Sheet2",
+                ExportPath: @"C:\Users\Zachary Londono\Desktop\report.pdf"
+            ));
+
+        if (result.Status == ProcessStatus.Success) {
+            MessageBox.Show("Print successful");
+        } else {
+            string msg = "Print Failed";
+
+            foreach (string err in result.Errors) {
+                msg += "\n" + err;
+            }
+
+            MessageBox.Show(msg);
+        }
+
+    }
+
     private void GenerateReportBtn_Click(object sender, EventArgs e) {
 
         /*Report report = new() {
@@ -190,6 +220,7 @@ public partial class Testing : Form {
             MessageBox.Show(ex.ToString());
         }*/
     }
+
 
     /*
         private async Task<ScriptResult> PriceProduct() {

@@ -42,13 +42,15 @@ partial class Testing {
             this.AttributeList = new System.Windows.Forms.ListBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.RptPDFBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(10, 10);
+            this.button1.Location = new System.Drawing.Point(11, 13);
+            this.button1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(347, 34);
+            this.button1.Size = new System.Drawing.Size(397, 45);
             this.button1.TabIndex = 0;
             this.button1.Text = "Load Scripts";
             this.button1.UseVisualStyleBackColor = true;
@@ -56,18 +58,18 @@ partial class Testing {
             // 
             // ScriptList
             // 
-            this.ScriptList.Location = new System.Drawing.Point(10, 49);
-            this.ScriptList.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ScriptList.Location = new System.Drawing.Point(11, 65);
             this.ScriptList.Name = "ScriptList";
-            this.ScriptList.Size = new System.Drawing.Size(347, 74);
+            this.ScriptList.Size = new System.Drawing.Size(396, 97);
             this.ScriptList.TabIndex = 1;
             this.ScriptList.UseCompatibleStateImageBehavior = false;
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(12, 128);
+            this.button2.Location = new System.Drawing.Point(14, 171);
+            this.button2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(345, 34);
+            this.button2.Size = new System.Drawing.Size(394, 45);
             this.button2.TabIndex = 2;
             this.button2.Text = "Run Selected Script";
             this.button2.UseVisualStyleBackColor = true;
@@ -75,16 +77,18 @@ partial class Testing {
             // 
             // ScriptParameter
             // 
-            this.ScriptParameter.Location = new System.Drawing.Point(10, 168);
+            this.ScriptParameter.Location = new System.Drawing.Point(11, 224);
+            this.ScriptParameter.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ScriptParameter.Name = "ScriptParameter";
-            this.ScriptParameter.Size = new System.Drawing.Size(345, 23);
+            this.ScriptParameter.Size = new System.Drawing.Size(394, 27);
             this.ScriptParameter.TabIndex = 3;
             // 
             // GenerateReportBtn
             // 
-            this.GenerateReportBtn.Location = new System.Drawing.Point(10, 197);
+            this.GenerateReportBtn.Location = new System.Drawing.Point(11, 263);
+            this.GenerateReportBtn.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.GenerateReportBtn.Name = "GenerateReportBtn";
-            this.GenerateReportBtn.Size = new System.Drawing.Size(345, 34);
+            this.GenerateReportBtn.Size = new System.Drawing.Size(394, 45);
             this.GenerateReportBtn.TabIndex = 4;
             this.GenerateReportBtn.Text = "Generate Report";
             this.GenerateReportBtn.UseVisualStyleBackColor = true;
@@ -93,17 +97,19 @@ partial class Testing {
             // CompanyList
             // 
             this.CompanyList.FormattingEnabled = true;
-            this.CompanyList.ItemHeight = 15;
-            this.CompanyList.Location = new System.Drawing.Point(10, 377);
+            this.CompanyList.ItemHeight = 20;
+            this.CompanyList.Location = new System.Drawing.Point(11, 503);
+            this.CompanyList.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.CompanyList.Name = "CompanyList";
-            this.CompanyList.Size = new System.Drawing.Size(341, 49);
+            this.CompanyList.Size = new System.Drawing.Size(389, 64);
             this.CompanyList.TabIndex = 5;
             // 
             // LoadCompaniesBtn
             // 
-            this.LoadCompaniesBtn.Location = new System.Drawing.Point(10, 332);
+            this.LoadCompaniesBtn.Location = new System.Drawing.Point(11, 443);
+            this.LoadCompaniesBtn.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.LoadCompaniesBtn.Name = "LoadCompaniesBtn";
-            this.LoadCompaniesBtn.Size = new System.Drawing.Size(341, 39);
+            this.LoadCompaniesBtn.Size = new System.Drawing.Size(390, 52);
             this.LoadCompaniesBtn.TabIndex = 6;
             this.LoadCompaniesBtn.Text = "LoadCompanies";
             this.LoadCompaniesBtn.UseVisualStyleBackColor = true;
@@ -111,9 +117,10 @@ partial class Testing {
             // 
             // CreateCompanyBtn
             // 
-            this.CreateCompanyBtn.Location = new System.Drawing.Point(12, 237);
+            this.CreateCompanyBtn.Location = new System.Drawing.Point(14, 316);
+            this.CreateCompanyBtn.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.CreateCompanyBtn.Name = "CreateCompanyBtn";
-            this.CreateCompanyBtn.Size = new System.Drawing.Size(341, 39);
+            this.CreateCompanyBtn.Size = new System.Drawing.Size(390, 52);
             this.CreateCompanyBtn.TabIndex = 7;
             this.CreateCompanyBtn.Text = "Create Company";
             this.CreateCompanyBtn.UseVisualStyleBackColor = true;
@@ -121,35 +128,38 @@ partial class Testing {
             // 
             // CompanyNameTextBox
             // 
-            this.CompanyNameTextBox.Location = new System.Drawing.Point(10, 303);
+            this.CompanyNameTextBox.Location = new System.Drawing.Point(11, 404);
+            this.CompanyNameTextBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.CompanyNameTextBox.Name = "CompanyNameTextBox";
-            this.CompanyNameTextBox.Size = new System.Drawing.Size(341, 23);
+            this.CompanyNameTextBox.Size = new System.Drawing.Size(389, 27);
             this.CompanyNameTextBox.TabIndex = 8;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 285);
+            this.label1.Location = new System.Drawing.Point(11, 380);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(94, 15);
+            this.label1.Size = new System.Drawing.Size(116, 20);
             this.label1.TabIndex = 9;
             this.label1.Text = "Company Name";
             // 
             // ProductList
             // 
             this.ProductList.FormattingEnabled = true;
-            this.ProductList.ItemHeight = 15;
-            this.ProductList.Location = new System.Drawing.Point(10, 592);
+            this.ProductList.ItemHeight = 20;
+            this.ProductList.Location = new System.Drawing.Point(11, 789);
+            this.ProductList.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ProductList.Name = "ProductList";
-            this.ProductList.Size = new System.Drawing.Size(341, 49);
+            this.ProductList.Size = new System.Drawing.Size(389, 64);
             this.ProductList.TabIndex = 10;
             this.ProductList.SelectedIndexChanged += new System.EventHandler(this.ProductList_SelectedIndexChanged);
             // 
             // LoadProductsBtn
             // 
-            this.LoadProductsBtn.Location = new System.Drawing.Point(10, 533);
+            this.LoadProductsBtn.Location = new System.Drawing.Point(11, 711);
+            this.LoadProductsBtn.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.LoadProductsBtn.Name = "LoadProductsBtn";
-            this.LoadProductsBtn.Size = new System.Drawing.Size(341, 39);
+            this.LoadProductsBtn.Size = new System.Drawing.Size(390, 52);
             this.LoadProductsBtn.TabIndex = 11;
             this.LoadProductsBtn.Text = "Load Products";
             this.LoadProductsBtn.UseVisualStyleBackColor = true;
@@ -157,25 +167,27 @@ partial class Testing {
             // 
             // ProductNameTextBox
             // 
-            this.ProductNameTextBox.Location = new System.Drawing.Point(10, 504);
+            this.ProductNameTextBox.Location = new System.Drawing.Point(11, 672);
+            this.ProductNameTextBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ProductNameTextBox.Name = "ProductNameTextBox";
-            this.ProductNameTextBox.Size = new System.Drawing.Size(341, 23);
+            this.ProductNameTextBox.Size = new System.Drawing.Size(389, 27);
             this.ProductNameTextBox.TabIndex = 12;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 486);
+            this.label2.Location = new System.Drawing.Point(11, 648);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(84, 15);
+            this.label2.Size = new System.Drawing.Size(104, 20);
             this.label2.TabIndex = 13;
             this.label2.Text = "Product Name";
             // 
             // CreateProductBtn
             // 
-            this.CreateProductBtn.Location = new System.Drawing.Point(10, 444);
+            this.CreateProductBtn.Location = new System.Drawing.Point(11, 592);
+            this.CreateProductBtn.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.CreateProductBtn.Name = "CreateProductBtn";
-            this.CreateProductBtn.Size = new System.Drawing.Size(341, 39);
+            this.CreateProductBtn.Size = new System.Drawing.Size(390, 52);
             this.CreateProductBtn.TabIndex = 14;
             this.CreateProductBtn.Text = "Create Product";
             this.CreateProductBtn.UseVisualStyleBackColor = true;
@@ -184,35 +196,48 @@ partial class Testing {
             // AttributeList
             // 
             this.AttributeList.FormattingEnabled = true;
-            this.AttributeList.ItemHeight = 15;
-            this.AttributeList.Location = new System.Drawing.Point(10, 662);
+            this.AttributeList.ItemHeight = 20;
+            this.AttributeList.Location = new System.Drawing.Point(11, 883);
+            this.AttributeList.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.AttributeList.Name = "AttributeList";
-            this.AttributeList.Size = new System.Drawing.Size(341, 49);
+            this.AttributeList.Size = new System.Drawing.Size(389, 64);
             this.AttributeList.TabIndex = 15;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 574);
+            this.label3.Location = new System.Drawing.Point(14, 765);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(54, 15);
+            this.label3.Size = new System.Drawing.Size(66, 20);
             this.label3.TabIndex = 16;
             this.label3.Text = "Products";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 644);
+            this.label4.Location = new System.Drawing.Point(14, 859);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(104, 15);
+            this.label4.Size = new System.Drawing.Size(129, 20);
             this.label4.TabIndex = 17;
             this.label4.Text = "Product Attributes";
             // 
+            // RptPDFBtn
+            // 
+            this.RptPDFBtn.Location = new System.Drawing.Point(425, 16);
+            this.RptPDFBtn.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.RptPDFBtn.Name = "RptPDFBtn";
+            this.RptPDFBtn.Size = new System.Drawing.Size(320, 43);
+            this.RptPDFBtn.TabIndex = 18;
+            this.RptPDFBtn.Text = "Report PDF";
+            this.RptPDFBtn.UseVisualStyleBackColor = true;
+            this.RptPDFBtn.Click += new System.EventHandler(this.RptPDFBtn_Click);
+            // 
             // Testing
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(369, 719);
+            this.ClientSize = new System.Drawing.Size(769, 959);
+            this.Controls.Add(this.RptPDFBtn);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.AttributeList);
@@ -231,8 +256,10 @@ partial class Testing {
             this.Controls.Add(this.button2);
             this.Controls.Add(this.ScriptList);
             this.Controls.Add(this.button1);
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "Testing";
             this.Text = "Testing";
+            this.Load += new System.EventHandler(this.Testing_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -258,4 +285,5 @@ partial class Testing {
     private ListBox AttributeList;
     private Label label3;
     private Label label4;
+    private Button RptPDFBtn;
 }
