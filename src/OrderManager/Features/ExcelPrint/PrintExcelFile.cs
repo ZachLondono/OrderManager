@@ -74,9 +74,9 @@ public class PrintExcelFile {
                 process.Start();
 
                 // Read from std error
-                Task.Run(() => ReadStream(process.StandardError, onStdErr));
+                _ = Task.Run(() => ReadStream(process.StandardError, onStdErr), cancellationToken);
 
-                await Task.Run(() => process.WaitForExit());
+                await Task.Run(() => process.WaitForExit(), cancellationToken);
 
                 ProcessStatus status = errors.Any() ? ProcessStatus.Failed : ProcessStatus.Success;
 
