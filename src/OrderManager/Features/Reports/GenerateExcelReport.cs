@@ -2,7 +2,6 @@
 using FluentValidation;
 using MediatR;
 using OrderManager.ApplicationCore.Domain;
-using OrderManager.ApplicationCore.Infrastructure;
 
 namespace OrderManager.ApplicationCore.Features.Reports;
 
@@ -35,7 +34,7 @@ public class GenerateExcelReport {
         }
     }
 
-    public class Handler : IRequestHandler<Command, ReportEnvelope> {
+    internal class Handler : IRequestHandler<Command, ReportEnvelope> {
 
         public Task<ReportEnvelope> Handle(Command request, CancellationToken cancellationToken) {
 
