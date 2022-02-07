@@ -1,22 +1,24 @@
 ﻿namespace OrderManager.ApplicationCore.Domain;
 
-public enum OrderStatus {
-    Pending,
-    Released,
-    Completed,
-    Shipped
-}
+public class Order {
+    public int Id { get; set; }
+    public string Number { get; set; } = default!;
+    public string Name { get; set; } = default!;
 
-public partial class Order {
+    public int SupplierId { get; set; }
+    public Company? Supplier { get; set; }
+    
+    public int VendorId { get; set; }
+    public Company? Vendor { get; set; }
+    
+    public int CustomerId { get; set; }
+    public Company? Customer { get; set; }
+    
+    public int StatusId { get; set; }
+    public Status? Status { get; set; }
+    
+    public int PriorityId { get; set; }
+    public Priority? Priority { get; set; }
 
-    public int OrderId { get; set; }
-
-    public string RefNum { get; set; } = string.Empty;
-
-    public DateTime OrderDate { get; set; } = DateTime.Today;
-
-    public List<LineItem> LineItems { get; set; } = new();
-
-    public OrderStatus Status { get; set; } = OrderStatus.Pending;
-
-}
+    public string Notes { get; set; } = default!;
+};

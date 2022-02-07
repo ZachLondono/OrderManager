@@ -8,12 +8,23 @@ public class OrderController : BaseController {
 
     public OrderController(ISender sender) : base(sender) { }
 
-    public async Task<Order?> CreateOrder(string refNum, DateTime orderDate) {
-        return await Sender.Send(new CreateOrder.Command(refNum, orderDate));
+    public Task<Order?> CreateOrder(string number,
+                                            string name,
+                                            int supplierId,
+                                            int vendorId,
+                                            int customerId,
+                                            int statusId,
+                                            int priorityId,
+                                            string notes) {
+        return Sender.Send(new CreateOrder.Command(number, name, supplierId, vendorId, customerId, statusId, priorityId, notes));
     }
 
-    public async Task<IEnumerable<Order>> GetAllOrders() {
-        return await Sender.Send(new GetAllOrders.Query());
+    public Task<Order?> CreateOrder(string number, string name) {
+        return CreateOrder(number, name, -1, -1, -1, -1, -1, "");
+    }
+
+    public Task<IEnumerable<Order>> GetAllOrders() {
+        return Sender.Send(new GetAllOrders.Query());
     }
 
 }

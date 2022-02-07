@@ -9,7 +9,14 @@ namespace OrderManager.ApplicationCore.Features.Orders;
 
 public class CreateOrder {
     
-    public record Command(string RefNum, DateTime OrderDate) : IRequest<Order?>;
+    public record Command(string Number,
+                        string Name,
+                        int SupplierId,
+                        int VendorId,
+                        int CustomerId,
+                        int StatusId,
+                        int PriorityId,
+                        string Notes) : IRequest<Order?>;
 
     public class Validator : AbstractValidator<Command> {
         private readonly AppConfiguration _config;
@@ -17,22 +24,26 @@ public class CreateOrder {
         public Validator(AppConfiguration config) {
             _config = config;
 
-            RuleFor(p => p.RefNum)
+            RuleFor(p => p.Number)
                 .NotNull()
                 .NotEmpty();
 
-            RuleFor(p => p.RefNum)
-                .Must(IsNameUnique);
+            RuleFor(p => p.Number)
+                .Must(IsNumUnique)
+                .WithMessage("Order number must be unique");
 
-            RuleFor(p => p.OrderDate)
-                .NotNull();
+
+            RuleFor(p => p.Name)
+                .NotNull()
+                .NotEmpty();
+
         }
 
-        public bool IsNameUnique(string name) {
-            const string query = "SELECT COUNT(RefNum) FROM Orders WHERE RefNum = @RefNum;";
-            using var connection = new OleDbConnection(_config.ConnectionString);
+        public bool IsNumUnique(string number) {
+            const string query = "SELECT COUNT([Number]) FROM Orders WHERE [Number] = [@Number];";
+            using var connection = new OleDbConnection(_config.OrderConnectionString);
             connection.Open();
-            int count = connection.QuerySingle<int>(query, new { RefNum = name });
+            int count = connection.QuerySingle<int>(query, new { Number = number });
             connection.Close();
             return count == 0;
         }
@@ -49,10 +60,12 @@ public class CreateOrder {
 
         public async Task<Order?> Handle(Command request, CancellationToken cancellationToken) {
 
-            string sql = "INSERT INTO [Orders] (RefNum, OrderDate) VALUES (@RefNum, @OrderDate)";
-            string query = "SELECT * FROM [Orders] WHERE RefNum = @RefNum;";
+            string sql = @"INSERT INTO [Orders] ([Number], [Name], [SupplierId], [VendorId], [CustomerId], [StatusId], [PriorityId], [Notes])
+                        VALUES ([@Number], [@Name], [@SupplierId], [@VendorId], [@CustomerId], [@StatusId], [@PriorityId], [@Notes]);";
+            
+            string query = "SELECT * FROM [Orders] WHERE [Number] = [@Number];";
 
-            using var connection = new OleDbConnection(_config.ConnectionString);
+            using var connection = new OleDbConnection(_config.OrderConnectionString);
 
             connection.Open();
 
@@ -60,13 +73,14 @@ public class CreateOrder {
 
             Order? order = null;
             if (rowsAffected > 0) {
-                order = await connection.QuerySingleOrDefaultAsync<Order>(query, new { request.RefNum });
+                order = await connection.QuerySingleOrDefaultAsync<Order>(query, new { request.Number });
             }
 
             connection.Close();
 
             return order;
         }
+
     }
 
 }

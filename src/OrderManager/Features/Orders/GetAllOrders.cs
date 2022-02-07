@@ -20,13 +20,27 @@ public class GetAllOrders {
 
         public async Task<IEnumerable<Order>> Handle(Query request, CancellationToken cancellationToken) {
 
-            string query = "SELECT * FROM [Orders];";
+            string query = @"SELECT Orders.[Id], Orders.[Number], Orders.[Name], Orders.[SupplierId], Orders.[VendorId], Orders.[CustomerId], Orders.[Notes], Statuses.[Id] as StatusId, Statuses.[Name] As StatusName, Statuses.[Level], Priorities.[Id] as PriorityId, Priorities.[Name] As PriorityName, Priorities.[Level]
+                            FROM  ([Orders] 
+                                LEFT JOIN [Statuses]
+                                ON Orders.[StatusId] = Statuses.[Id])
+                            LEFT JOIN [Priorities] 
+                            ON Orders.[PriorityId] = Priorities.[Id];";
 
-            using var connection = new OleDbConnection(_config.ConnectionString);
+            using var connection = new OleDbConnection(_config.OrderConnectionString);
 
             connection.Open();
 
-            IEnumerable<Order> orders = await connection.QueryAsync<Order>(query);
+            IEnumerable<Order> orders = await connection.QueryAsync<Order, Status, Priority, Order>(query, (o, s, p) => {
+
+                o.StatusId = s.Id;
+                o.Status = s;
+                o.PriorityId = p.Id;
+                o.Priority = p;
+
+                return o;
+
+            }, splitOn:"StatusId,PriorityId");
 
             connection.Close();
 
