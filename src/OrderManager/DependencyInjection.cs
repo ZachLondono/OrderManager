@@ -2,11 +2,6 @@
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using OrderManager.ApplicationCore.Features.Companies;
-using OrderManager.ApplicationCore.Features.Orders;
-using OrderManager.ApplicationCore.Features.Products;
-using OrderManager.ApplicationCore.Features.Reports;
-using OrderManager.ApplicationCore.Features.Scripts;
 using OrderManager.ApplicationCore.Infrastructure;
 
 namespace OrderManager.ApplicationCore;
@@ -19,13 +14,7 @@ public static class DependencyInjection {
             .AddMediatR(typeof(DependencyInjection).Assembly)
             .AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipeline<,>))
             .AddControllers()
-            .AddTransient(c => {
-                return new AppConfiguration() {
-                    ConnectionString = config.GetConnectionString("AccessDB") ?? "",
-                    ScriptDirectory = config["ScriptDir"] ?? "",
-                    ExcelPrinterExecutable = config["ConverterPath"] ?? ""
-                };
-            });
+            .AddSingleton<AppConfiguration>();
             
     }
 
