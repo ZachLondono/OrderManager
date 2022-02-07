@@ -23,7 +23,7 @@ public class GetAllCompanies {
 
             IEnumerable<Company> companies = Enumerable.Empty<Company>();
 
-            using (var connection = new OleDbConnection(_config.ConnectionString)) {
+            using (var connection = new OleDbConnection(_config.OrderConnectionString)) {
                 connection.Open();
 
                 companies = await connection.QueryAsync<Company>(query);

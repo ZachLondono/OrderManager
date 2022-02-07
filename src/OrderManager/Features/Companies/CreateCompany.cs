@@ -10,10 +10,8 @@ namespace OrderManager.ApplicationCore.Features.Companies;
 public class CreateCompany {
 
     public record Command(
-            string CompanyName,
-            string ContactName,
-            string ContactEmail,
-            string ContactPhone,
+            string Name,
+            string Contact,
             string AddressLine1,
             string AddressLine2,
             string AddressLine3,
@@ -29,14 +27,12 @@ public class CreateCompany {
             _config = config;
 
 
-            RuleFor(c => c.CompanyName)
+            RuleFor(c => c.Name)
                 .NotEmpty()
                 .NotNull()
                 .Must(IsNameUnique);
 
-            RuleFor(c => c.ContactName).NotNull();
-            RuleFor(c => c.ContactEmail).NotNull();
-            RuleFor(c => c.ContactPhone).NotNull();
+            RuleFor(c => c.Contact).NotNull();
             RuleFor(c => c.AddressLine1).NotNull();
             RuleFor(c => c.AddressLine2).NotNull();
             RuleFor(c => c.AddressLine3).NotNull();
@@ -47,10 +43,10 @@ public class CreateCompany {
         }
 
         public bool IsNameUnique(string name) {
-            const string query = "SELECT COUNT(CompanyName) FROM Companies WHERE CompanyName = @CompanyName;";
-            using var connection = new OleDbConnection(_config.ConnectionString);
+            const string query = "SELECT COUNT([Name]) FROM Companies WHERE [Name] = [@Name];";
+            using var connection = new OleDbConnection(_config.OrderConnectionString);
             connection.Open();
-            int count = connection.QuerySingle<int>(query, new { CompanyName = name });
+            int count = connection.QuerySingle<int>(query, new { Name = name });
             connection.Close();
             return count == 0;
         }
@@ -68,19 +64,19 @@ public class CreateCompany {
         public async Task<Company?> Handle(Command request, CancellationToken cancellationToken) {
 
             const string sql = @"INSERT INTO [Companies] 
-                                (CompanyName, ContactName, ContactEmail, ContactPhone, AddressLine1, AddressLine2, AddressLine3, City, State, PostalCode)
-                                VALUES (@CompanyName, @ContactName, @ContactEmail, @ContactPhone, @AddressLine1, @AddressLine2, @AddressLine3, @City, @State, @PostalCode);";
+                                ([Name], [Contact], [AddressLine1], [AddressLine2], [AddressLine3], [City], [State], [PostalCode])
+                                VALUES ([@Name], [@Contact], [@AddressLine1], [@AddressLine2], [@AddressLine3], [@City], [@State], [@PostalCode]);";
 
-            const string query = "SELECT * FROM Companies WHERE CompanyName = @CompanyName;";
+            const string query = "SELECT * FROM Companies WHERE [Name] = [@Name];";
 
-            using var connection = new OleDbConnection(_config.ConnectionString);
+            using var connection = new OleDbConnection(_config.OrderConnectionString);
             connection.Open();
 
             int rowsAffected = await connection.ExecuteAsync(sql, request);
 
             Company? company = null;
             if (rowsAffected > 0) {
-                company = await connection.QuerySingleAsync<Company>(query, new { request.CompanyName });
+                company = await connection.QuerySingleAsync<Company>(query, new { request.Name });
             }
 
             connection.Close();

@@ -26,11 +26,11 @@ public class GetCompanyByName {
 
         public async Task<Company?> Handle(Query request, CancellationToken cancellationToken) {
 
-            const string query = "SELECT * FROM Companies WHERE CompanyName = @CompanyName;";
+            const string query = "SELECT * FROM Companies WHERE [Name] = [@Name];";
 
             Company? company = null;
 
-            using (var connection = new OleDbConnection(_config.ConnectionString)) {
+            using (var connection = new OleDbConnection(_config.OrderConnectionString)) {
                 connection.Open();
 
                 company = await connection.QuerySingleAsync<Company>(query, request);
