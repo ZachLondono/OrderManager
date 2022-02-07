@@ -21,11 +21,12 @@ internal static class Program {
 
         ServiceProvider = new ServiceCollection()
             .AddLogging(c => c.AddConsole())
+            .AddSingleton(config)
             .AddAppplicationCore(config)
             .BuildServiceProvider();
 
         ApplicationConfiguration.Initialize();
-        Application.Run(new Testing());
+        Application.Run(new NewCompanyForm());
     }
 
 }
