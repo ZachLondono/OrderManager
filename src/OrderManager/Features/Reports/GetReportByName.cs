@@ -22,7 +22,7 @@ public class GetReportByName {
 
             string query = "SELECT * FROM Reports WHERE ReportName = @ReportName;";
 
-            using var connection = new OleDbConnection(_config.ConnectionString);
+            using var connection = new OleDbConnection(_config.OrderConnectionString);
 
             connection.Open();
 

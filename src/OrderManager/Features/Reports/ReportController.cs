@@ -21,4 +21,8 @@ public class ReportController : BaseController {
         return Sender.Send(new GetAllReports.Query());
     }
 
+    public Task<Report?> CreateReport(string reportName, string template, string outputDirectory, ReportType reportType) {
+        return Sender.Send(new CreateReport.Command(reportName, template, outputDirectory, reportType));
+    }
+
 }

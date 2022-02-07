@@ -22,7 +22,7 @@ public class GetAllReports {
 
             string query = "SELECT * FROM Reports;";
 
-            using var connection = new OleDbConnection(_config.ConnectionString);
+            using var connection = new OleDbConnection(_config.OrderConnectionString);
 
             connection.Open();
 

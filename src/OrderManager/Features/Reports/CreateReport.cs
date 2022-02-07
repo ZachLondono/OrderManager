@@ -42,8 +42,8 @@ public class CreateReport {
                             || string.IsNullOrEmpty(directory);
 
         public bool IsNameUnique(string name) {
-            const string query = "SELECT COUNT(ReportName) FROM Reports WHERE ReportName = @ReportName;";
-            using var connection = new OleDbConnection(_config.ConnectionString);
+            const string query = "SELECT COUNT([Name]) FROM Reports WHERE [Name] = [@Name];";
+            using var connection = new OleDbConnection(_config.OrderConnectionString);
             connection.Open();
             int count = connection.QuerySingle<int>(query, new { ReportName = name });
             connection.Close();
@@ -62,11 +62,11 @@ public class CreateReport {
 
         public async Task<Report?> Handle(Command request, CancellationToken cancellationToken) {
 
-            string sql = "INSERT INTO Reports (Name, Template, OutputDirectory, ReportType) VALUES (@Name, @Template, @OutputDirectory, @ReportType);";
+            string sql = "INSERT INTO Reports ([Name], [Template], [OutputDirectory], [ReportType]) VALUES ([@Name], [@Template], [@OutputDirectory], [@ReportType]);";
 
-            string query = "SELECT * FROM Reports WHERE ReportName = @ReportName;";
+            string query = "SELECT * FROM Reports WHERE [Name] = [@Name];";
 
-            using var connection = new OleDbConnection(_config.ConnectionString);
+            using var connection = new OleDbConnection(_config.OrderConnectionString);
 
             connection.Open();
 
