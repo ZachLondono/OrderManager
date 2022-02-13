@@ -4,6 +4,7 @@ using MediatR;
 using Avalonia.ReactiveUI;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using Domain;
 
 namespace OrderManager;
 
@@ -19,6 +20,7 @@ internal class Program {
 
         ServiceProvider = new ServiceCollection()
             .AddMediatR(typeof(Program).Assembly)
+            .AddDomain()
             .BuildServiceProvider();
 
         if (ServiceProvider is null) throw new InvalidProgramException(nameof(ServiceProvider));
