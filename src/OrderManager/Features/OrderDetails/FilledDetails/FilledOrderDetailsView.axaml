@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OrderManager.Features.OrderDetails.FilledDetails.FilledOrderDetailsView">
+
+  <Control.Styles>
+    <Style Selector="Button">
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate>
+            <Border Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}">
+              <ContentPresenter Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                Margin="{TemplateBinding Padding}"/>
+            </Border>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    
+    <!-- Secondary Button Class -->
+    <Style Selector="Button.Secondary">
+      <Setter Property="Foreground" Value="#212529" />
+      <Setter Property="Background" Value="#ffffff"/>
+      <Setter Property="BorderBrush" Value="#ebebeb"/>
+      <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <Style Selector="Button.Secondary:pointerover /template/ Border">
+      <Setter Property="Background" Value="#eff6fc"/>
+      <Setter Property="BorderBrush" Value="#0078d4"/>
+      <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    
+  </Control.Styles>
+  
+  <StackPanel Orientation="Vertical">
+    <TextBlock Text="{Binding Order.Id}" FontSize="20"/>
+    <TextBlock Text="{Binding Order.Number}" FontSize="20"/>
+    <Button Content="{Binding ReleaseBtnText}" Command="{Binding ReleaseOrder}" CommandParameter="{Binding Order.Id}" Classes="Secondary" />
+  </StackPanel>
+</UserControl>

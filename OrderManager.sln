@@ -5,11 +5,11 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3A82FA78-9658-4585-B98E-B415942858E7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationCore", "src\OrderManager\ApplicationCore.csproj", "{0AC363D3-CF24-4987-A059-FA16B45B7D66}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OrderManager", "OrderManager", "{81D47A27-B517-4263-AE68-142F24D346FF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinFormsUI", "src\WinFormsUI\WinFormsUI.csproj", "{F6EED991-3C41-46A7-8E23-30650585054B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderManager", "src\OrderManager\OrderManager.csproj", "{3773ABEE-7833-4656-9CF7-397D041A7A46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelToPDFConverter", "src\ExcelToPDFConverter\ExcelToPDFConverter.csproj", "{036378AE-C063-42F5-97C3-D944DD831E1D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderManager.UnitTests", "tests\OrderManager.UnitTests\OrderManager.UnitTests.csproj", "{83DA482F-5D9E-436E-9953-161DBBE66085}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,26 +17,22 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0AC363D3-CF24-4987-A059-FA16B45B7D66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0AC363D3-CF24-4987-A059-FA16B45B7D66}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0AC363D3-CF24-4987-A059-FA16B45B7D66}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0AC363D3-CF24-4987-A059-FA16B45B7D66}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F6EED991-3C41-46A7-8E23-30650585054B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F6EED991-3C41-46A7-8E23-30650585054B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F6EED991-3C41-46A7-8E23-30650585054B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F6EED991-3C41-46A7-8E23-30650585054B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{036378AE-C063-42F5-97C3-D944DD831E1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{036378AE-C063-42F5-97C3-D944DD831E1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{036378AE-C063-42F5-97C3-D944DD831E1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{036378AE-C063-42F5-97C3-D944DD831E1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3773ABEE-7833-4656-9CF7-397D041A7A46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3773ABEE-7833-4656-9CF7-397D041A7A46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3773ABEE-7833-4656-9CF7-397D041A7A46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3773ABEE-7833-4656-9CF7-397D041A7A46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83DA482F-5D9E-436E-9953-161DBBE66085}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83DA482F-5D9E-436E-9953-161DBBE66085}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83DA482F-5D9E-436E-9953-161DBBE66085}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83DA482F-5D9E-436E-9953-161DBBE66085}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{0AC363D3-CF24-4987-A059-FA16B45B7D66} = {3A82FA78-9658-4585-B98E-B415942858E7}
-		{F6EED991-3C41-46A7-8E23-30650585054B} = {3A82FA78-9658-4585-B98E-B415942858E7}
-		{036378AE-C063-42F5-97C3-D944DD831E1D} = {3A82FA78-9658-4585-B98E-B415942858E7}
+		{81D47A27-B517-4263-AE68-142F24D346FF} = {3A82FA78-9658-4585-B98E-B415942858E7}
+		{3773ABEE-7833-4656-9CF7-397D041A7A46} = {81D47A27-B517-4263-AE68-142F24D346FF}
+		{83DA482F-5D9E-436E-9953-161DBBE66085} = {81D47A27-B517-4263-AE68-142F24D346FF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F71DA846-21B8-4AEE-950D-BD18D658A9EE}

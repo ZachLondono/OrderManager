@@ -1,0 +1,33 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:orderlist="clr-namespace:OrderManager.Features.OrderList"
+        xmlns:orderdetails="clr-namespace:OrderManager.Features.OrderDetails"
+        x:Class="OrderManager.MainWindow.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="OrderManager">
+
+  <Window.DataTemplates>
+    <DataTemplate DataType="{x:Type orderlist:OrderListViewModel}">
+      <orderlist:OrderListView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type orderdetails:OrderDetailsViewModel}">
+      <orderdetails:OrderDetailsView />
+    </DataTemplate>
+  </Window.DataTemplates>
+  
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="1*" MinWidth="300" />
+      <ColumnDefinition Width="5" />
+      <ColumnDefinition MinWidth="300" />
+    </Grid.ColumnDefinitions>
+
+    <ContentControl Content="{Binding OrderListViewModel}" Grid.Column="0"/>
+    <GridSplitter  Background="#ffffff" BorderThickness="0,0,1,0" BorderBrush="#d4d4d4" Width="5" Grid.Column="1"  />
+    <ContentControl Content="{Binding OrderDetailsViewModel}" Grid.Column="2" />
+  </Grid>
+
+</Window>
