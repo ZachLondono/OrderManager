@@ -107,12 +107,13 @@
       <Setter Property="BorderThickness" Value="0,0,0,0"/>
     </Style>
     <Style Selector="RadioButton.OrderItem:checked /template/ Border > Border">
-      <Setter Property="BorderBrush" Value="#CDE6F7"/>
+      <Setter Property="BorderBrush" Value="#B1D6F0"/>
       <Setter Property="BorderThickness" Value="4,0,0,1"/>
     </Style>
     <Style Selector="RadioButton.Priority:checked /template/ Border">
       <Setter Property="Background" Value="#FFF5B7" />
     </Style>
+    
   </Control.Styles>
 
   <Control.Styles>
