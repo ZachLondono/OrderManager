@@ -1,5 +1,6 @@
 ﻿using Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Persistance;
 
 namespace Domain;
 
@@ -16,7 +17,7 @@ public static class DependencyInjection {
             services.AddTransient(service);
         }
 
-        return services;
+        return services.AddPersistance();
 
     }
 
