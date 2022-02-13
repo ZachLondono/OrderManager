@@ -16,11 +16,12 @@
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.12" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.12" />
-    <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain\Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Features\OrderList\EmptyList\EmptyOrderListView.axaml.cs">
