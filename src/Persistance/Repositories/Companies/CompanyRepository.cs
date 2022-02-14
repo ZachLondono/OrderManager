@@ -1,7 +1,7 @@
 ﻿namespace Persistance.Repositories.Companies;
 
 public class CompanyRepository : BaseRepository, ICompanyRepository {
-    public CompanyRepository(string connectionString) : base(connectionString) { }
+    public CompanyRepository(ConnectionStringManager connectionStringManager) : base(connectionStringManager) { }
 
     public CompanyDAO CreateCompany(string name) {
         string sql = @"INSERT INTO [Companies] ([Name])
@@ -15,7 +15,7 @@ public class CompanyRepository : BaseRepository, ICompanyRepository {
     }
 
     public CompanyDAO GetCompanyById(int id) {
-        string query = @"SELECT ([Id], [Name]) FROM [Companies] WHERE [Id] = [@Id];";
+        string query = @"SELECT [Id], [Name] FROM [Companies] WHERE [Id] = @Id;";
         return QuerySingleOrDefault<CompanyDAO>(query, new { Id = id });
     }
 

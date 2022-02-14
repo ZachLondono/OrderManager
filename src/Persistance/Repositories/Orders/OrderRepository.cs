@@ -2,7 +2,7 @@
 
 public class OrderRepository : BaseRepository, IOrderRepository {
     
-    public OrderRepository(string connectionString) : base(connectionString) {
+    public OrderRepository(ConnectionStringManager connectionStringManager) : base(connectionStringManager) {
     }
 
     public OrderDAO CreateOrder(string number) {
@@ -22,7 +22,7 @@ public class OrderRepository : BaseRepository, IOrderRepository {
 
     public OrderDAO GetOrderById(int id) {
 
-        const string sql = @"SELECT ([Id], [Number], [Name], [LastModified], [IsPriority]) FROM [Orders] WHERE Id = @Id;";
+        const string sql = @"SELECT [Id], [Number], [Name], [LastModified], [IsPriority], [CustomerId], [VendorId], [SupplierId] FROM [Orders] WHERE Id = @Id;";
 
         OrderDAO? dao = QuerySingleOrDefault<OrderDAO>(sql, new { Id = id });
 
@@ -34,13 +34,13 @@ public class OrderRepository : BaseRepository, IOrderRepository {
     }
 
     public IEnumerable<OrderDAO> GetOrders() {
-        const string sql = @"SELECT ([Id], [Number], [Name], [LastModified], [IsPriority]) FROM [Orders];";
+        const string sql = @"SELECT [Id], [Number], [Name], [LastModified], [IsPriority], [CustomerId], [VendorId], [SupplierId] FROM [Orders];";
         return Query<OrderDAO>(sql);
     }
 
     public void UpdateOrder(OrderDAO order) {
         const string sql = @"UPDATE [Orders]
-                            SET [Number] = [@Number], [Name] = [@Name], [LastModified] = [@LastModified], [IsPriority] = [@IsPriority]
+                            SET [Number] = [@Number], [Name] = [@Name], [LastModified] = [@LastModified], [IsPriority] = [@IsPriority], [CustomerId] = [@CustomerId], [VendorId] = [@VendorId], [SupplierId] = [@SupplierId]
                             WHERE [Id] = @Id;";
         Execute(sql, order);
     }

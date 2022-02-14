@@ -15,7 +15,7 @@ public static class DependencyInjection {
             services.AddTransient(repository);
         }
 
-        return services;
+        return services.AddSingleton<ConnectionStringManager>();
 
     }
 

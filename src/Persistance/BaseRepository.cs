@@ -7,8 +7,8 @@ public abstract class BaseRepository {
 
     protected readonly string _connectionString;
 
-    public BaseRepository(string connectionString) {
-        _connectionString = connectionString;
+    public BaseRepository(ConnectionStringManager connectionStringManager) {
+        _connectionString = connectionStringManager.GetConnectionString;
     }
 
     public void Execute(string sql, object? param = null) {

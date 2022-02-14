@@ -12,7 +12,7 @@ public interface IOrderItemRepository {
 
 public class OrderItemRepository : BaseRepository, IOrderItemRepository {
     
-    public OrderItemRepository(string connectionString) : base(connectionString) {
+    public OrderItemRepository(ConnectionStringManager connectionStringManager) : base(connectionStringManager) {
     }
 
     public OrderItemDAO CreateItem(int orderId, int productId, int qty = 1) {
@@ -29,7 +29,7 @@ public class OrderItemRepository : BaseRepository, IOrderItemRepository {
     }
 
     public IEnumerable<OrderItemDAO> GetItemsByOrderId(int orderId) {
-        const string query = @"SELECT ([Id], [OrderId], [ProductId], [Qty]) FROM [OrderItems] WHERE [OrderId] = @OrderId;";
+        const string query = @"SELECT [Id], [OrderId], [ProductId], [Qty] FROM [OrderItems] WHERE [OrderId] = @OrderId;";
         return Query<OrderItemDAO>(query, new { OrderId = orderId });
     }
 

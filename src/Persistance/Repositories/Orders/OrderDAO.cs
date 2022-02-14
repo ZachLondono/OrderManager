@@ -12,4 +12,10 @@ public class OrderDAO {
 
     public DateTime LastModified { get; set; } = DateTime.Today;
 
+    public int CustomerId { get; set; }
+    
+    public int VendorId { get; set; }
+
+    public int SupplierId { get; set; }
+
 }
