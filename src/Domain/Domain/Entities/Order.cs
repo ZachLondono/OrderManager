@@ -12,6 +12,12 @@ public class Order {
 
 	public DateTime LastModified { get; set; } = DateTime.Today;
 
+	public Company? Customer { get; set; }
+
+	public Company? Vendor { get; set; }
+
+	public Company? Supplier { get; set; }
+
 	private readonly List<OrderItem> _items = new();
 
 	public IReadOnlyCollection<OrderItem> Items => _items.AsReadOnly();
