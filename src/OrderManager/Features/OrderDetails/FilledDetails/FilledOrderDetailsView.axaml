@@ -38,8 +38,9 @@
   </Control.Styles>
   
   <StackPanel Orientation="Vertical">
-    <TextBlock Text="{Binding Order.Id}" FontSize="20"/>
-    <TextBlock Text="{Binding Order.Number}" FontSize="20"/>
-    <Button Content="{Binding ReleaseBtnText}" Command="{Binding ReleaseOrder}" CommandParameter="{Binding Order.Id}" Classes="Secondary" />
+    <TextBlock Text="{Binding Details.Id}" FontSize="20"/>
+    <TextBlock Text="{Binding Details.Number}" FontSize="20"/>
+    <TextBlock Text="{Binding Details.Name}" FontSize="16"/>
+    <Button Content="Release" Command="{Binding ReleaseOrder}" CommandParameter="{Binding Details.Id}" Classes="Secondary" />
   </StackPanel>
 </UserControl>

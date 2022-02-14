@@ -1,9 +1,8 @@
-﻿using MediatR;
+﻿using Domain.Entities;
+using Domain.Services;
+using MediatR;
 using OrderManager.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,20 +10,28 @@ namespace OrderManager.Features.OrderDetails;
 
 public class GetOrderDetails {
 
-    public record Query(int Id) : IRequest<QueryResult<OrderModel>>;
+    public record Query(int Id) : IRequest<QueryResult<Order>>;
 
-    public class Handler : IRequestHandler<Query, QueryResult<OrderModel>> {
-        public async Task<QueryResult<OrderModel>> Handle(Query request, CancellationToken cancellationToken) {
-            OrderModel o = new() {
-                Id = request.Id,
-                Number = "IDK",
-                ItemCount = new Random().Next(100)
-            };
+    public class Handler : IRequestHandler<Query, QueryResult<Order>> {
 
-            await Task.Delay(5);
+        private readonly OrderService _service;
 
-            //return new QueryResult<OrderModel>(new Error("Not Found", $"Could not find order with id '{request.Id}'"));
-            return new QueryResult<OrderModel>(o);
+        public Handler(OrderService service) {
+            _service = service;
+        }
+
+        public Task<QueryResult<Order>> Handle(Query request, CancellationToken cancellationToken) {
+
+            try { 
+                
+                Order o = _service.GetOrderById(request.Id);
+                return Task.FromResult(new QueryResult<Order>(o));
+
+            } catch (InvalidDataException) {
+
+                return Task.FromResult(new QueryResult<Order>(new Error("Not Found", $"Could not find order with id '{request.Id}'")));
+
+            }
 
         }
     }

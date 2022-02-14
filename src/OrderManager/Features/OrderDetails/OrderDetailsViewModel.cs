@@ -4,11 +4,7 @@ using OrderManager.Features.OrderDetails.FilledDetails;
 using OrderManager.Shared;
 using OrderManager.Shared.DataError;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OrderManager.Features.OrderDetails;
