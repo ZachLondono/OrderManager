@@ -1,20 +1,51 @@
-﻿using Avalonia.Interactivity;
+﻿using Domain.Entities;
 using OrderManager.Shared;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using Unit = System.Reactive.Unit;
 
 namespace OrderManager.Features.OrderList.FilledList;
 
 public class FilledOrderListViewModel : ViewModelBase {
 
-    public ObservableCollection<OrderModel> Items { get; set; }
+    public ObservableCollection<ListItemViewModel> Items { get; set; }
 
-    public FilledOrderListViewModel(IEnumerable<OrderModel> items) {
-        Items = new ObservableCollection<OrderModel>(items);
+    public FilledOrderListViewModel(IEnumerable<Order> items) {
+
+        List<ListItemViewModel> list = new();
+        foreach (var item in items) {
+            list.Add(new() {
+                Id = item.Id,
+                Number = item.Number,
+                Name = item.Name,
+                IsPriority = item.IsPriority,
+                LastModified = item.LastModified,
+                CompanyNames = "" //$"{item.Customer?.Name} / {item.Vendor?.Name} / {item.Supplier?.Name}"
+            }) ;        
+        }
+        
+        Items = new ObservableCollection<ListItemViewModel>(list);
+
     }
+
+}
+
+public class ListItemViewModel {
+
+    public int Id { get; set; }
+
+    public string Number { get; set; } = string.Empty;
+
+    public string Name { get; set; } = string.Empty;
+
+    public bool IsPriority { get; set; }
+
+    public DateTime LastModified { get; set; } = DateTime.Now;
+
+    public string DateModifiedStr {
+        get => DateTime.Today.IsSameWeek(LastModified) ? LastModified.ToString("ddd h:mm") : LastModified.ToString("d/M/yy h:mm");
+    }
+
+    public string CompanyNames { get; set; } = string.Empty;
 
 }
