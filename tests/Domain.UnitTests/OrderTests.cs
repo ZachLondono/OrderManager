@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.Entities.OrderAggregate;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -11,13 +12,13 @@ public class OrderTests {
 
         // Arrange
         Order order = new Order();
-        CatalogProduct product = new CatalogProduct();
-        product.Name = "Test Product";
+        string productName = "Test Product";
+        CatalogItemOrdered item = new(0, productName, new List<string>() { });
 
         int qty = 1;
 
         // Act
-        var exception = Record.Exception(() => order.AddItem(product, qty));
+        var exception = Record.Exception(() => order.AddItem(item, qty));
 
         // Assert
         Assert.Null(exception);
@@ -31,13 +32,13 @@ public class OrderTests {
 
         // Arrange
         Order order = new Order();
-        CatalogProduct product = new CatalogProduct();
-        product.Name = "Test Product";
+        string productName = "Test Product";
+        CatalogItemOrdered item = new(0, productName, new List<string>() { });
 
         int qty = -1;
 
         // Act
-        var exception = Record.Exception(() => order.AddItem(product, qty));
+        var exception = Record.Exception(() => order.AddItem(item, qty));
 
 
         // Assert

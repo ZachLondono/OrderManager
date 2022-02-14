@@ -1,5 +1,5 @@
 ﻿using Domain.Entities;
-using Persistance.Repositories.Catalog;
+using Domain.Entities.OrderAggregate;
 using Persistance.Repositories.Companies;
 using Persistance.Repositories.OrderItems;
 using Persistance.Repositories.Orders;
@@ -10,13 +10,11 @@ public class OrderService : EntityService {
 
     private readonly OrderRepository _orderRepository;
     private readonly OrderItemRepository _itemRepository;
-    private readonly CatalogRepository _catalogRepository;
     private readonly CompanyRepository _companyRepository;
 
-    public OrderService(OrderRepository orderRepository, OrderItemRepository itemRepository, CatalogRepository catalogRepository, CompanyRepository companyRepository) {
+    public OrderService(OrderRepository orderRepository, OrderItemRepository itemRepository, CompanyRepository companyRepository) {
         _orderRepository = orderRepository;
         _itemRepository = itemRepository;
-        _catalogRepository = catalogRepository;
         _companyRepository = companyRepository;
     }
 
@@ -43,7 +41,6 @@ public class OrderService : EntityService {
     private Order GetOrder(OrderDAO orderDao) {
         
         IEnumerable<OrderItemDAO> items = _itemRepository.GetItemsByOrderId(orderDao.Id);
-        IEnumerable<CatalogProductDAO> catalog = _catalogRepository.GetCatalog();
 
         var order = new Order() {
             Id = orderDao.Id,
@@ -54,12 +51,8 @@ public class OrderService : EntityService {
         };
 
         foreach (var item in items) {
-            CatalogProductDAO? product = catalog.Where(x => x.Id == item.ProductId).FirstOrDefault();
-            if (product is null) continue;
-
-            order.AddItem(new() {
-                Id = product.Id,
-            }, item.Qty);
+            // Map the OrderItemDAO objects to  CatalogItemOrdered objects
+            order.AddItem(new(item.ProductId, item.ProductName, new List<string>()), item.Qty);
         }
 
         order.Customer = GetCompany(orderDao.CustomerId);
@@ -97,7 +90,8 @@ public class OrderService : EntityService {
             _itemRepository.UpdateItem(new() {
                 Id = item.Id,
                 OrderId = item.OrderId,
-                ProductId = item.ProductId,
+                ProductId = item.OrderedItem.ProductId,
+                ProductName = item.OrderedItem.ProductName,
                 Qty = item.Qty,
             });
         }

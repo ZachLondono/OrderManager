@@ -1,4 +1,4 @@
-﻿namespace Domain.Entities;
+﻿namespace Domain.Entities.OrderAggregate;
 
 public class Order {
 
@@ -22,8 +22,8 @@ public class Order {
 
 	public IReadOnlyCollection<OrderItem> Items => _items.AsReadOnly();
 
-	public void AddItem(CatalogProduct catalogProduct, int qty) {
-		OrderItem item = new(Id, catalogProduct);
+	public void AddItem(CatalogItemOrdered catalogItem, int qty) {
+		OrderItem item = new(Id, catalogItem);
 		item.SetQty(qty);
 		_items.Add(item);
 	}

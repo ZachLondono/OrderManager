@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using Domain.Entities.OrderAggregate;
 using Domain.Services;
 using MediatR;
 using OrderManager.Shared;

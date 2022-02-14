@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using Domain.Entities.OrderAggregate;
 using System.Collections.Generic;
 using Xunit;
 
@@ -15,18 +15,14 @@ public class OrderItemTests {
             "AttrB",
             "AttrC"
         };
-        CatalogProduct product = new CatalogProduct();
-        product.Name = "Test Product";
-        foreach (var attribute in attributes) {
-            product.AddAttribute(attribute);
-        }
+        string productName = "Test Product";
 
         // Act
-        OrderItem item = new(0, product);
+        OrderItem item = new(0, new(0, productName, attributes));
 
         // Assert
         foreach (var attribute in attributes) {
-            Assert.True(item.Options.ContainsKey(attribute));
+            Assert.True(item.OrderedItem.Options.ContainsKey(attribute));
         }
 
     }
@@ -37,15 +33,14 @@ public class OrderItemTests {
         // Arrange
         string attribute = "AttrA";
         string val = "ValA";
-        CatalogProduct product = new CatalogProduct();
-        product.AddAttribute(attribute);
-        OrderItem item = new(0, product);
+        string productName = "Test Product";
+        OrderItem item = new(0, new(0, productName, new List<string>() { attribute }));
 
         // Act
-        item.SetOptionValue(attribute, val);
+        item.OrderedItem.SetOptionValue(attribute, val);
 
         // Assert
-        Assert.Equal(val, item.Options[attribute]);
+        Assert.Equal(val, item.OrderedItem.Options[attribute]);
 
     }
 
@@ -55,14 +50,14 @@ public class OrderItemTests {
         // Arrange
         string attribute = "AttrA";
         string val = "ValA";
-        CatalogProduct product = new CatalogProduct();
-        OrderItem item = new(0, product);
+        string productName = "Test Product";
+        OrderItem item = new(0, new(0, productName, new List<string>() { }));
 
         // Act
-        item.SetOptionValue(attribute, val);
+        item.OrderedItem.SetOptionValue(attribute, val);
 
         // Assert
-        Assert.Throws<KeyNotFoundException>(() => item.Options[attribute]);
+        Assert.Throws<KeyNotFoundException>(() => item.OrderedItem.Options[attribute]);
 
     }
 
@@ -70,8 +65,8 @@ public class OrderItemTests {
     public void Should_Not_SetQuantity() {
 
         // Arrange
-        CatalogProduct product = new();
-        OrderItem item = new(0, product);
+        string productName = "Test Product";
+        OrderItem item = new(0, new(0, productName, new List<string>() { }));
 
         // Act
         var exception = Record.Exception(() => item.SetQty(-1));

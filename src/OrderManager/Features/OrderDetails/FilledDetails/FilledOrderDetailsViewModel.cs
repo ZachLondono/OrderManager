@@ -1,13 +1,8 @@
-﻿using Domain.Entities;
+﻿using Domain.Entities.OrderAggregate;
 using OrderManager.Shared;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reactive;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrderManager.Features.OrderDetails.FilledDetails;
 
