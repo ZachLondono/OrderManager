@@ -6,7 +6,7 @@ public class Quantity {
 
     public Quantity(int qty) {
 
-        if (qty < 0) {
+        if (qty <= 0) {
             throw new ArgumentOutOfRangeException(nameof(qty));
         }
 

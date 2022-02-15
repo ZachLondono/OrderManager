@@ -23,7 +23,7 @@ public class OrderTests {
         // Assert
         Assert.Null(exception);
         Assert.Single(order.Items);
-        Assert.Equal(1, order.Items.Sum(p => p.Qty));
+        Assert.Equal(1, order.Items.Sum(p => p.Qty.Value));
 
     }
 
