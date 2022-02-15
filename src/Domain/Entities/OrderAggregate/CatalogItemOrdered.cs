@@ -25,4 +25,8 @@ public class CatalogItemOrdered {
 		_options[option] = value;
 	}
 
+	public bool ContainsOption(string option) {
+		return _options.ContainsKey(option);
+    }
+
 }
