@@ -12,7 +12,7 @@ public class OrderService : EntityService {
     private readonly IOrderItemRepository _itemRepository;
     private readonly ICompanyRepository _companyRepository;
 
-    public OrderService(OrderRepository orderRepository, OrderItemRepository itemRepository, CompanyRepository companyRepository) {
+    public OrderService(IOrderRepository orderRepository, IOrderItemRepository itemRepository, ICompanyRepository companyRepository) {
         _orderRepository = orderRepository;
         _itemRepository = itemRepository;
         _companyRepository = companyRepository;
