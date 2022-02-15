@@ -92,7 +92,7 @@ public class OrderService : EntityService {
                 OrderId = item.OrderId,
                 ProductId = item.OrderedItem.ProductId,
                 ProductName = item.OrderedItem.ProductName,
-                Qty = item.Qty,
+                Qty = item.Qty.Value,
             });
         }
 
