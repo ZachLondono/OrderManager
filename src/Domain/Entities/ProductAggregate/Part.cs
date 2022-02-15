@@ -16,7 +16,7 @@ public class Part {
         Name = name;
         Product = product;
     }
-
+    
     public void AddAttribute(string attributeName) {
         if (attributeName is null)
             throw new ArgumentNullException(nameof(attributeName));

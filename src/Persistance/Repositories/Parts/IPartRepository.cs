@@ -6,6 +6,6 @@ public interface IPartRepository {
 
     public void UpdatePart(PartDAO part);
 
-    public IEnumerable<PartDAO> GetPartsByProduct(int productId);
+    public IEnumerable<PartDAO> GetPartsByProductId(int productId);
 
 }
