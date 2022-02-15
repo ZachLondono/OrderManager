@@ -6,19 +6,19 @@ public class CatalogProduct {
 
     public string Name { get; set; } = string.Empty;
 
-    private readonly HashSet<string> _attributes = new();
+    private readonly Dictionary<string, ProductAttribute> _attributes = new();
 
-    public IReadOnlyCollection<string> Attributes => _attributes.ToList().AsReadOnly();
+    public IReadOnlyCollection<ProductAttribute> Attributes => _attributes.Values.ToList().AsReadOnly();
 
     private readonly Dictionary<string, Part> _parts = new();
 
     public IReadOnlyCollection<Part> Parts => _parts.Values.ToList().AsReadOnly();
 
-    public void AddAttribute(string attribute) {
-        if (attribute is null)
-            throw new ArgumentNullException(nameof(attribute));
-        if (_attributes.Contains(attribute)) return;
-        _attributes.Add(attribute);
+    public void AddAttribute(string attributeName) {
+        if (attributeName is null)
+            throw new ArgumentNullException(nameof(attributeName));
+        if (_attributes.ContainsKey(attributeName)) return;
+        _attributes.Add(attributeName, new(-1, Id, attributeName));
     }
 
     public void AddPart(Part part) {

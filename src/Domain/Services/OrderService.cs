@@ -8,9 +8,9 @@ namespace Domain.Services;
 
 public class OrderService : EntityService {
 
-    private readonly OrderRepository _orderRepository;
-    private readonly OrderItemRepository _itemRepository;
-    private readonly CompanyRepository _companyRepository;
+    private readonly IOrderRepository _orderRepository;
+    private readonly IOrderItemRepository _itemRepository;
+    private readonly ICompanyRepository _companyRepository;
 
     public OrderService(OrderRepository orderRepository, OrderItemRepository itemRepository, CompanyRepository companyRepository) {
         _orderRepository = orderRepository;
