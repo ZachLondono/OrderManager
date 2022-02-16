@@ -140,12 +140,19 @@
   </Control.Styles>
 
   <StackPanel>
-    <StackPanel Orientation="Horizontal" >
-      <RadioButton GroupName="OrderCategory" Classes="OrderCategory" Content="All" />
-      <RadioButton GroupName="OrderCategory" Classes="OrderCategory" Content="Pending" />
-      <RadioButton GroupName="OrderCategory" Classes="OrderCategory" Content="Complete" />
-      <RadioButton GroupName="OrderCategory" Classes="OrderCategory" Content="Shipped" />
-    </StackPanel>
+    <ItemsControl Items="{Binding OrderFilters}">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <StackPanel Orientation="Horizontal"/>
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <RadioButton GroupName="OrderCategory" Classes="OrderCategory" Content="{Binding Name}" IsChecked="{Binding IsChecked}" />
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+    
     <ItemsControl Items="{Binding Items}">
       <ItemsControl.ItemTemplate>
         <DataTemplate>
