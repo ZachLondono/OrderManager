@@ -66,7 +66,14 @@ public class OrderService : EntityService {
         var dao = _companyRepository.GetCompanyById(id);
         return new() {
             Id = dao.Id,
-            Name = dao.Name
+            Name = dao.Name,
+            Contact = dao.Contact,
+            AddressLine1 = dao.Address1,
+            AddressLine2 = dao.Address2,
+            AddressLine3 = dao.Address3,
+            City = dao.City,
+            State = dao.State,
+            Zip = dao.Zip,
         };
     }
 
