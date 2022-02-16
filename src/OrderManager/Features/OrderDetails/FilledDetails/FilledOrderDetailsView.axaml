@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:company="clr-namespace:OrderManager.Features.OrderDetails.FilledDetails.CompanyDisplay"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OrderManager.Features.OrderDetails.FilledDetails.FilledOrderDetailsView">
 
@@ -41,6 +42,17 @@
     <TextBlock Text="{Binding Details.Id}" FontSize="20"/>
     <TextBlock Text="{Binding Details.Number}" FontSize="20"/>
     <TextBlock Text="{Binding Details.Name}" FontSize="16"/>
+    <StackPanel Orientation="Horizontal" Spacing="15" HorizontalAlignment="Center">
+      <StackPanel Orientation="Vertical">
+        <company:CompanyDisplayView DataContext="{Binding Details.Customer}"  />
+      </StackPanel>
+      <StackPanel Orientation="Vertical">
+        <company:CompanyDisplayView DataContext="{Binding Details.Vendor}"  />
+      </StackPanel>
+      <StackPanel Orientation="Vertical">
+        <company:CompanyDisplayView DataContext="{Binding Details.Supplier}"  />
+      </StackPanel>
+    </StackPanel>
     <Button Content="Release" Command="{Binding ReleaseOrder}" CommandParameter="{Binding Details.Id}" Classes="Secondary" />
   </StackPanel>
 </UserControl>

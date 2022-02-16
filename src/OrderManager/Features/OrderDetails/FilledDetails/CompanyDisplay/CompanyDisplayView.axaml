@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OrderManager.Features.OrderDetails.FilledDetails.CompanyDisplay.CompanyDisplayView">
+  
+  <Control.Styles>
+    <Style Selector="TextBlock">
+      <Setter Property="Padding" Value="2.5" />
+      <Setter Property="FontSize" Value="12" />
+    </Style>
+  </Control.Styles>
+  
+  <Border BorderThickness="1"
+          BorderBrush="Black"
+          MinWidth="150"
+          MaxWidth="300">
+    <StackPanel Orientation="Vertical">
+      <Border BorderThickness="0,0,0,1" BorderBrush="Black">
+        <TextBlock Text="{Binding CompanyRole}"
+                   FontWeight="Bold"
+                   FontSize="14"
+                   Background="LightGray"
+                   TextAlignment="Center" />
+      </Border>
+      <TextBlock Text="{Binding CompanyName}" FontWeight="Bold" />
+      <TextBlock Text="{Binding ContactName}" />
+      <TextBlock Text="{Binding AddressLine1}" />
+      <TextBlock Text="{Binding AddressLine2}" />
+      <TextBlock Text="{Binding AddressLine3}" />
+      <TextBlock Text="{Binding CityStateZip}" />
+    </StackPanel>
+  </Border>
+</UserControl>

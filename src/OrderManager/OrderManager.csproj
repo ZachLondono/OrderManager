@@ -24,6 +24,9 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Features\OrderDetails\FilledDetails\CompanyDisplay\CompanyDisplayView.axaml.cs">
+      <DependentUpon>CompanyDisplayView.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Features\OrderList\EmptyList\EmptyOrderListView.axaml.cs">
       <DependentUpon>EmptyOrderListView.axaml</DependentUpon>
     </Compile>

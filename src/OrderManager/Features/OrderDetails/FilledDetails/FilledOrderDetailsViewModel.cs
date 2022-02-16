@@ -18,7 +18,19 @@ public class FilledOrderDetailsViewModel : ViewModelBase {
             Number = order.Number,
             Name = order.Name,
             IsPriority = order.IsPriority,
-            LastModified = order.LastModified
+            LastModified = order.LastModified,
+            Customer = new() {
+                CompanyRole = "Customer",
+                Company = order.Customer
+            },
+            Vendor = new() {
+                CompanyRole = "Vendor",
+                Company = order.Vendor
+            },
+            Supplier = new() {
+                CompanyRole = "Supplier",
+                Company = order.Supplier
+            }
         };
         ReleaseOrder = ReactiveCommand.Create<int>(OnOrderRelease);
     }
