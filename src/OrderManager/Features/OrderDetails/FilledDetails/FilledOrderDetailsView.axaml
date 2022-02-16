@@ -14,12 +14,9 @@
             <Border Background="{TemplateBinding Background}"
                     BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}">
-              <StackPanel Orientation="Horizontal">
-                <Image Source="/Assets/redo-arrow-symbol.png" Width="12" Height="12" Margin="10,0,0,0"/>
-                <ContentPresenter Content="{TemplateBinding Content}"
-                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                  Margin="{TemplateBinding Padding}"/>
-              </StackPanel>
+              <ContentPresenter Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                Margin="{TemplateBinding Padding}"/>
             </Border>
           </ControlTemplate>
         </Setter.Value>
@@ -41,7 +38,7 @@
 
   </Control.Styles>
   
-  <StackPanel Orientation="Vertical" Margin="10">
+  <StackPanel Orientation="Vertical" Margin="20">
 
     <Grid ColumnDefinitions="*,Auto,*">
       <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Grid.Column="0">
@@ -51,12 +48,22 @@
         <!--<TextBlock Text="{Binding Details.Name}" FontSize="16"/>-->
       </StackPanel>
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="2">
-        <Button Content="Release" Command="{Binding ReleaseOrder}" CommandParameter="{Binding Details.Id}" Classes="Secondary Release" />
-        <Button Content="Remake" Classes="Secondary Remake" />
+        <Button Command="{Binding ReleaseOrder}" CommandParameter="{Binding Details.Id}" Classes="Secondary Release">
+          <StackPanel Orientation="Horizontal">
+            <Image Source="/Assets/hammer.png" Width="12" Height="12" Margin="6,0,6,0"/>
+            <TextBlock Text="Release"/>
+          </StackPanel>
+        </Button>
+        <Button Command="{Binding ReleaseOrder}" CommandParameter="{Binding Details.Id}" Classes="Secondary Remake">
+          <StackPanel Orientation="Horizontal">
+            <Image Source="/Assets/redo-arrow-symbol.png" Width="12" Height="12" Margin="6,0,6,0"/>
+            <TextBlock Text="Remake"/>
+          </StackPanel>
+        </Button>
       </StackPanel>
     </Grid>
     
-    <StackPanel Orientation="Horizontal" Spacing="15" HorizontalAlignment="Center" Margin="20">
+    <StackPanel Orientation="Horizontal" Spacing="15" HorizontalAlignment="Center" Margin="0,20,0,0">
       <StackPanel Orientation="Vertical">
         <company:CompanyDisplayView DataContext="{Binding Details.Customer}"  />
       </StackPanel>
