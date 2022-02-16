@@ -14,9 +14,12 @@
             <Border Background="{TemplateBinding Background}"
                     BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}">
-              <ContentPresenter Content="{TemplateBinding Content}"
-                                ContentTemplate="{TemplateBinding ContentTemplate}"
-                                Margin="{TemplateBinding Padding}"/>
+              <StackPanel Orientation="Horizontal">
+                <Image Source="/Assets/redo-arrow-symbol.png" Width="12" Height="12" Margin="10,0,0,0"/>
+                <ContentPresenter Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  Margin="{TemplateBinding Padding}"/>
+              </StackPanel>
             </Border>
           </ControlTemplate>
         </Setter.Value>
@@ -27,7 +30,7 @@
     <Style Selector="Button.Secondary">
       <Setter Property="Foreground" Value="#212529" />
       <Setter Property="Background" Value="#ffffff"/>
-      <Setter Property="BorderBrush" Value="#ebebeb"/>
+      <Setter Property="BorderBrush" Value="#B3B0AD"/>
       <Setter Property="BorderThickness" Value="1"/>
     </Style>
     <Style Selector="Button.Secondary:pointerover /template/ Border">
@@ -35,14 +38,25 @@
       <Setter Property="BorderBrush" Value="#0078d4"/>
       <Setter Property="BorderThickness" Value="1"/>
     </Style>
-    
+
   </Control.Styles>
   
-  <StackPanel Orientation="Vertical">
-    <TextBlock Text="{Binding Details.Id}" FontSize="20"/>
-    <TextBlock Text="{Binding Details.Number}" FontSize="20"/>
-    <TextBlock Text="{Binding Details.Name}" FontSize="16"/>
-    <StackPanel Orientation="Horizontal" Spacing="15" HorizontalAlignment="Center">
+  <StackPanel Orientation="Vertical" Margin="10">
+
+    <Grid ColumnDefinitions="*,Auto,*">
+      <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Grid.Column="0">
+        <TextBlock Text="OT000" FontSize="20"/>
+        <TextBlock Text="Kitchen ABC" FontSize="16"/>
+        <!--<TextBlock Text="{Binding Details.Number}" FontSize="20"/>-->
+        <!--<TextBlock Text="{Binding Details.Name}" FontSize="16"/>-->
+      </StackPanel>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="2">
+        <Button Content="Release" Command="{Binding ReleaseOrder}" CommandParameter="{Binding Details.Id}" Classes="Secondary Release" />
+        <Button Content="Remake" Classes="Secondary Remake" />
+      </StackPanel>
+    </Grid>
+    
+    <StackPanel Orientation="Horizontal" Spacing="15" HorizontalAlignment="Center" Margin="20">
       <StackPanel Orientation="Vertical">
         <company:CompanyDisplayView DataContext="{Binding Details.Customer}"  />
       </StackPanel>
@@ -53,6 +67,5 @@
         <company:CompanyDisplayView DataContext="{Binding Details.Supplier}"  />
       </StackPanel>
     </StackPanel>
-    <Button Content="Release" Command="{Binding ReleaseOrder}" CommandParameter="{Binding Details.Id}" Classes="Secondary" />
   </StackPanel>
 </UserControl>
