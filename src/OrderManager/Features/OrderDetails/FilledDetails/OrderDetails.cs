@@ -1,5 +1,7 @@
-﻿using OrderManager.Features.OrderDetails.FilledDetails.CompanyDisplay;
+﻿using Domain.Entities.OrderAggregate;
+using OrderManager.Features.OrderDetails.FilledDetails.CompanyDisplay;
 using System;
+using System.Collections.Generic;
 
 namespace OrderManager.Features.OrderDetails.FilledDetails;
 
@@ -21,6 +23,12 @@ public class OrderDetails {
 
     public DateTime LastModified { get; set; }
 
-    public CompanyDisplayViewModel? CompanyModel { get; set; } = new();
+    public IReadOnlyDictionary<int, OrderedProductViewModel> Products { get; set; }
+
+}
+
+public class OrderedProductViewModel {
+
+    public List<OrderItem> Items { get; set; }
 
 }
