@@ -23,8 +23,6 @@ internal class Program {
             .AddDomain()
             .BuildServiceProvider();
 
-        if (ServiceProvider is null) throw new InvalidProgramException(nameof(ServiceProvider));
-
         BuildAvaloniaApp()
         .StartWithClassicDesktopLifetime(args);
     }
