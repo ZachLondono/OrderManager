@@ -1,4 +1,5 @@
-﻿using Domain.Entities.OrderAggregate;
+﻿using Avalonia.Controls;
+using Domain.Entities.OrderAggregate;
 using OrderManager.Features.OrderDetails.FilledDetails.CompanyDisplay;
 using System;
 using System.Collections.Generic;
@@ -23,12 +24,12 @@ public class OrderDetails {
 
     public DateTime LastModified { get; set; }
 
-    public IReadOnlyDictionary<int, OrderedProductViewModel> Products { get; set; }
-
+    public IReadOnlyDictionary<int, OrderedProductViewModel> Products { get; set; } = new Dictionary<int, OrderedProductViewModel>();
+    
 }
 
 public class OrderedProductViewModel {
 
-    public List<OrderItem> Items { get; set; }
+    public List<OrderItem> Items { get; set; } = new();
 
 }

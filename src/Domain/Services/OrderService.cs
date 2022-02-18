@@ -52,7 +52,8 @@ public class OrderService : EntityService {
 
         foreach (var item in items) {
             // Map the OrderItemDAO objects to  CatalogItemOrdered objects
-            order.AddItem(new(item.ProductId, item.ProductName, new List<string>()), item.Qty);
+            //TODO: read ordered item from database
+            order.AddItem(new(item.ProductId, item.ProductName, new List<string>() { "Height", "Width", "Depth" }), item.Qty);
         }
 
         order.Customer = GetCompany(orderDao.CustomerId);

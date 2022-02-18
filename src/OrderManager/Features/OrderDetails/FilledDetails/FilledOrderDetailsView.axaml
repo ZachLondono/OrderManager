@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:company="clr-namespace:OrderManager.Features.OrderDetails.FilledDetails.CompanyDisplay"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:item="clr-namespace:OrderManager.Features.OrderDetails.FilledDetails"
              x:Class="OrderManager.Features.OrderDetails.FilledDetails.FilledOrderDetailsView">
 
   <Control.Styles>
@@ -74,5 +75,14 @@
         <company:CompanyDisplayView DataContext="{Binding Details.Supplier}"  />
       </StackPanel>
     </StackPanel>
+     
+    <ItemsControl Items="{Binding Details.Products.Values}">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <item:ItemsOrdered ProductName="{Binding Items}"/>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+    
   </StackPanel>
 </UserControl>
