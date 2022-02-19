@@ -20,7 +20,21 @@ public partial class ProductTable : UserControl {
     public static readonly StyledProperty<List<OrderItem>?> ItemsOrderedProperty = AvaloniaProperty
                                     .Register<ProductTable, List<OrderItem>?>(nameof(ItemsOrderedProperty));
 
+
+    private string? _productName;
+    public string? ProductName {
+        get => _productName;
+        set => SetAndRaise(ProductNameProperty, ref _productName, value);
+    }
+
+    public static readonly StyledProperty<string?> ProductNameProperty = AvaloniaProperty.Register<ProductTable, string?>(nameof(ProductNameProperty));
+
+    /// <summary>
+    /// The datagrid that holds all of the item information
+    /// </summary>
     private DataGrid? _prodGrid;
+
+    private TextBlock? _nameText;
 
     public ProductTable() {
         InitializeComponent();
@@ -29,12 +43,15 @@ public partial class ProductTable : UserControl {
     private void InitializeComponent() {
         AvaloniaXamlLoader.Load(this);
         _prodGrid = this.FindControl<DataGrid>("ProductGrid");
+        _nameText = this.FindControl<TextBlock>("ProductName");
     }
 
     protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {
         base.OnPropertyChanged(change);
 
-        if (change.Property.Name == nameof(ItemsOrderedProperty) && _prodGrid is not null) {
+        if (change.Property.Name == nameof(ProductNameProperty) && _nameText is not null) {
+            _nameText.Text = GetValue(ProductNameProperty);
+        } else if (change.Property.Name == nameof(ItemsOrderedProperty) && _prodGrid is not null) {
 
             // Builds a DataGrid which has all the product's options as columns and each line item in a row
 

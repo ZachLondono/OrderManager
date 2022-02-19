@@ -5,9 +5,12 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OrderManager.Features.OrderDetails.FilledDetails.ProductTable">
 
-  <StackPanel>
-    <TextBlock Name="ProductName" HorizontalAlignment="Center" TextAlignment="Center"/>
-    <DataGrid Name="ProductGrid" />
-  </StackPanel>
+  <Border BorderBrush="Black" BorderThickness="1" Padding="10">
+    <StackPanel>
+      <TextBlock Name="ProductName" Text="Ordered Items" HorizontalAlignment="Center" TextAlignment="Center"/>
+      <!-- Orders should not be editable once they are uploaded -->
+      <DataGrid Name="ProductGrid" IsReadOnly="True"/>
+    </StackPanel>
+  </Border>
   
 </UserControl>

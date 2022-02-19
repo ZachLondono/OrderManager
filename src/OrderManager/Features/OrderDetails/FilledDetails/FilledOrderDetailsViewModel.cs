@@ -20,6 +20,7 @@ public class FilledOrderDetailsViewModel : ViewModelBase {
                                 .GroupBy(oi => oi.OrderedItem.ProductId)
                                 .ToDictionary(x => x.Key,
                                                 x => new OrderedProductViewModel() {
+                                                    ProductName = x.FirstOrDefault()?.OrderedItem.ProductName ?? "Unkown",
                                                     Items = x.ToList()
                                                 }
                                 );

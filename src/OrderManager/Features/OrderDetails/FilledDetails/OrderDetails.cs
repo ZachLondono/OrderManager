@@ -30,6 +30,8 @@ public class OrderDetails {
 
 public class OrderedProductViewModel {
 
+    public string ProductName { get; set; } = string.Empty;
+
     public List<OrderItem> Items { get; set; } = new();
 
 }

@@ -14,8 +14,7 @@
   
   <Border BorderThickness="1"
           BorderBrush="Black"
-          MinWidth="150"
-          MaxWidth="300">
+          MinWidth="150">
     <StackPanel Orientation="Vertical">
       <Border BorderThickness="0,0,0,1" BorderBrush="Black">
         <TextBlock Text="{Binding CompanyRole}"
