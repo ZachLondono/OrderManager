@@ -38,54 +38,56 @@
     </Style>
 
   </Control.Styles>
-  
-  <StackPanel Orientation="Vertical" Margin="30">
 
-    <Grid ColumnDefinitions="*,Auto,*">
-      <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Grid.Column="0">
-        <TextBlock Text="OT000" FontSize="20"/>
-        <TextBlock Text="Kitchen ABC" FontSize="16"/>
-        <!--<TextBlock Text="{Binding Details.Number}" FontSize="20"/>-->
-        <!--<TextBlock Text="{Binding Details.Name}" FontSize="16"/>-->
-      </StackPanel>
-      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="2">
-        <Button Command="{Binding ReleaseOrder}" CommandParameter="{Binding Details.Id}" Classes="Secondary Release">
-          <StackPanel Orientation="Horizontal">
-            <Image Source="/Assets/hammer.png" Width="12" Height="12" Margin="6,0,6,0"/>
-            <TextBlock Text="Release"/>
-          </StackPanel>
-        </Button>
-        <Button Command="{Binding ReleaseOrder}" CommandParameter="{Binding Details.Id}" Classes="Secondary Remake">
-          <StackPanel Orientation="Horizontal">
-            <Image Source="/Assets/redo-arrow-symbol.png" Width="12" Height="12" Margin="6,0,6,0"/>
-            <TextBlock Text="Remake"/>
-          </StackPanel>
-        </Button>
-      </StackPanel>
-    </Grid>
+  <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <StackPanel Orientation="Vertical" Margin="30">
 
-    <!-- TODO: company display boxes should stretch to take up as mutch space as they can without touching eachother -->
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15" Margin="0,20,0,0">
-      <StackPanel Orientation="Vertical">
-        <company:CompanyDisplayView DataContext="{Binding Details.Customer}"  />
+      <Grid ColumnDefinitions="*,Auto,*">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Grid.Column="0">
+          <TextBlock Text="OT000" FontSize="20"/>
+          <TextBlock Text="Kitchen ABC" FontSize="16"/>
+          <!--<TextBlock Text="{Binding Details.Number}" FontSize="20"/>-->
+          <!--<TextBlock Text="{Binding Details.Name}" FontSize="16"/>-->
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="2">
+          <Button Command="{Binding ReleaseOrder}" CommandParameter="{Binding Details.Id}" Classes="Secondary Release">
+            <StackPanel Orientation="Horizontal">
+              <Image Source="/Assets/hammer.png" Width="12" Height="12" Margin="6,0,6,0"/>
+              <TextBlock Text="Release"/>
+            </StackPanel>
+          </Button>
+          <Button Command="{Binding ReleaseOrder}" CommandParameter="{Binding Details.Id}" Classes="Secondary Remake">
+            <StackPanel Orientation="Horizontal">
+              <Image Source="/Assets/redo-arrow-symbol.png" Width="12" Height="12" Margin="6,0,6,0"/>
+              <TextBlock Text="Remake"/>
+            </StackPanel>
+          </Button>
+        </StackPanel>
+      </Grid>
+
+      <!-- TODO: company display boxes should stretch to take up as mutch space as they can without touching eachother -->
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15" Margin="0,20,0,0">
+        <StackPanel Orientation="Vertical">
+          <company:CompanyDisplayView DataContext="{Binding Details.Customer}"  />
+        </StackPanel>
+        <StackPanel Orientation="Vertical">
+          <company:CompanyDisplayView DataContext="{Binding Details.Vendor}"  />
+        </StackPanel>
+        <StackPanel Orientation="Vertical">
+          <company:CompanyDisplayView DataContext="{Binding Details.Supplier}"  />
+        </StackPanel>
       </StackPanel>
-      <StackPanel Orientation="Vertical">
-        <company:CompanyDisplayView DataContext="{Binding Details.Vendor}"  />
-      </StackPanel>
-      <StackPanel Orientation="Vertical">
-        <company:CompanyDisplayView DataContext="{Binding Details.Supplier}"  />
-      </StackPanel>
+
+      <TextBox AcceptsReturn="True" AcceptsTab="True" Watermark="Comment" TextWrapping="Wrap" Margin="0,10,0,0" CornerRadius="0" />
+      
+      <ItemsControl Items="{Binding Details.Products.Values}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <item:ProductTable ItemsOrdered="{Binding Items}" ProductName="{Binding ProductName}" Margin="0,10,0,10" />
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    
     </StackPanel>
-
-    <TextBox AcceptsReturn="True" AcceptsTab="True" Watermark="Comment" TextWrapping="Wrap" Margin="0,10,0,0" CornerRadius="0" />
-    
-    <ItemsControl Items="{Binding Details.Products.Values}">
-      <ItemsControl.ItemTemplate>
-        <DataTemplate>
-          <item:ProductTable ItemsOrdered="{Binding Items}" ProductName="{Binding ProductName}" Margin="0,10,0,10" />
-        </DataTemplate>
-      </ItemsControl.ItemTemplate>
-    </ItemsControl>
-    
-  </StackPanel>
+  </ScrollViewer>
 </UserControl>
