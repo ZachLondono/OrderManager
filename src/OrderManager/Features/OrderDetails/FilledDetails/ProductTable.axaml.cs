@@ -4,29 +4,25 @@ using Avalonia.Data;
 using Avalonia.Markup.Xaml;
 using Domain.Entities.OrderAggregate;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
 
 namespace OrderManager.Features.OrderDetails.FilledDetails;
-public partial class ItemsOrdered : UserControl {
+public partial class ProductTable : UserControl {
 
-    private List<OrderItem>? _productName;
-    public List<OrderItem>? ProductName {
-        get => _productName;
-        set {
-            Debug.WriteLine($"Setting ProductName: {value}");
-            SetAndRaise(ProductNameProperty, ref _productName, value);
-        }
+    private List<OrderItem>? _itemsOrdered;
+    public List<OrderItem>? ItemsOrdered {
+        get => _itemsOrdered;
+        set => SetAndRaise(ItemsOrderedProperty, ref _itemsOrdered, value);
     }
 
-    public static readonly StyledProperty<List<OrderItem>?> ProductNameProperty = AvaloniaProperty
-                                    .Register<ItemsOrdered, List<OrderItem>?>(nameof(ProductNameProperty));
+    public static readonly StyledProperty<List<OrderItem>?> ItemsOrderedProperty = AvaloniaProperty
+                                    .Register<ProductTable, List<OrderItem>?>(nameof(ItemsOrderedProperty));
 
     private DataGrid? _prodGrid;
 
-    public ItemsOrdered() {
+    public ProductTable() {
         InitializeComponent();
     }
 
@@ -38,11 +34,11 @@ public partial class ItemsOrdered : UserControl {
     protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) {
         base.OnPropertyChanged(change);
 
-        if (change.Property.Name == nameof(ProductNameProperty) && _prodGrid is not null) {
+        if (change.Property.Name == nameof(ItemsOrderedProperty) && _prodGrid is not null) {
 
             // Builds a DataGrid which has all the product's options as columns and each line item in a row
 
-            var products = GetValue(ProductNameProperty);
+            var products = GetValue(ItemsOrderedProperty);
             if (products is null) return;
 
             // Map of the header to the column index
@@ -59,7 +55,7 @@ public partial class ItemsOrdered : UserControl {
                 var row = new List<string>();
 
                 // Each row has a line number and quantity column, no matter the product type
-                AddToRow(row,headers["#"],$"line: {i++}");
+                AddToRow(row,headers["#"],$"{i++}");
                 AddToRow(row, headers["Qty"], $"{item.Qty.Value}");
 
                 // Then traverse through each item to find all of it's attributes

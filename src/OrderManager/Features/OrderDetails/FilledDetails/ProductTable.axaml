@@ -3,8 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OrderManager.Features.OrderDetails.FilledDetails.ItemsOrdered">
-  
-  <DataGrid Name="ProductGrid" />
+             x:Class="OrderManager.Features.OrderDetails.FilledDetails.ProductTable">
+
+  <StackPanel>
+    <TextBlock Name="ProductName" HorizontalAlignment="Center" TextAlignment="Center"/>
+    <DataGrid Name="ProductGrid" />
+  </StackPanel>
   
 </UserControl>

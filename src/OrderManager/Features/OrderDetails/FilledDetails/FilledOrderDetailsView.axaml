@@ -79,7 +79,7 @@
     <ItemsControl Items="{Binding Details.Products.Values}">
       <ItemsControl.ItemTemplate>
         <DataTemplate>
-          <item:ItemsOrdered ProductName="{Binding Items}"/>
+          <item:ProductTable ItemsOrdered="{Binding Items}"/>
         </DataTemplate>
       </ItemsControl.ItemTemplate>
     </ItemsControl>
