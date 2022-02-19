@@ -4,7 +4,7 @@ namespace Domain.Entities.OrderAggregate;
 
 public class OrderItem {
 
-	public int Id { get; protected set; }
+	public int Id { get; set; }
 
 	/// <summary>
 	///  The order to which this item belongs

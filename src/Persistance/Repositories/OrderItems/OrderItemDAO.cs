@@ -8,10 +8,10 @@ public class OrderItemDAO {
 
     public int ProductId { get; set; }
 
-    public string ProductName { get; init; } = string.Empty;
+    public string ProductName { get; set; } = string.Empty;
 
     public int Qty { get; set; }
 
-
+    public Dictionary<string, string> Options { get; set; } = new();
 
 }

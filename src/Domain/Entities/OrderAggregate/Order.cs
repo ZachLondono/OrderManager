@@ -22,6 +22,11 @@ public class Order {
 
 	public IReadOnlyCollection<OrderItem> Items => _items.AsReadOnly();
 
+	public Order() { }
+	public Order(List<OrderItem> items) {
+		_items = items;
+    }
+
 	public void AddItem(CatalogItemOrdered catalogItem, int qty) {
 		OrderItem item = new(Id, catalogItem);
 		item.SetQty(qty);

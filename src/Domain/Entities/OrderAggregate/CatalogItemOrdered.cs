@@ -13,11 +13,17 @@ public class CatalogItemOrdered {
 	/// <summary>
 	/// Represents a snapshot of an item which was ordered. If the details of a product in the catalog changes, the order items that where part of a completed order should not change
 	/// </summary>
-	public CatalogItemOrdered(int productId, string productName, IReadOnlyCollection<string> productAttributes) {
+	public CatalogItemOrdered(int productId, string productName, IList<string> productAttributes) {
 		ProductId = productId;
 		ProductName = productName;
 		foreach (string option in productAttributes)
 			_options.Add(option, string.Empty);
+	}
+	
+	public CatalogItemOrdered(int productId, string productName, Dictionary<string,string> options) {
+		ProductId = productId;
+		ProductName = productName;
+		_options = options;
 	}
 
 	public void SetOptionValue(string option, string value) {

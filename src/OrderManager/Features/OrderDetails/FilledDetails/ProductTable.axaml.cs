@@ -72,7 +72,8 @@ public partial class ProductTable : UserControl {
 
             var headerNames = headers.Keys.ToList();
 
-            foreach (var idx in rows.Select((value, index) => index)) {
+            var indices = rows[0].Select((value, index) => index);
+            foreach (var idx in indices) {
                 _prodGrid.Columns.Add(new DataGridTextColumn { Header = $"{headerNames[idx]}", Binding = new Binding($"[{idx}]") });
             }
 

@@ -1,5 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Entities.OrderAggregate;
+using Domain.Entities.ProductAggregate;
+using Persistance.Repositories.Catalog;
 using Persistance.Repositories.Companies;
 using Persistance.Repositories.OrderItems;
 using Persistance.Repositories.Orders;
@@ -42,20 +44,23 @@ public class OrderService : EntityService {
         
         IEnumerable<OrderItemDAO> items = _itemRepository.GetItemsByOrderId(orderDao.Id);
 
-        var order = new Order() {
+        List<OrderItem> orderedItems = new();
+
+        foreach (var item in items) {
+            // Map the OrderItemDAO objects to  CatalogItemOrdered objects
+            CatalogItemOrdered prodOrdered = new(item.ProductId, item.ProductName, item.Options);
+            orderedItems.Add(new(orderDao.Id, prodOrdered, item.Qty) {
+                Id = item.Id
+            });
+        }
+
+        var order = new Order(orderedItems) {
             Id = orderDao.Id,
             Number = orderDao.Number,
             Name = orderDao.Name,
             IsPriority = orderDao.IsPriority,
             LastModified = orderDao.LastModified,
         };
-
-        foreach (var item in items) {
-            // Map the OrderItemDAO objects to  CatalogItemOrdered objects
-            //TODO: read ordered item from database
-            order.AddItem(new(item.ProductId, item.ProductName, new List<string>() { "Height", "Width", "Depth" }), item.Qty);
-        }
-
         order.Customer = GetCompany(orderDao.CustomerId);
         order.Vendor = GetCompany(orderDao.VendorId);
         order.Supplier = GetCompany(orderDao.SupplierId);

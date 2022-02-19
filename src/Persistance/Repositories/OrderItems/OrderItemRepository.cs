@@ -19,8 +19,26 @@ public class OrderItemRepository : BaseRepository, IOrderItemRepository {
     }
 
     public IEnumerable<OrderItemDAO> GetItemsByOrderId(int orderId) {
+        // TODO: this can be improved by using dapper result multi-mapping
         const string query = @"SELECT [Id], [OrderId], [ProductId], [ProductName], [Qty] FROM [OrderItems] WHERE [OrderId] = @OrderId;";
-        return Query<OrderItemDAO>(query, new { OrderId = orderId });
+        var items =  Query<OrderItemDAO>(query, new { OrderId = orderId });
+
+        foreach(var item in items) { 
+            const string optionQuery = @"SELECT [Key], [Value] FROM [OrderItemOptions] WHERE [ItemId] = @ItemId;";
+
+            var options = Query<ItemOption>(optionQuery, new { ItemId = item.Id });
+
+            var optionsDict = options.ToDictionary(x => x.Key, x => x.Value);
+
+            item.Options = optionsDict;
+
+        }
+        return items;
+    }
+
+    private class ItemOption {
+        public string Key { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
     }
 
     public void UpdateItem(OrderItemDAO item) {
