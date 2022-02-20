@@ -23,19 +23,6 @@
         </Setter.Value>
       </Setter>
     </Style>
-    
-    <!-- Secondary Button Class -->
-    <Style Selector="Button.Secondary">
-      <Setter Property="Foreground" Value="#212529" />
-      <Setter Property="Background" Value="#ffffff"/>
-      <Setter Property="BorderBrush" Value="#B3B0AD"/>
-      <Setter Property="BorderThickness" Value="1"/>
-    </Style>
-    <Style Selector="Button.Secondary:pointerover /template/ Border">
-      <Setter Property="Background" Value="#eff6fc"/>
-      <Setter Property="BorderBrush" Value="#0078d4"/>
-      <Setter Property="BorderThickness" Value="1"/>
-    </Style>
 
   </Control.Styles>
 

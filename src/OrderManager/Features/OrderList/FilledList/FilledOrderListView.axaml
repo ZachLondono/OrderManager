@@ -39,16 +39,16 @@
 
     <!-- Pointer Over State -->
     <Style Selector="RadioButton.OrderCategory:pointerover TextBlock">
-      <Setter Property="Foreground" Value="#0072C6" />
+      <Setter Property="Foreground" Value="{DynamicResource TextFocus}" />
     </Style>
 
     <!-- Checked State -->
     <Style Selector="RadioButton.OrderCategory:checked /template/ Border">
-      <Setter Property="BorderBrush" Value="#0072C6"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource TextSelected}"/>
       <Setter Property="BorderThickness" Value="0,0,0,1"/>
     </Style>
     <Style Selector="RadioButton.OrderCategory:checked TextBlock">
-      <Setter Property="Foreground" Value="#0072C6" />
+      <Setter Property="Foreground" Value="{DynamicResource TextSelected}" />
     </Style>
   </Control.Styles>
   
@@ -90,11 +90,11 @@
 
     <!-- Pointer Over State -->
     <Style Selector="RadioButton.OrderItem:pointerover /template/ Border">
-      <Setter Property="Background" Value="#E6F2FA" />
+      <Setter Property="Background" Value="{DynamicResource ContentFocus}" />
       <Setter Property="BorderThickness" Value="0,0,0,0"/>
     </Style>
     <Style Selector="RadioButton.OrderItem:pointerover /template/ Border > Border">
-      <Setter Property="BorderBrush" Value="#B1D6F0"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource BorderFocus}"/>
       <Setter Property="BorderThickness" Value="4,0,0,1"/>
     </Style>
     <Style Selector="RadioButton.Priority:pointerover /template/ Border">
@@ -103,11 +103,11 @@
 
     <!-- Checked State -->
     <Style Selector="RadioButton.OrderItem:checked /template/ Border">
-      <Setter Property="Background" Value="#CDE6F7"/>
+      <Setter Property="Background" Value="{DynamicResource ContentSelected}"/>
       <Setter Property="BorderThickness" Value="0,0,0,0"/>
     </Style>
     <Style Selector="RadioButton.OrderItem:checked /template/ Border > Border">
-      <Setter Property="BorderBrush" Value="#B1D6F0"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource BorderSelected}"/>
       <Setter Property="BorderThickness" Value="4,0,0,1"/>
     </Style>
     <Style Selector="RadioButton.Priority:checked /template/ Border">
@@ -173,6 +173,7 @@
                 <TextBlock Text="{Binding Name}" Classes="SubTitle" Grid.Column="0" Grid.Row="1" />
                 <TextBlock Text="{Binding DateModifiedStr}" Classes="SubTitle" Grid.Column="2" Grid.Row="1" />
 
+                <!-- TODO: Clicking on a company name should open all orders for that company -->
                 <TextBlock Text="{Binding CompanyNames}" Classes="Hint" Grid.Column="0" Grid.Row="2" />
               </Grid>
 
