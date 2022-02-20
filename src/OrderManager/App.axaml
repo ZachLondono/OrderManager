@@ -16,8 +16,9 @@
   </Application.Resources>
   
   <Application.Styles>
-    <FluentTheme Mode="Light"/>
-    <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+    <FluentTheme Mode="Light" />
+    <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
+    <StyleInclude Source="avares://AvaloniaUI.Ribbon/Styles/Fluent/AvaloniaRibbon.xaml" />
     <StyleInclude Source="/Shared/Styles/CommonStyles.axaml" />
   </Application.Styles>
   

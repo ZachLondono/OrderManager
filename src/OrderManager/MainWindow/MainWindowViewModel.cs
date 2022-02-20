@@ -1,12 +1,11 @@
-using Avalonia.Controls;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using OrderManager.Features.LoadOrders;
 using OrderManager.Features.OrderDetails;
 using OrderManager.Features.OrderList;
 using OrderManager.Shared;
 using ReactiveUI;
 using System;
-using System.Diagnostics;
 using Unit = System.Reactive.Unit;
 
 namespace OrderManager.MainWindow;
@@ -26,6 +25,8 @@ public class MainWindowViewModel : ViewModelBase {
 
     public ReactiveCommand<int, Unit> SelectLineItem { get; }
 
+    public ReactiveCommand<Unit, Unit> OpenNewOrderDialog { get; }
+
     public MainWindowViewModel() {
         if (Program.ServiceProvider is null) throw new InvalidProgramException("ServiceProvider is null");
 
@@ -36,6 +37,13 @@ public class MainWindowViewModel : ViewModelBase {
         _orderListViewModel = new(sender);
         _orderDetailsViewModel = new(sender);
         SelectLineItem = ReactiveCommand.Create<int>(LineItemSelected);
+
+        OpenNewOrderDialog = ReactiveCommand.Create(() => {
+            // TODO: open this as an actual dialog, not sure how to do that since the MainWindow does not inherit from ReactiveWindow
+            var dialog = new NewOrderDialog();
+            dialog.Show();
+            //dialog.ShowDialog();
+        });
     }
 
     private async void LineItemSelected(int orderId) {

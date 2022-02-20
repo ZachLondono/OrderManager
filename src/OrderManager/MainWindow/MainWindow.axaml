@@ -1,14 +1,39 @@
-<Window xmlns="https://github.com/avaloniaui"
+<ribbon:RibbonWindow
+        xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:ribbon="clr-namespace:AvaloniaUI.Ribbon;assembly=AvaloniaUI.Ribbon"
         xmlns:orderlist="clr-namespace:OrderManager.Features.OrderList"
         xmlns:orderdetails="clr-namespace:OrderManager.Features.OrderDetails"
+        xmlns:local="clr-namespace:OrderManager.MainWindow"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="OrderManager.MainWindow.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="OrderManager">
+        Title="OrderManager"
+        HasSystemDecorations="False">
 
+  <ribbon:RibbonWindow.DataContext>
+    <local:MainWindowViewModel />
+  </ribbon:RibbonWindow.DataContext>
+  
+  <ribbon:RibbonWindow.Ribbon>
+    <ribbon:Ribbon>
+      <ribbon:Ribbon.Tabs>
+        <ribbon:RibbonTab Header="Home" ribbon:KeyTip.KeyTipKeys="H">
+          <ribbon:RibbonTab.Groups>
+            <ribbon:RibbonGroupBox Header="New">
+              <ribbon:RibbonButton Content="New Order"
+                                   MinSize="Large"
+                                   ribbon:KeyTip.KeyTipKeys="N" 
+                                   Command="{Binding OpenNewOrderDialog}"/>
+            </ribbon:RibbonGroupBox>
+          </ribbon:RibbonTab.Groups>
+        </ribbon:RibbonTab>
+      </ribbon:Ribbon.Tabs>
+    </ribbon:Ribbon>
+  </ribbon:RibbonWindow.Ribbon>
+  
   <Window.DataTemplates>
     <DataTemplate DataType="{x:Type orderlist:OrderListViewModel}">
       <orderlist:OrderListView />
@@ -17,7 +42,6 @@
       <orderdetails:OrderDetailsView />
     </DataTemplate>
   </Window.DataTemplates>
-  
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="1*" MinWidth="300" />
@@ -30,4 +54,4 @@
     <ContentControl Content="{Binding OrderDetailsViewModel}" Grid.Column="2" />
   </Grid>
 
-</Window>
+</ribbon:RibbonWindow>
