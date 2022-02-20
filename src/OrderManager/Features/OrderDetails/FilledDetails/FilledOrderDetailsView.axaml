@@ -31,10 +31,8 @@
 
       <Grid ColumnDefinitions="*,Auto,*">
         <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Grid.Column="0">
-          <TextBlock Text="OT000" FontSize="20"/>
-          <TextBlock Text="Kitchen ABC" FontSize="16"/>
-          <!--<TextBlock Text="{Binding Details.Number}" FontSize="20"/>-->
-          <!--<TextBlock Text="{Binding Details.Name}" FontSize="16"/>-->
+          <TextBlock Text="{Binding Details.Number}" FontSize="20"/>
+          <TextBlock Text="{Binding Details.Name}" FontSize="16"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="2">
           <Button Command="{Binding ReleaseOrder}" CommandParameter="{Binding Details.Id}" Classes="Secondary Release">
@@ -65,7 +63,11 @@
         </StackPanel>
       </StackPanel>
 
-      <TextBox AcceptsReturn="True" AcceptsTab="True" Watermark="Comment" TextWrapping="Wrap" Margin="0,10,0,0" CornerRadius="0" />
+      <TextBox AcceptsReturn="True"
+               AcceptsTab="True"
+               Watermark="Comment"
+               TextWrapping="Wrap"
+               Margin="0,10,0,0"/>
       
       <ItemsControl Items="{Binding Details.Products.Values}">
         <ItemsControl.ItemTemplate>

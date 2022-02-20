@@ -13,10 +13,10 @@
   </Control.Styles>
   
   <Border BorderThickness="1"
-          BorderBrush="Black"
+          BorderBrush="LightGray"
           MinWidth="150">
     <StackPanel Orientation="Vertical">
-      <Border BorderThickness="0,0,0,1" BorderBrush="Black">
+      <Border BorderThickness="0,0,0,1" BorderBrush="LightGray">
         <TextBlock Text="{Binding CompanyRole}"
                    FontWeight="Bold"
                    FontSize="14"

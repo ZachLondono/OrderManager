@@ -6,6 +6,7 @@
         <Button HorizontalAlignment="Center" Classes="Primary" Content="Primary" />
         <Button HorizontalAlignment="Center" Classes="Secondary" Content="Secondary" />
         <Button HorizontalAlignment="Center" Classes="Danger" Content="Danger" />
+        <TextBox Watermark="Enter Text" />
       </StackPanel>
     </Border>
   </Design.PreviewWith>
@@ -50,4 +51,14 @@
     <Setter Property="Background" Value="#C74643"/>
     <Setter Property="BorderBrush" Value="#FF9198"/>
   </Style>
+
+
+  <Style Selector="TextBox">
+    <Setter Property="BorderBrush" Value="LightGray" />
+    <Setter Property="CornerRadius" Value="0" />
+  </Style>
+  <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+    <Setter Property="BorderBrush" Value="{DynamicResource BorderSelected}"/>
+  </Style>
+  
 </Styles>

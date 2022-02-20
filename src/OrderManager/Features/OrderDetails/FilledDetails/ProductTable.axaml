@@ -5,11 +5,22 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OrderManager.Features.OrderDetails.FilledDetails.ProductTable">
 
-  <Border BorderBrush="Black" BorderThickness="1" Padding="10">
+  <Border BorderBrush="LightGray" BorderThickness="1" Padding="10">
     <StackPanel>
-      <TextBlock Name="ProductName" Text="Ordered Items" HorizontalAlignment="Center" TextAlignment="Center"/>
+      
+      <TextBlock Name="ProductName"
+                 Text="Ordered Items"
+                 TextAlignment="Center" />
+      
       <!-- Orders should not be editable once they are uploaded -->
-      <DataGrid Name="ProductGrid" IsReadOnly="True"/>
+      <DataGrid Name="ProductGrid" IsReadOnly="True">
+        <DataGrid.Styles>
+          <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="{DynamicResource ContentSelected}"/>
+          </Style>
+        </DataGrid.Styles>
+      </DataGrid>
+      
     </StackPanel>
   </Border>
   
