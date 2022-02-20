@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Microsoft.Extensions.DependencyInjection;
 using OrderManager.MainWindow;
 
 namespace OrderManager;
@@ -12,10 +13,11 @@ public class App : Application {
     public override void OnFrameworkInitializationCompleted() {
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
-            desktop.MainWindow = new MainWindow.MainWindow();
-            /*{
-                DataContext = new MainWindowViewModel(),
-            };*/
+
+            desktop.MainWindow = new MainWindow.MainWindow {
+                DataContext = Program.GetInstance<MainWindowViewModel>()
+            };
+
         }
 
         base.OnFrameworkInitializationCompleted();

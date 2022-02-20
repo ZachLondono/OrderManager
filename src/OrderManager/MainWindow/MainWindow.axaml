@@ -12,10 +12,6 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="OrderManager"
         HasSystemDecorations="False">
-
-  <ribbon:RibbonWindow.DataContext>
-    <local:MainWindowViewModel />
-  </ribbon:RibbonWindow.DataContext>
   
   <ribbon:RibbonWindow.Ribbon>
     <ribbon:Ribbon>
@@ -26,7 +22,7 @@
               <ribbon:RibbonButton Content="New Order"
                                    MinSize="Large"
                                    ribbon:KeyTip.KeyTipKeys="N" 
-                                   Command="{Binding OpenNewOrderDialog}"/>
+                                   Command="{Binding OpenNewOrderDialogCommand}"/>
             </ribbon:RibbonGroupBox>
           </ribbon:RibbonTab.Groups>
         </ribbon:RibbonTab>

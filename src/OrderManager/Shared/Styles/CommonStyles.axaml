@@ -11,13 +11,29 @@
     </Border>
   </Design.PreviewWith>
 
+  <Style Selector="Button">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate>
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}">
+            <ContentPresenter Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              Margin="{TemplateBinding Padding}"/>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  
   <!-- Button -->
   <Style Selector="Button">
     <Setter Property="BorderBrush" Value="#B3B0AD"/>
     <Setter Property="BorderThickness" Value="1"/>
     <Setter Property="CornerRadius" Value="0"/>
   </Style>
-
+  
   <!-- Primary Button -->
   <Style Selector="Button.Primary">
     <Setter Property="Foreground" Value="#FFFFFF" />
@@ -51,7 +67,6 @@
     <Setter Property="Background" Value="#C74643"/>
     <Setter Property="BorderBrush" Value="#FF9198"/>
   </Style>
-
 
   <Style Selector="TextBox">
     <Setter Property="BorderBrush" Value="LightGray" />

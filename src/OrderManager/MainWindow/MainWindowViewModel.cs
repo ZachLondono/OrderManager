@@ -1,3 +1,4 @@
+using Domain.OrderProvider;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using OrderManager.Features.LoadOrders;
@@ -6,6 +7,7 @@ using OrderManager.Features.OrderList;
 using OrderManager.Shared;
 using ReactiveUI;
 using System;
+using System.Collections.Generic;
 using Unit = System.Reactive.Unit;
 
 namespace OrderManager.MainWindow;
@@ -25,25 +27,27 @@ public class MainWindowViewModel : ViewModelBase {
 
     public ReactiveCommand<int, Unit> SelectLineItem { get; }
 
-    public ReactiveCommand<Unit, Unit> OpenNewOrderDialog { get; }
+    public ReactiveCommand<Unit, Unit> OpenNewOrderDialogCommand { get; }
 
     public MainWindowViewModel() {
-        if (Program.ServiceProvider is null) throw new InvalidProgramException("ServiceProvider is null");
-
-        ISender? sender = Program.ServiceProvider?.GetService<ISender>();
-
-        if (sender is null) throw new InvalidProgramException("Unable to get implementation of ISender");
-
-        _orderListViewModel = new(sender);
-        _orderDetailsViewModel = new(sender);
+        _orderListViewModel = Program.GetInstance<OrderListViewModel>();
+        _orderDetailsViewModel = Program.GetInstance<OrderDetailsViewModel>();
         SelectLineItem = ReactiveCommand.Create<int>(LineItemSelected);
 
-        OpenNewOrderDialog = ReactiveCommand.Create(() => {
-            // TODO: open this as an actual dialog, not sure how to do that since the MainWindow does not inherit from ReactiveWindow
-            var dialog = new NewOrderDialog();
-            dialog.Show();
-            //dialog.ShowDialog();
-        });
+        OpenNewOrderDialogCommand = ReactiveCommand.Create(OpenNewOrderDialog);
+    }
+
+    private void OpenNewOrderDialog() {
+
+        var vm = Program.GetInstance<NewOrderViewModel>();
+
+        var dialog = new NewOrderDialog {
+            DataContext = vm
+        };
+
+        dialog.Show();
+        // TODO: open this as an actual dialog, not sure how to do that since the MainWindow does not inherit from ReactiveWindow
+        //dialog.ShowDialog();
     }
 
     private async void LineItemSelected(int orderId) {
