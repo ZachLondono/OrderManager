@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\PluginContracts\PluginContracts.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Features\OrderDetails\FilledDetails\CompanyDisplay\CompanyDisplayView.axaml.cs">
