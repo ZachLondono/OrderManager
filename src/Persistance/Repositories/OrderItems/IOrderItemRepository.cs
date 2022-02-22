@@ -2,9 +2,9 @@
 
 public interface IOrderItemRepository {
 
-    public OrderItemDAO CreateItem(int orderId, int productId, string productName, int qty = 1);
+    public OrderItemDAO CreateItem(Guid orderId, int productId, string productName, int qty = 1);
 
-    public IEnumerable<OrderItemDAO> GetItemsByOrderId(int orderId);
+    public IEnumerable<OrderItemDAO> GetItemsByOrderId(Guid orderId);
 
     public void UpdateItem(OrderItemDAO item);
 

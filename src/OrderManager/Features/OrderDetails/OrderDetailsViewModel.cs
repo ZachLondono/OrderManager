@@ -4,6 +4,7 @@ using OrderManager.Features.OrderDetails.FilledDetails;
 using OrderManager.Shared;
 using OrderManager.Shared.DataError;
 using ReactiveUI;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -23,7 +24,7 @@ public class OrderDetailsViewModel : ViewModelBase {
         _sender = sender;
     }
 
-    public async Task SetOrder(int orderId) {
+    public async Task SetOrder(Guid orderId) {
         Debug.WriteLine($"Setting OrderDetailsPage to order [{orderId}]");
         var result = await _sender.Send(new GetOrderDetails.Query(orderId));
         

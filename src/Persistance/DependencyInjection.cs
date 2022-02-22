@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Dapper;
+using Microsoft.Extensions.DependencyInjection;
+using System.Data;
 
 namespace Persistance;
 
@@ -19,6 +21,8 @@ public static class DependencyInjection {
                 services.AddTransient(repoInterface, repository);
             else services.AddTransient(repository);
         }
+
+        SqlMapper.AddTypeHandler(new GuidHandler());
 
         return services.AddSingleton<ConnectionStringManager>();
 

@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.ValueObjects;
+using System;
 
 namespace Domain.Entities.OrderAggregate;
 
@@ -9,7 +10,7 @@ public class OrderItem {
 	/// <summary>
 	///  The order to which this item belongs
 	/// </summary>
-	public int OrderId { get; init; }
+	public Guid OrderId { get; init; }
 
 	/// <summary>
 	/// Amount ordered
@@ -26,7 +27,7 @@ public class OrderItem {
 	/// </summary>
 	// public Price UnitPrice { get; init; }
 
-	public OrderItem(int orderId, CatalogItemOrdered item, int qty = 1) {
+	public OrderItem(Guid orderId, CatalogItemOrdered item, int qty = 1) {
 		OrderId = orderId;
 		OrderedItem = item;
 		Qty = new(qty);

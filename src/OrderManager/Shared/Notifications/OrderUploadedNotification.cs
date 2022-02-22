@@ -1,5 +1,6 @@
 ﻿using MediatR;
+using System;
 
 namespace OrderManager.Shared.Notifications;
 
-public record OrderUploadedNotification(int Id) : INotification;
+public record OrderUploadedNotification(Guid Id) : INotification;

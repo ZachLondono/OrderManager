@@ -1,4 +1,6 @@
-﻿namespace Persistance.Repositories.Orders;
+﻿using Dapper;
+
+namespace Persistance.Repositories.Orders;
 
 public class OrderRepository : BaseRepository, IOrderRepository {
     
@@ -11,7 +13,7 @@ public class OrderRepository : BaseRepository, IOrderRepository {
                             VALUES ([@Number])
                             RETURNING Id;";
 
-        int newId = QuerySingleOrDefault<int>(sql, new { Number = number });
+        Guid newId = QuerySingleOrDefault<Guid>(sql, new { Number = number });
 
         return new() {
             Id = newId,
@@ -20,11 +22,11 @@ public class OrderRepository : BaseRepository, IOrderRepository {
 
     }
 
-    public OrderDAO GetOrderById(int id) {
+    public OrderDAO GetOrderById(Guid id) {
 
         const string sql = @"SELECT [Id], [Number], [Name], [LastModified], [IsPriority], [CustomerId], [VendorId], [SupplierId] FROM [Orders] WHERE Id = @Id;";
 
-        OrderDAO? dao = QuerySingleOrDefault<OrderDAO>(sql, new { Id = id });
+        OrderDAO? dao = QuerySingleOrDefault<OrderDAO>(sql, new { Id = id.ToString() });
 
         if (dao is null)
             throw new InvalidDataException($"Order with id '{id}' was not found");
@@ -42,6 +44,15 @@ public class OrderRepository : BaseRepository, IOrderRepository {
         const string sql = @"UPDATE [Orders]
                             SET [Number] = [@Number], [Name] = [@Name], [LastModified] = [@LastModified], [IsPriority] = [@IsPriority], [CustomerId] = [@CustomerId], [VendorId] = [@VendorId], [SupplierId] = [@SupplierId]
                             WHERE [Id] = @Id;";
-        Execute(sql, order);
+        Execute(sql, new {
+            Id = order.Id.ToString(),
+            order.Number,
+            order.Name,
+            order.LastModified,
+            order.IsPriority,
+            order.CustomerId,
+            order.VendorId,
+            order.SupplierId
+        });
     }
 }

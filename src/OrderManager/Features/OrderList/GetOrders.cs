@@ -6,6 +6,7 @@ using OrderManager.Shared;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,7 +40,7 @@ public class GetOrders {
 
             List<Order> orders = new() {
                 new() {
-                    Id = 0,
+                    Id = Guid.NewGuid(),
                     Number = "OT000",
                     Name = "ABC Kitchen",
                     LastModified = DateTime.Now,
@@ -48,7 +49,7 @@ public class GetOrders {
                     Vendor = vendor*/
                 },
                 new() {
-                    Id = 1,
+                    Id = Guid.NewGuid(),
                     Number = "OT111",
                     Name = "ABC Kitchen",
                     LastModified = DateTime.Now.AddHours(-1.35),
@@ -57,7 +58,7 @@ public class GetOrders {
                     Vendor = vendor*/
                 },
                 new() {
-                    Id = 2,
+                    Id = Guid.NewGuid(),
                     Number = "OT222",
                     Name = "ABC Kitchen",
                     IsPriority = true,
@@ -66,7 +67,7 @@ public class GetOrders {
                     Vendor = vendor*/
                 },
                 new() {
-                    Id = 3,
+                    Id = Guid.NewGuid(),
                     Number = "OT222",
                     Name = "ABC Kitchen",
                     IsPriority = false,
@@ -75,7 +76,7 @@ public class GetOrders {
                     Vendor = vendor*/
                 },
                 new() {
-                    Id = 4,
+                    Id = Guid.NewGuid(),
                     Number = "OT222",
                     Name = "ABC Kitchen",
                     IsPriority = false,
@@ -84,7 +85,7 @@ public class GetOrders {
                     Vendor = vendor*/
                 },
                 new() {
-                    Id = 5,
+                    Id = Guid.NewGuid(),
                     Number = "OT222",
                     Name = "ABC Kitchen",
                     IsPriority = true,
@@ -93,7 +94,7 @@ public class GetOrders {
                     Vendor = vendor*/
                 },
                 new() {
-                    Id = 6,
+                    Id = Guid.NewGuid(),
                     Number = "OT222",
                     Name = "ABC Kitchen",
                     IsPriority = false,
@@ -102,7 +103,7 @@ public class GetOrders {
                     Vendor = vendor*/
                 },
                 new() {
-                    Id = 6,
+                    Id = Guid.NewGuid(),
                     Number = "OT222",
                     Name = "ABC Kitchen",
                     IsPriority = false,
@@ -112,7 +113,7 @@ public class GetOrders {
                 },
 
                 new() {
-                    Id = 6,
+                    Id = Guid.NewGuid(),
                     Number = "OT222",
                     Name = "ABC Kitchen",
                     IsPriority = false,
@@ -122,17 +123,18 @@ public class GetOrders {
                 }
             };
 
-            try { 
-                orders.AddRange(_orderService.GetAllOrders());
+            try {
+                var list = _orderService.GetAllOrders().ToList();
+                list.AddRange(orders);
+
+                return new(new OrderList(list));
             } catch (Exception e) {
                 Debug.WriteLine(e);
             }
 
             await Task.Delay(1);
 
-            return new(new OrderList(orders));
-
-            //return new(new Error("No Data", "Could not connect to database with connection string 'Data Source=C:/'"));
+            return new(new Error("No Data", "Could not connect to database with connection string 'Data Source=C:/'"));
 
         }
 

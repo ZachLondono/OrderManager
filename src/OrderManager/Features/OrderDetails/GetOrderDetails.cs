@@ -2,6 +2,7 @@
 using Domain.Services;
 using MediatR;
 using OrderManager.Shared;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace OrderManager.Features.OrderDetails;
 
 public class GetOrderDetails {
 
-    public record Query(int Id) : IRequest<QueryResult<Order>>;
+    public record Query(Guid Id) : IRequest<QueryResult<Order>>;
 
     public class Handler : IRequestHandler<Query, QueryResult<Order>> {
 

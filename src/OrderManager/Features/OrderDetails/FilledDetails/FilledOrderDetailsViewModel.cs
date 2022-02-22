@@ -15,9 +15,9 @@ public class FilledOrderDetailsViewModel : ViewModelBase {
 
     public OrderDetails Details { get; set; }
     
-    public ReactiveCommand<int, Unit> ReleaseOrder { get; }
+    public ReactiveCommand<Guid, Unit> ReleaseOrder { get; }
 
-    public ReactiveCommand<int, Unit> RemakeOrder { get; }
+    public ReactiveCommand<Guid, Unit> RemakeOrder { get; }
 
     public FilledOrderDetailsViewModel(Order order) {
         
@@ -51,21 +51,21 @@ public class FilledOrderDetailsViewModel : ViewModelBase {
             Products = productsOrdered
         };
 
-        ReleaseOrder = ReactiveCommand.Create<int>(OnOrderRelease);
-        RemakeOrder = ReactiveCommand.Create<int>(OnOrderRemake);
+        ReleaseOrder = ReactiveCommand.Create<Guid>(OnOrderRelease);
+        RemakeOrder = ReactiveCommand.Create<Guid>(OnOrderRemake);
     }
 
-    public static void OnOrderRelease(int orderId) {
+    public static void OnOrderRelease(Guid orderId) {
         Debug.WriteLine($"Releasing order {orderId}");
     }
 
-    public static async void OnOrderRemake(int orderId) {
+    public static async void OnOrderRemake(Guid orderId) {
         Debug.WriteLine($"Remaking order {orderId}");
 
         var sender = Program.GetService<IMediator>();
-        try { 
-            int newId = await sender.Send(new CreateRemake.Command(orderId, new() {
-                new(1, 10)
+        try {
+            Guid newId = await sender.Send(new CreateRemake.Command(orderId, new() {
+                new(1, 10) // test values, should open dialog to choose item quantities
             }));
         } catch(Exception e) {
             Debug.WriteLine(e);

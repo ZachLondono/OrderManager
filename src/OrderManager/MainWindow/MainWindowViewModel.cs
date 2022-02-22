@@ -24,14 +24,14 @@ public class MainWindowViewModel : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _orderDetailsViewModel, value);
     }
 
-    public ReactiveCommand<int, Unit> SelectLineItem { get; }
+    public ReactiveCommand<Guid, Unit> SelectLineItem { get; }
 
     public ReactiveCommand<Unit, Unit> OpenNewOrderDialogCommand { get; }
 
     public MainWindowViewModel() {
         _orderListViewModel = Program.CreateInstance<OrderListViewModel>();
         _orderDetailsViewModel = Program.CreateInstance<OrderDetailsViewModel>();
-        SelectLineItem = ReactiveCommand.Create<int>(LineItemSelected);
+        SelectLineItem = ReactiveCommand.Create<Guid>(LineItemSelected);
 
         OpenNewOrderDialogCommand = ReactiveCommand.Create(OpenNewOrderDialog);
     }
@@ -49,7 +49,7 @@ public class MainWindowViewModel : ViewModelBase {
         //dialog.ShowDialog();
     }
 
-    private async void LineItemSelected(int orderId) {
+    private async void LineItemSelected(Guid orderId) {
         await OrderDetailsViewModel.SetOrder(orderId);
     }
 

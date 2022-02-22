@@ -39,7 +39,7 @@ internal class UploadNewOrder {
                                     VALUES ([@Number], [@Name], [@IsPriority], [@LastModified], [@VendorId], [@SupplierId])
                                     RETURNING Id;";
 
-            int newId = connection.QuerySingle<int>(orderQuery, new {
+            Guid newId = connection.QuerySingle<Guid>(orderQuery, new {
                 orderData.Number,
                 orderData.Name,
                 IsPriority = false,
@@ -62,20 +62,20 @@ internal class UploadNewOrder {
         /// <summary>
         /// Updates the customer id for the given order. If the customer does not yet exist, it will be created.
         /// </summary>
-        private static void SetCustomerId(int orderId, CompanyDto customerData, SqliteConnection connection) {
-            const string customerQuery = @"SELECT [Id] FROM [Companies] WHERE [Name] = [@Name];";
+        private static void SetCustomerId(Guid orderId, CompanyDto customerData, SqliteConnection connection) {
+            const string customerQuery = @"SELECT [Id] FROM [Companies] WHERE [Name] = @Name;";
             int customerId = connection.QueryFirstOrDefault<int>(customerQuery, new { Name = customerData.Name });
 
             if (customerId == default) {
                 const string customerSql = @"INSERT INTO [Companies] ([Name], [Contact], [Address1], [Address2], [Address3], [City], [State], [Zip])
-                                                VALUES ([@Name], [@Contact], [@Address1], [@Address2], [@Address3], [@City], [@State], [@Zip])
+                                                VALUES (@Name, @Contact, @Address1, @Address2, @Address3, @City, @State, @Zip)
                                                 RETURNING Id;";
 
                 customerId = connection.QuerySingle<int>(customerSql, customerData);
             }
 
-            const string updateSql = @"UPDATE [Orders] SET [CustomerId] = [@CustomerId] WHERE [Id] = [@Id];";
-            connection.Execute(updateSql, new { CustomerId = customerId, Id = orderId });
+            const string updateSql = @"UPDATE [Orders] SET [CustomerId] = [@CustomerId] WHERE [Id] = @Id;";
+            connection.Execute(updateSql, new { CustomerId = customerId, Id = orderId.ToString() });
         }
     }
 

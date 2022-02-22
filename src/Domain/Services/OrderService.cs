@@ -32,7 +32,7 @@ public class OrderService : EntityService {
     /// <summary>
     /// Gets an order and all its order items from the database
     /// </summary>
-    public Order GetOrderById(int id) {
+    public Order GetOrderById(Guid id) {
         OrderDAO orderDao = _orderRepository.GetOrderById(id);
         return GetOrder(orderDao);
     }

@@ -4,7 +4,7 @@ namespace Persistance.Repositories.Orders;
 
 public interface IOrderRepository {
 
-    public OrderDAO GetOrderById(int id);
+    public OrderDAO GetOrderById(Guid id);
 
     public IEnumerable<OrderDAO> GetOrders();
 

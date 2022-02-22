@@ -1,8 +1,10 @@
-﻿namespace Domain.Entities.OrderAggregate;
+﻿using System;
+
+namespace Domain.Entities.OrderAggregate;
 
 public class Order {
 
-	public int Id { get; set; }
+	public Guid Id { get; set; }
 
 	public string Number { get; set; } = string.Empty;
 

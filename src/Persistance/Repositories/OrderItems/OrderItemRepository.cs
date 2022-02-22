@@ -5,11 +5,11 @@ public class OrderItemRepository : BaseRepository, IOrderItemRepository {
     public OrderItemRepository(ConnectionStringManager connectionStringManager) : base(connectionStringManager) {
     }
 
-    public OrderItemDAO CreateItem(int orderId, int productId, string productName, int qty = 1) {
+    public OrderItemDAO CreateItem(Guid orderId, int productId, string productName, int qty = 1) {
         const string sql = @"INSERT INTO [OrderItems] ([OrderId], [ProductId], [ProductName], [Qty])
                             VALUES ([@OrderId], [@ProductId], [ProductName], [@Qty])
                             RETURNING Id;";
-        int newId = QuerySingleOrDefault<int>(sql, new { OrderId = orderId, ProductId = productId, ProductName = productName, Qty = qty });
+        int newId = QuerySingleOrDefault<int>(sql, new { OrderId = orderId.ToString(), ProductId = productId, ProductName = productName, Qty = qty });
         return new() {
             Id = newId,
             OrderId = orderId,
@@ -18,10 +18,10 @@ public class OrderItemRepository : BaseRepository, IOrderItemRepository {
         };
     }
 
-    public IEnumerable<OrderItemDAO> GetItemsByOrderId(int orderId) {
+    public IEnumerable<OrderItemDAO> GetItemsByOrderId(Guid orderId) {
         // TODO: this can be improved by using dapper result multi-mapping
         const string query = @"SELECT [Id], [OrderId], [ProductId], [ProductName], [Qty] FROM [OrderItems] WHERE [OrderId] = @OrderId;";
-        var items =  Query<OrderItemDAO>(query, new { OrderId = orderId });
+        var items =  Query<OrderItemDAO>(query, new { OrderId = orderId.ToString() });
 
         foreach(var item in items) { 
             const string optionQuery = @"SELECT [Key], [Value] FROM [OrderItemOptions] WHERE [ItemId] = @ItemId;";
@@ -49,7 +49,13 @@ public class OrderItemRepository : BaseRepository, IOrderItemRepository {
         const string sql = @"UPDATE [OrderItems]
                             SET [OrderId] = @OrderId, [ProductId] = [@ProductId], [ProductName] = [@ProductName], [Qty] = @Qty
                             WHERE [Id] = @Id;";
-        Execute(sql, item);
+        Execute(sql, new {
+            OrderId = item.OrderId.ToString(),
+            item.ProductId,
+            item.ProductName,
+            item.Qty,
+            item.Id
+        });
     }
 
 }
