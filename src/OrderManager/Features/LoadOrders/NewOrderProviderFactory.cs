@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Domain.OrderProvider;
+namespace OrderManager.Features.LoadOrders;
 
 public class NewOrderProviderFactory {
 
