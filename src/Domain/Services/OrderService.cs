@@ -83,6 +83,15 @@ public class OrderService : EntityService {
         };
     }
 
+    public Order CreateOrder(string number) {
+        OrderDAO dao = _orderRepository.CreateOrder(number);
+
+        return new() {
+            Id = dao.Id,
+            Number = number
+        };
+    }
+
     /// <summary>
     /// Updates the order on the database and all of the items in the order
     /// </summary>
