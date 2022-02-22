@@ -1,4 +1,3 @@
-using Domain.OrderProvider;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using OrderManager.Features.LoadOrders;
@@ -30,8 +29,8 @@ public class MainWindowViewModel : ViewModelBase {
     public ReactiveCommand<Unit, Unit> OpenNewOrderDialogCommand { get; }
 
     public MainWindowViewModel() {
-        _orderListViewModel = Program.GetInstance<OrderListViewModel>();
-        _orderDetailsViewModel = Program.GetInstance<OrderDetailsViewModel>();
+        _orderListViewModel = Program.CreateInstance<OrderListViewModel>();
+        _orderDetailsViewModel = Program.CreateInstance<OrderDetailsViewModel>();
         SelectLineItem = ReactiveCommand.Create<int>(LineItemSelected);
 
         OpenNewOrderDialogCommand = ReactiveCommand.Create(OpenNewOrderDialog);
@@ -39,7 +38,7 @@ public class MainWindowViewModel : ViewModelBase {
 
     private void OpenNewOrderDialog() {
 
-        var vm = Program.GetInstance<NewOrderViewModel>();
+        var vm = Program.CreateInstance<NewOrderViewModel>();
 
         var dialog = new NewOrderDialog {
             DataContext = vm

@@ -15,7 +15,7 @@ public class App : Application {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
 
             desktop.MainWindow = new MainWindow.MainWindow {
-                DataContext = Program.GetInstance<MainWindowViewModel>()
+                DataContext = Program.CreateInstance<MainWindowViewModel>()
             };
 
         }
