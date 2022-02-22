@@ -28,7 +28,11 @@ public class OrderItemRepository : BaseRepository, IOrderItemRepository {
 
             var options = Query<ItemOption>(optionQuery, new { ItemId = item.Id });
 
-            var optionsDict = options.ToDictionary(x => x.Key, x => x.Value);
+            Dictionary<string, string> optionsDict = new();
+            foreach (var x in options) {
+                if (optionsDict.ContainsKey(x.Key)) continue;
+                optionsDict.Add(x.Key, x.Value);
+            }
 
             item.Options = optionsDict;
 
