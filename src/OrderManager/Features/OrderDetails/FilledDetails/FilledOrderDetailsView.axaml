@@ -41,7 +41,7 @@
               <TextBlock Text="Release"/>
             </StackPanel>
           </Button>
-          <Button Command="{Binding ReleaseOrder}" CommandParameter="{Binding Details.Id}" Classes="Secondary Remake">
+          <Button Command="{Binding RemakeOrder}" CommandParameter="{Binding Details.Id}" Classes="Secondary Remake">
             <StackPanel Orientation="Horizontal">
               <Image Source="/Assets/redo-arrow-symbol.png" Width="12" Height="12" Margin="6,0,6,0"/>
               <TextBlock Text="Remake"/>
