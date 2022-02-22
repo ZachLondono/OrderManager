@@ -1,11 +1,12 @@
 using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
 using MediatR;
 using Avalonia.ReactiveUI;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using Domain;
-using Domain.OrderProvider;
+using OrderManager.Features.LoadOrders;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace OrderManager;
 
@@ -17,15 +18,24 @@ internal class Program {
 
     private Program() {
         ServiceProvider = new ServiceCollection()
-            .AddMediatR(typeof(Program).Assembly)
+            .AddMediatR(typeof(Program).GetTypeInfo().Assembly)
             .AddDomain()
             .AddSingleton<NewOrderProviderFactory>()
             .BuildServiceProvider();
     }
 
-    public static T GetInstance<T>() {
+    public static T CreateInstance<T>() {
         if (_instance is null) _instance = new Program();
+        Debug.WriteLine($"Getting instance of type '{typeof(T)}'");
         return ActivatorUtilities.CreateInstance<T>(_instance.ServiceProvider);
+    }
+
+    public static T GetService<T>() {
+        if (_instance is null) _instance = new Program();
+        Debug.WriteLine($"Getting service of type '{typeof(T)}'");
+        var service = _instance.ServiceProvider.GetService<T>();
+        if (service is null) throw new InvalidOperationException($"Could not find a sutible service for type '{typeof(T)}'");
+        return service;
     }
 
     public static object GetInstance(Type type) {
