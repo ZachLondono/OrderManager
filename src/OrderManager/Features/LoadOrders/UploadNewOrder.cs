@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Dapper;
-using OrderManager.Shared.Notifications;
 using Persistance;
 using PluginContracts.Models;
 using System.Threading;
@@ -12,21 +11,19 @@ namespace OrderManager.Features.LoadOrders;
 
 internal class UploadNewOrder {
 
-    public record Command(string OrderProvider) : IRequest;
+    public record Command(string OrderProvider) : IRequest<Guid>;
 
-    public class Handler : IRequestHandler<Command> {
+    public class Handler : IRequestHandler<Command, Guid> {
 
-        private readonly IPublisher _publisher;
         private readonly NewOrderProviderFactory _factory;
         private readonly ConnectionStringManager _connectionStringManager;
 
-        public Handler(IPublisher publisher, NewOrderProviderFactory factory, ConnectionStringManager connectionStringManager) {
-            _publisher = publisher;
+        public Handler(NewOrderProviderFactory factory, ConnectionStringManager connectionStringManager) {
             _factory = factory;
             _connectionStringManager = connectionStringManager;
         }
 
-        public Task<Unit> Handle(Command request, CancellationToken cancellationToken) {
+        public Task<Guid> Handle(Command request, CancellationToken cancellationToken) {
 
             var provider = _factory.GetProviderByName(request.OrderProvider);
             OrderDto orderData = provider.GetNewOrder();
@@ -53,9 +50,7 @@ internal class UploadNewOrder {
             transaction.Commit();
             connection.Close();
 
-            _publisher.Publish(new OrderUploadedNotification(newId));
-
-            return Unit.Task;
+            return Task.FromResult(newId);
 
         }
 

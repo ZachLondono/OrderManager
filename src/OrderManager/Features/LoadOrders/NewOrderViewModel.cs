@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using OrderManager.Shared;
+using OrderManager.Shared.Messages;
 using PluginContracts.Interfaces;
 using ReactiveUI;
 using System.Collections.Generic;
@@ -26,8 +27,9 @@ public class NewOrderViewModel : ViewModelBase {
         LoadOrderFromProvider = ReactiveCommand.Create<string>(OnProviderChosen);
     }
 
-    private void OnProviderChosen(string providerName) {
-        _sender.Send(new UploadNewOrder.Command(providerName));
+    private async void OnProviderChosen(string providerName) {
+        var id = await _sender.Send(new UploadNewOrder.Command(providerName));
+        MessageBus.Current.SendMessage(new OrderUploaded(id));
     }
 
 }

@@ -1,6 +1,7 @@
 ﻿using Domain.Entities.OrderAggregate;
 using MediatR;
 using OrderManager.Shared;
+using OrderManager.Shared.Messages;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -64,9 +65,13 @@ public class FilledOrderDetailsViewModel : ViewModelBase {
 
         var sender = Program.GetService<IMediator>();
         try {
+
             Guid newId = await sender.Send(new CreateRemake.Command(orderId, new() {
                 new(1, 10) // test values, should open dialog to choose item quantities
             }));
+
+            MessageBus.Current.SendMessage(new OrderUploaded(newId));
+
         } catch(Exception e) {
             Debug.WriteLine(e);
         }

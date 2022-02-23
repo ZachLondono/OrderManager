@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System;
-using OrderManager.Shared.Notifications;
 
 namespace OrderManager.Features.OrderDetails;
 
@@ -19,11 +18,9 @@ public class CreateRemake {
     public class Handler : IRequestHandler<Command, Guid> {
 
         private readonly ConnectionStringManager _connectionStringManager;
-        private readonly IPublisher _publisher;
 
-        public Handler(ConnectionStringManager connectionStringManager, IPublisher publisher) {
+        public Handler(ConnectionStringManager connectionStringManager) {
             _connectionStringManager = connectionStringManager;
-            _publisher = publisher;
         }
 
         public Task<Guid> Handle(Command request, CancellationToken cancellationToken) {
@@ -78,8 +75,6 @@ public class CreateRemake {
             }
 
             transaction.Commit();
-
-            _publisher.Publish(new OrderUploadedNotification(newId));
 
             return Task.FromResult(newId);
 
