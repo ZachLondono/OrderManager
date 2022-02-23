@@ -2,4 +2,4 @@
 
 namespace OrderManager.Shared.Messages;
 
-public record OrderUploaded(Guid Id);
+public record OrderUploaded(Guid OrderId);

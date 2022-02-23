@@ -3,6 +3,7 @@ using OrderManager.Features.OrderDetails.EmptyDetails;
 using OrderManager.Features.OrderDetails.FilledDetails;
 using OrderManager.Shared;
 using OrderManager.Shared.DataError;
+using OrderManager.Shared.Messages;
 using ReactiveUI;
 using System;
 using System.Diagnostics;
@@ -22,6 +23,13 @@ public class OrderDetailsViewModel : ViewModelBase {
 
     public OrderDetailsViewModel(ISender sender) {
         _sender = sender;
+
+        MessageBus.Current
+            .Listen<OrderUploaded>()
+            .WhereNotNull()
+            .Subscribe(async x => {
+                await SetOrder(x.OrderId);
+            });
     }
 
     public async Task SetOrder(Guid orderId) {

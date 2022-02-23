@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reactive;
 using Unit = System.Reactive.Unit;
 
 namespace OrderManager.Features.OrderDetails.FilledDetails;

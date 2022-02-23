@@ -4,10 +4,9 @@ using OrderManager.Features.OrderList.EmptyList;
 using OrderManager.Shared;
 using ReactiveUI;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using OrderManager.Shared.DataError;
-using System.Diagnostics;
-using Unit = System.Reactive.Unit;
+using System;
+using OrderManager.Shared.Messages;
 
 namespace OrderManager.Features.OrderList;
 
@@ -23,10 +22,18 @@ public class OrderListViewModel : ViewModelBase {
 
     public OrderListViewModel(ISender sender) {
         _sender = sender;
-        _ = Task.Run(async () => await GetOrders());
+        _ = Task.Run(async () => await RefreshContent());
+
+        MessageBus.Current
+            .Listen<OrderUploaded>()
+            .WhereNotNull()
+            .Subscribe(async x => {
+                await RefreshContent();
+            });
+
     }
 
-    private async Task GetOrders() {
+    private async Task RefreshContent() {
         var result = await _sender.Send(new GetOrders.Query());
 
         result.Match(
