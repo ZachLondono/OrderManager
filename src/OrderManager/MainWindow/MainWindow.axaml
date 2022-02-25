@@ -38,6 +38,17 @@
     <Style Selector="Button#PART_CloseButton:pointerover">
       <Setter Property="Background" Value="#EEFF0000" />
     </Style>
+
+    <Style Selector="TextBox#PART_SearchBar">
+      <Setter Property="Height" Value="25"/>
+      <Setter Property="MinHeight" Value="25"/>
+      <Setter Property="Width" Value="300"/>
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+      <Setter Property="BorderThickness" Value="0"/>
+    </Style>
   </Window.Styles>
 
   <Grid x:Name="WindowGrid">
@@ -52,8 +63,9 @@
     </Grid.ColumnDefinitions>
 
     <menu:RibbonView Grid.Row="0" Grid.ColumnSpan="2" />
-    <Panel x:Name="PART_TitleBar" Grid.Row="0" Grid.ColumnSpan="2" Height="36" Background="#106EBE" VerticalAlignment="Top" />
-
+    <Panel x:Name="PART_TitleBar" Grid.Row="0" Grid.ColumnSpan="2" Height="36" Background="#106EBE" VerticalAlignment="Top">
+      <TextBox x:Name="PART_SearchBar" Watermark="Search" VerticalAlignment="Center" />
+    </Panel>
     <Grid ColumnDefinitions="*,*,*" Width="135" Height="34" Name="CaptionButtons" Grid.ColumnSpan="2" Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right">
       <Button Grid.Column="0" x:Name="PART_MinimizeButton">
         <Rectangle Width="10" Height="1" Fill="White" />
@@ -66,7 +78,7 @@
       </Button>
     </Grid>
 
-    <Grid Grid.Row="1" Grid.ColumnSpan="2">
+    <Grid Grid.Row="1" Grid.ColumnSpan="2" x:Name="Content">
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
         <RowDefinition Height="*" />
@@ -76,7 +88,7 @@
         <ColumnDefinition Width="5" />
         <ColumnDefinition MinWidth="300" />
       </Grid.ColumnDefinitions>
-
+      
       <ContentControl Content="{Binding OrderListViewModel}" Grid.Column="0" Grid.Row="1" />
       <GridSplitter  Background="#ffffff" BorderThickness="0,0,1,0" BorderBrush="#d4d4d4" Width="5" Grid.Column="1" Grid.Row="1" />
       <ContentControl Content="{Binding OrderDetailsViewModel}" Grid.Column="2" Grid.Row="1"  />
