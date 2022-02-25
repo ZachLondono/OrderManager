@@ -26,27 +26,10 @@ public class MainWindowViewModel : ViewModelBase {
 
     public ReactiveCommand<Guid, Unit> SelectLineItem { get; }
 
-    public ReactiveCommand<Unit, Unit> OpenNewOrderDialogCommand { get; }
-
     public MainWindowViewModel() {
         _orderListViewModel = Program.CreateInstance<OrderListViewModel>();
         _orderDetailsViewModel = Program.CreateInstance<OrderDetailsViewModel>();
         SelectLineItem = ReactiveCommand.Create<Guid>(LineItemSelected);
-
-        OpenNewOrderDialogCommand = ReactiveCommand.Create(OpenNewOrderDialog);
-    }
-
-    private void OpenNewOrderDialog() {
-
-        var vm = Program.CreateInstance<NewOrderViewModel>();
-
-        var dialog = new NewOrderDialog {
-            DataContext = vm
-        };
-
-        dialog.Show();
-        // TODO: open this as an actual dialog, not sure how to do that since the MainWindow does not inherit from ReactiveWindow
-        //dialog.ShowDialog();
     }
 
     private async void LineItemSelected(Guid orderId) {

@@ -20,6 +20,7 @@ internal class Program {
         ServiceProvider = new ServiceCollection()
             .AddMediatR(typeof(Program).GetTypeInfo().Assembly)
             .AddDomain()
+            .AddSingleton<MainWindow.MainWindow>()
             .AddSingleton<NewOrderProviderFactory>()
             .BuildServiceProvider();
     }

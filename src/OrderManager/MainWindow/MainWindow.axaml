@@ -12,7 +12,8 @@
         x:Class="OrderManager.MainWindow.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="OrderManager"
-        HasSystemDecorations="False">
+        HasSystemDecorations="False"
+        WindowStartupLocation="CenterOwner">
 
   <Window.DataTemplates>
     <DataTemplate DataType="{x:Type orderlist:OrderListViewModel}">
@@ -46,7 +47,7 @@
       <Setter Property="FontSize" Value="12"/>
       <Setter Property="BorderThickness" Value="0"/>
     </Style>
-    <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+    <Style Selector="TextBox#PART_SearchBar:focus /template/ Border#PART_BorderElement">
       <Setter Property="BorderThickness" Value="0"/>
     </Style>
 
