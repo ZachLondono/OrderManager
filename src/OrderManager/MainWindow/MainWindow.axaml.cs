@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using Avalonia.VisualTree;
 using System.Diagnostics;
 using System.Timers;
 
@@ -46,6 +47,27 @@ public partial class MainWindow : Window {
                 };
                 secondClickTimer.Start();
             }
+        };
+
+        SetupSide("Left_top", StandardCursorType.LeftSide, WindowEdge.West);
+        SetupSide("Left_mid", StandardCursorType.LeftSide, WindowEdge.West);
+        SetupSide("Left_bottom", StandardCursorType.LeftSide, WindowEdge.West);
+        SetupSide("Right_top", StandardCursorType.RightSide, WindowEdge.East);
+        SetupSide("Right_mid", StandardCursorType.RightSide, WindowEdge.East);
+        SetupSide("Right_bottom", StandardCursorType.RightSide, WindowEdge.East);
+        SetupSide("Top", StandardCursorType.TopSide, WindowEdge.North);
+        SetupSide("Bottom", StandardCursorType.BottomSide, WindowEdge.South);
+        SetupSide("TopLeft", StandardCursorType.TopLeftCorner, WindowEdge.NorthWest);
+        SetupSide("TopRight", StandardCursorType.TopRightCorner, WindowEdge.NorthEast);
+        SetupSide("BottomLeft", StandardCursorType.BottomLeftCorner, WindowEdge.SouthWest);
+        SetupSide("BottomRight", StandardCursorType.BottomRightCorner, WindowEdge.SouthEast);
+    }
+
+    private void SetupSide(string name, StandardCursorType cursor, WindowEdge edge) {
+        var control = this.FindControl<Control>(name);
+        control.Cursor = new(cursor);
+        control.PointerPressed += (s, e) => {
+            ((Window)this.GetVisualRoot()).PlatformImpl?.BeginResizeDrag(edge, e);
         };
     }
 
