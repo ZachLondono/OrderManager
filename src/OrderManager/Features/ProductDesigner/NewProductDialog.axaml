@@ -1,0 +1,50 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="450"
+        Width="300"
+        Background="#F0F0F0"
+        CanResize="False"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        x:Class="OrderManager.Features.ProductDesigner.NewProductDialog"
+        Title="New Product"
+        SizeToContent="Height">
+
+  <Border Padding="10">
+    <StackPanel>
+      <TextBlock Text="Product Designer" Margin="10" HorizontalAlignment="Center"/>
+      <TextBlock Text="Name"/>
+      <TextBox />
+
+      <Border BorderThickness="1" BorderBrush="LightGray" Margin="0,15,0,0">
+        <StackPanel>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15" Margin="10">
+            <TextBlock Text="Name" Width="125" />
+            <TextBlock Text="Default Value" Width="125" />
+          </StackPanel>
+
+          <ScrollViewer VerticalScrollBarVisibility="Visible" MaxHeight="300">
+            <ItemsControl Items="{ Binding Attributes }">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Spacing="15" Margin="10">
+                    <TextBox Text="{Binding Name}"  Width="120" HorizontalContentAlignment="Center" Watermark="Name" />
+                    <TextBox Text="{Binding DefaultValue}" Width="120" HorizontalContentAlignment="Center" Watermark="Default" />
+                  </StackPanel>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+        </StackPanel>
+      </Border>
+      
+      <Button Content="+ Add Attribute" HorizontalAlignment="Center" Margin="10" Classes="Secondary" Command="{ Binding AddAttributeCommand }"/>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15" Margin="10">
+        <Button Content="Save" Classes="Primary" Width="100" HorizontalContentAlignment="Center" />
+        <Button Content="Close" Classes="Secondary" Width="100" HorizontalContentAlignment="Right" />
+      </StackPanel>
+    </StackPanel>
+  </Border>
+</Window>
