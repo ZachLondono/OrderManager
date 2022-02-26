@@ -1,7 +1,6 @@
 ﻿using Domain.Entities.OrderAggregate;
 using MediatR;
 using OrderManager.Shared;
-using OrderManager.Shared.Messages;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -19,8 +18,12 @@ public class FilledOrderDetailsViewModel : ViewModelBase {
 
     public ReactiveCommand<Guid, Unit> RemakeOrder { get; }
 
-    public FilledOrderDetailsViewModel(Order order) {
-        
+    private ApplicationContext _context;
+
+    public FilledOrderDetailsViewModel(ApplicationContext context, Order order) {
+
+        _context = context;
+
         IReadOnlyDictionary<int, OrderedProductViewModel> productsOrdered = order.Items
                                 .GroupBy(oi => oi.OrderedItem.ProductId)
                                 .ToDictionary(x => x.Key,
@@ -59,17 +62,17 @@ public class FilledOrderDetailsViewModel : ViewModelBase {
         Debug.WriteLine($"Releasing order {orderId}");
     }
 
-    public static async void OnOrderRemake(Guid orderId) {
+    public async void OnOrderRemake(Guid orderId) {
         Debug.WriteLine($"Remaking order {orderId}");
 
         var sender = Program.GetService<IMediator>();
         try {
 
             Guid newId = await sender.Send(new CreateRemake.Command(orderId, new() {
-                new(1, 10) // test values, should open dialog to choose item quantities
+                new(1, 10) // TODO: open dialog to choose quantities of order to remake
             }));
 
-            MessageBus.Current.SendMessage(new OrderUploaded(newId));
+            _context.AddOrder(newId);
 
         } catch(Exception e) {
             Debug.WriteLine(e);

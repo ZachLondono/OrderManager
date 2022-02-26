@@ -1,12 +1,8 @@
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using OrderManager.Features.LoadOrders;
 using OrderManager.Features.OrderDetails;
 using OrderManager.Features.OrderList;
 using OrderManager.Shared;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using Unit = System.Reactive.Unit;
 
 namespace OrderManager.MainWindow;
@@ -26,6 +22,8 @@ public class MainWindowViewModel : ViewModelBase {
 
     public ReactiveCommand<Guid, Unit> SelectLineItem { get; }
 
+    private readonly ApplicationContext _context = Program.GetService<ApplicationContext>();
+
     public MainWindowViewModel() {
         _orderListViewModel = Program.CreateInstance<OrderListViewModel>();
         _orderDetailsViewModel = Program.CreateInstance<OrderDetailsViewModel>();
@@ -33,7 +31,7 @@ public class MainWindowViewModel : ViewModelBase {
     }
 
     private async void LineItemSelected(Guid orderId) {
-        await OrderDetailsViewModel.SetOrder(orderId);
+        _context.SelectedOrderId = orderId;
     }
 
 }

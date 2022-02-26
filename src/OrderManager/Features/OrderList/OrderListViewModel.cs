@@ -20,17 +20,16 @@ public class OrderListViewModel : ViewModelBase {
 
     private readonly ISender _sender;
 
-    public OrderListViewModel(ISender sender) {
+    public OrderListViewModel(ISender sender, ApplicationContext context) {
         _sender = sender;
         _ = Task.Run(async () => await RefreshContent());
 
-        MessageBus.Current
-            .Listen<OrderUploaded>()
-            .WhereNotNull()
-            .Subscribe(async x => {
-                await RefreshContent();
-            });
+        context.OrderAddedEvent += OnOrderAddedEvent;
+    }
 
+    private async Task OnOrderAddedEvent(object sender, ApplicationContext.OrderAddedEventArgs e) {
+        //TODO: if an order is added, don't refresh all content, just add the new order to the list
+        await RefreshContent();
     }
 
     private async Task RefreshContent() {

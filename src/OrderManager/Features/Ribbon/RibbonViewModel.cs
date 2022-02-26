@@ -1,7 +1,9 @@
-﻿using OrderManager.Features.LoadOrders;
+﻿using Avalonia.Interactivity;
+using OrderManager.Features.LoadOrders;
 using OrderManager.Features.ProductDesigner;
 using OrderManager.Shared;
 using ReactiveUI;
+using System;
 using System.Reactive;
 using System.Reactive.Linq;
 
