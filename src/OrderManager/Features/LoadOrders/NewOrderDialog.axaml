@@ -9,6 +9,7 @@
         Height="150"
         Background="#F0F0F0"
         CanResize="False"
+        ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner">
 
   <Grid ColumnDefinitions="*,120" RowDefinitions="150">
