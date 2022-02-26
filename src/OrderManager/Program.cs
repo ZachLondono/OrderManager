@@ -7,6 +7,7 @@ using Domain;
 using OrderManager.Features.LoadOrders;
 using System.Diagnostics;
 using System.Reflection;
+using OrderManager.Shared;
 
 namespace OrderManager;
 
@@ -22,6 +23,7 @@ internal class Program {
             .AddDomain()
             .AddSingleton<MainWindow.MainWindow>()
             .AddSingleton<NewOrderProviderFactory>()
+            .AddSingleton<ApplicationContext>()
             .BuildServiceProvider();
     }
 
