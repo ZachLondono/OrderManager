@@ -10,14 +10,20 @@
     <ribbon:Ribbon>
       <ribbon:Ribbon.Tabs>
         <ribbon:RibbonTab Header="Home" ribbon:KeyTip.KeyTipKeys="H">
+          
           <ribbon:RibbonTab.Groups>
             <ribbon:RibbonGroupBox Header="New">
               <ribbon:RibbonButton Content="New Order"
                                     MinSize="Large"
                                     ribbon:KeyTip.KeyTipKeys="N"
                                     Command="{ Binding OpenNewOrderDialogCommand }"/>
+              <ribbon:RibbonButton Content="New Product"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="N"
+                                    Command="{ Binding OpenProductDesignerDialogCommand }"/>
             </ribbon:RibbonGroupBox>
           </ribbon:RibbonTab.Groups>
+          
         </ribbon:RibbonTab>
       </ribbon:Ribbon.Tabs>
     </ribbon:Ribbon>
