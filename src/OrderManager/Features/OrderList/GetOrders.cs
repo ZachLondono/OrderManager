@@ -1,12 +1,11 @@
-﻿using Domain.Entities;
-using Domain.Entities.OrderAggregate;
-using Domain.Services;
+﻿using Dapper;
 using MediatR;
+using Microsoft.Data.Sqlite;
 using OrderManager.Shared;
+using Persistance;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,125 +15,55 @@ public class GetOrders {
 
     public record Query() : IRequest<Either<OrderList, Error>>;
 
-    public record OrderList(IEnumerable<Order> Orders);
+    public record OrderList(IEnumerable<OrderListItem> Orders);
+
+    public class OrderListItem {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Number { get; set; } = string.Empty;
+        public DateTime LastModified { get; set; }
+        public bool IsPriority { get; set; }
+        public string CustomerName { get; set; } = string.Empty;
+        public string VendorName { get; set; } = string.Empty;
+        public string SupplierName { get; set; } = string.Empty;
+    }
 
     public class Handler : IRequestHandler<Query, Either<OrderList, Error>> {
 
-        private readonly OrderService _orderService;
+        private readonly ConnectionStringManager _connectionStringManager;
 
-        public Handler(OrderService orderService) {
-            _orderService = orderService;
+        public Handler(ConnectionStringManager connectionStringManager) {
+            _connectionStringManager = connectionStringManager;
         }
 
-        public async Task<Either<OrderList, Error>> Handle(Query request, CancellationToken cancellationToken) {
+        public Task<Either<OrderList, Error>> Handle(Query request, CancellationToken cancellationToken) {
 
-            Company customer = new() {
-                Id = 1,
-                Name = "Joe's Cabinet Shop"
-            };
-
-            Company vendor = new() {
-                Id = 1,
-                Name = "On Track"
-            };
-
-            List<Order> orders = new() {
-                new() {
-                    Id = Guid.NewGuid(),
-                    Number = "OT000",
-                    Name = "ABC Kitchen",
-                    LastModified = DateTime.Now,
-                    IsPriority = false,
-                    /*Customer = customer,
-                    Vendor = vendor*/
-                },
-                new() {
-                    Id = Guid.NewGuid(),
-                    Number = "OT111",
-                    Name = "ABC Kitchen",
-                    LastModified = DateTime.Now.AddHours(-1.35),
-                    IsPriority = false,
-                    /*Customer = customer,
-                    Vendor = vendor*/
-                },
-                new() {
-                    Id = Guid.NewGuid(),
-                    Number = "OT222",
-                    Name = "ABC Kitchen",
-                    IsPriority = true,
-                    LastModified = DateTime.Now.AddHours(-3.65),
-                    /*Customer = customer,
-                    Vendor = vendor*/
-                },
-                new() {
-                    Id = Guid.NewGuid(),
-                    Number = "OT222",
-                    Name = "ABC Kitchen",
-                    IsPriority = false,
-                    LastModified = DateTime.Now.AddHours(-3.98),
-                    /*Customer = customer,
-                    Vendor = vendor*/
-                },
-                new() {
-                    Id = Guid.NewGuid(),
-                    Number = "OT222",
-                    Name = "ABC Kitchen",
-                    IsPriority = false,
-                    LastModified = DateTime.Now.AddDays(-3.98),
-                    /*Customer = customer,
-                    Vendor = vendor*/
-                },
-                new() {
-                    Id = Guid.NewGuid(),
-                    Number = "OT222",
-                    Name = "ABC Kitchen",
-                    IsPriority = true,
-                    LastModified = DateTime.Now.AddDays(-1.98),
-                    /*Customer = customer,
-                    Vendor = vendor*/
-                },
-                new() {
-                    Id = Guid.NewGuid(),
-                    Number = "OT222",
-                    Name = "ABC Kitchen",
-                    IsPriority = false,
-                    LastModified = DateTime.Now.AddDays(-10.98),
-                    /*Customer = customer,
-                    Vendor = vendor*/
-                },
-                new() {
-                    Id = Guid.NewGuid(),
-                    Number = "OT222",
-                    Name = "ABC Kitchen",
-                    IsPriority = false,
-                    LastModified = DateTime.Now.AddDays(-12.98),
-                    /*Customer = customer,
-                    Vendor = vendor*/
-                },
-
-                new() {
-                    Id = Guid.NewGuid(),
-                    Number = "OT222",
-                    Name = "ABC Kitchen",
-                    IsPriority = false,
-                    LastModified = DateTime.Now.AddDays(-9.98),
-                    /*Customer = customer,
-                    Vendor = vendor*/
-                }
-            };
+            const string query = @"SELECT Orders.Id, Orders.IsPriority, Orders.LastModified, Orders.Number, Orders.Name, Customer.Name as CustomerName, Vendor.Name as VendorName, Supplier.Name as SupplierName
+                                FROM Orders
+                                LEFT JOIN Companies AS Customer
+                                ON CustomerId = Customer.Id
+                                LEFT JOIN Companies AS Vendor
+                                ON VendorId = Vendor.Id
+                                LEFT JOIN Companies AS Supplier
+                                ON SupplierId = Supplier.Id";
 
             try {
-                var list = _orderService.GetAllOrders().ToList();
-                list.AddRange(orders);
 
-                return new(new OrderList(list));
+                IEnumerable<OrderListItem> items;
+
+                using var connection = new SqliteConnection(_connectionStringManager.GetConnectionString);
+                connection.Open();
+
+                items = connection.Query<OrderListItem>(query);
+
+                connection.Close();
+
+                return Task.FromResult(new Either<OrderList, Error>(new OrderList(items)));
             } catch (Exception e) {
                 Debug.WriteLine(e);
             }
 
-            await Task.Delay(1);
-
-            return new(new Error("No Data", "Could not connect to database with connection string 'Data Source=C:/'"));
+            return Task.FromResult(new Either<OrderList, Error>(new Error("No Data", "Could not connect to database with connection string 'Data Source=C:/'")));
 
         }
 

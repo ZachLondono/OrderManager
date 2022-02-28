@@ -3,6 +3,7 @@ using OrderManager.Shared;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using static OrderManager.Features.OrderList.GetOrders;
 
 namespace OrderManager.Features.OrderList.FilledList;
 
@@ -12,7 +13,7 @@ public class FilledOrderListViewModel : ViewModelBase {
 
     public ObservableCollection<ListItemViewModel> Items { get; set; }
 
-    public FilledOrderListViewModel(IEnumerable<Order> items) {
+    public FilledOrderListViewModel(IEnumerable<OrderListItem> items) {
 
         List<ListItemViewModel> list = new();
         foreach (var item in items) {
@@ -22,7 +23,7 @@ public class FilledOrderListViewModel : ViewModelBase {
                 Name = item.Name,
                 IsPriority = item.IsPriority,
                 LastModified = item.LastModified,
-                CompanyNames = $"{item.Customer?.Name} / {item.Vendor?.Name} / {item.Supplier?.Name}"
+                CompanyNames = $"{item.CustomerName} / {item.VendorName} / {item.SupplierName}"
             });        
         }
         
