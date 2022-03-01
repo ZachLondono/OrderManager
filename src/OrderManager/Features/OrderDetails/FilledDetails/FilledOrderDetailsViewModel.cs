@@ -1,11 +1,9 @@
-﻿using Domain.Entities.OrderAggregate;
-using MediatR;
+﻿using MediatR;
+using OrderManager.Features.OrderDetails.CompanyDisplay;
 using OrderManager.Shared;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Unit = System.Reactive.Unit;
 
 namespace OrderManager.Features.OrderDetails.FilledDetails;
@@ -13,46 +11,23 @@ namespace OrderManager.Features.OrderDetails.FilledDetails;
 public class FilledOrderDetailsViewModel : ViewModelBase {
 
     public OrderDetails Details { get; set; }
-    
+    public CompanyDisplayViewModel Customer { get; set; }
+    public CompanyDisplayViewModel Vendor { get; set; }
+    public CompanyDisplayViewModel Supplier { get; set; }
+
     public ReactiveCommand<Guid, Unit> ReleaseOrder { get; }
 
     public ReactiveCommand<Guid, Unit> RemakeOrder { get; }
 
     private ApplicationContext _context;
 
-    public FilledOrderDetailsViewModel(ApplicationContext context, Order order) {
+    public FilledOrderDetailsViewModel(ApplicationContext context, OrderDetails order) {
 
         _context = context;
-
-        IReadOnlyDictionary<int, OrderedProductViewModel> productsOrdered = order.Items
-                                .GroupBy(oi => oi.OrderedItem.ProductId)
-                                .ToDictionary(x => x.Key,
-                                                x => new OrderedProductViewModel() {
-                                                    ProductName = x.FirstOrDefault()?.OrderedItem.ProductName ?? "Unkown",
-                                                    Items = x.ToList()
-                                                }
-                                );
-
-        Details = new() {
-            Id = order.Id,
-            Number = order.Number,
-            Name = order.Name,
-            IsPriority = order.IsPriority,
-            LastModified = order.LastModified,
-            Customer = new() {
-                CompanyRole = "Customer",
-                Company = order.Customer
-            },
-            Vendor = new() {
-                CompanyRole = "Vendor",
-                Company = order.Vendor
-            },
-            Supplier = new() {
-                CompanyRole = "Supplier",
-                Company = order.Supplier
-            },
-            Products = productsOrdered
-        };
+        Details = order;
+        Customer = new() { Company = Details.Customer };
+        Vendor = new() { Company = Details.Vendor };
+        Supplier = new() { Company = Details.Supplier };
 
         ReleaseOrder = ReactiveCommand.Create<Guid>(OnOrderRelease);
         RemakeOrder = ReactiveCommand.Create<Guid>(OnOrderRemake);

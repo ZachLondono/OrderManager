@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:company="clr-namespace:OrderManager.Features.OrderDetails.FilledDetails.CompanyDisplay"
+             xmlns:company="clr-namespace:OrderManager.Features.OrderDetails.CompanyDisplay"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:item="clr-namespace:OrderManager.Features.OrderDetails.FilledDetails"
              x:Class="OrderManager.Features.OrderDetails.FilledDetails.FilledOrderDetailsView">
@@ -53,13 +53,13 @@
       <!-- TODO: company display boxes should stretch to take up as mutch space as they can without touching eachother -->
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15" Margin="0,20,0,0">
         <StackPanel Orientation="Vertical">
-          <company:CompanyDisplayView DataContext="{Binding Details.Customer}"  />
+          <company:CompanyDisplayView DataContext="{Binding Customer}"  />
         </StackPanel>
         <StackPanel Orientation="Vertical">
-          <company:CompanyDisplayView DataContext="{Binding Details.Vendor}"  />
+          <company:CompanyDisplayView DataContext="{Binding Vendor}"  />
         </StackPanel>
         <StackPanel Orientation="Vertical">
-          <company:CompanyDisplayView DataContext="{Binding Details.Supplier}"  />
+          <company:CompanyDisplayView DataContext="{Binding Supplier}"  />
         </StackPanel>
       </StackPanel>
 
