@@ -30,7 +30,7 @@ public class MainWindowViewModel : ViewModelBase {
         SelectLineItem = ReactiveCommand.Create<Guid>(LineItemSelected);
     }
 
-    private async void LineItemSelected(Guid orderId) {
+    private void LineItemSelected(Guid orderId) {
         _context.SelectedOrderId = orderId;
     }
 
