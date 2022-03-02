@@ -5,8 +5,6 @@ using OrderManager.Shared;
 using ReactiveUI;
 using System.Threading.Tasks;
 using OrderManager.Shared.DataError;
-using System;
-using OrderManager.Shared.Messages;
 
 namespace OrderManager.Features.OrderList;
 
