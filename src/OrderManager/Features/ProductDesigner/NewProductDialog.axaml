@@ -3,12 +3,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="450"
+        x:Class="OrderManager.Features.ProductDesigner.NewProductDialog"
         Width="300"
         Background="#F0F0F0"
         CanResize="False"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
-        x:Class="OrderManager.Features.ProductDesigner.NewProductDialog"
         Title="New Product"
         SizeToContent="Height">
 
@@ -16,13 +16,13 @@
     <StackPanel>
       <TextBlock Text="Product Designer" Margin="10" HorizontalAlignment="Center"/>
       <TextBlock Text="Name"/>
-      <TextBox />
+      <TextBox Watermark="Product Name" />
 
       <Border BorderThickness="1" BorderBrush="LightGray" Margin="0,15,0,0">
         <StackPanel>
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15" Margin="10">
-            <TextBlock Text="Name" Width="125" />
-            <TextBlock Text="Default Value" Width="125" />
+            <TextBlock Text="Name" Width="125" TextAlignment="Center"/>
+            <TextBlock Text="Default Value" Width="125" TextAlignment="Center"/>
           </StackPanel>
 
           <ScrollViewer VerticalScrollBarVisibility="Visible" MaxHeight="300">
@@ -30,8 +30,8 @@
               <ItemsControl.ItemTemplate>
                 <DataTemplate>
                   <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Spacing="15" Margin="10">
-                    <TextBox Text="{Binding Name}"  Width="120" HorizontalContentAlignment="Center" Watermark="Name" />
-                    <TextBox Text="{Binding DefaultValue}" Width="120" HorizontalContentAlignment="Center" Watermark="Default" />
+                    <TextBox Text="{Binding Name}"  Width="120"  TextAlignment="Center" Watermark="Name" />
+                    <TextBox Text="{Binding DefaultValue}" Width="120"  TextAlignment="Center" Watermark="Default" />
                   </StackPanel>
                 </DataTemplate>
               </ItemsControl.ItemTemplate>
