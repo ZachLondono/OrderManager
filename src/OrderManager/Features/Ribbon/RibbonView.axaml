@@ -6,6 +6,12 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="170"
              x:Class="OrderManager.Features.Ribbon.RibbonView">
 
+  <Control.Styles>
+    <Style Selector="RibbonButton">
+      <Setter Property="FontSize" Value="12"/>
+    </Style>
+  </Control.Styles>
+  
   <Panel>
     <ribbon:Ribbon>
       <ribbon:Ribbon.Tabs>
@@ -21,6 +27,18 @@
                                     MinSize="Large"
                                     ribbon:KeyTip.KeyTipKeys="N"
                                     Command="{ Binding OpenProductDesignerDialogCommand }"/>
+            </ribbon:RibbonGroupBox>
+          </ribbon:RibbonTab.Groups>
+
+          <ribbon:RibbonTab.Groups>
+            <ribbon:RibbonGroupBox Header="Order">
+              <ribbon:RibbonButton Content="Release"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="R"/>
+              <ribbon:RibbonButton Content="Remake"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="R"
+                                    Command="{ Binding RemakeCurrentOrderCommand }"/>
             </ribbon:RibbonGroupBox>
           </ribbon:RibbonTab.Groups>
           

@@ -5,9 +5,9 @@ using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using OrderManager.Features.LoadOrders;
 using OrderManager.Features.ProductDesigner;
+using OrderManager.Features.RemakeOrder;
 using OrderManager.Shared;
 using ReactiveUI;
-using System;
 using System.Reactive;
 using System.Threading.Tasks;
 
@@ -16,10 +16,11 @@ public partial class RibbonView : ReactiveUserControl<RibbonViewModel> {
 
     public RibbonView() {
         InitializeComponent();
-        DataContext = new RibbonViewModel();
+        DataContext = Program.CreateInstance<RibbonViewModel>();
 
         this.WhenActivated(d => d(ViewModel!.ShowNewOrderDialog.RegisterHandler(DoShowNewOrderDialogAsync)));
         this.WhenActivated(d => d(ViewModel!.ShowNewProductDialog.RegisterHandler(DoShowNewProductDialogAsync)));
+        this.WhenActivated(d => d(ViewModel!.ShowOrderRemakeDialog.RegisterHandler(DoShowOrderRemakeDialogAsync)));
     }
 
     private async Task DoShowNewOrderDialogAsync(InteractionContext<NewOrderViewModel, Unit> interaction) {
@@ -28,6 +29,10 @@ public partial class RibbonView : ReactiveUserControl<RibbonViewModel> {
 
     private async Task DoShowNewProductDialogAsync(InteractionContext<ProductDesignerViewModel, Unit> interaction) {
         await CreateDialog<ProductDesignerViewModel, NewProductDialog>(interaction);
+    }
+
+    private async Task DoShowOrderRemakeDialogAsync(InteractionContext<OrderRemakeViewModel, Unit> interaction) {
+        await CreateDialog<OrderRemakeViewModel, OrderRemakeDialog>(interaction);
     }
 
     private async Task CreateDialog<Tvm, Tv>(InteractionContext<Tvm, Unit> interaction) where Tv : Window where Tvm : ViewModelBase {
