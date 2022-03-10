@@ -13,14 +13,14 @@ public class NewOrderProviderFactory {
     }
 
     public void AddProvider(INewOrderProvider provider) {
-        if (_providers.ContainsKey(provider.ProviderName))
-            throw new ArgumentException($"Provider with name '{provider.ProviderName}' already exists");
+        if (_providers.ContainsKey(provider.PluginName))
+            throw new ArgumentException($"Provider with name '{provider.PluginName}' already exists");
 
-        _providers.Add(provider.ProviderName, provider);
+        _providers.Add(provider.PluginName, provider);
     }
 
     public void RemoveProvider(INewOrderProvider provider) {
-        _providers.Remove(provider.ProviderName);
+        _providers.Remove(provider.PluginName);
     }
 
     public IEnumerable<string> GetAvailableProviders() {
