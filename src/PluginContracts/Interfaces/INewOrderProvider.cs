@@ -2,7 +2,8 @@
 
 namespace PluginContracts.Interfaces;
 
-public interface INewOrderProvider {
-    public string ProviderName { get; }
+public interface INewOrderProvider :IPlugin {
+
     public OrderDto GetNewOrder();
+
 }
