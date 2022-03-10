@@ -37,11 +37,11 @@ public class PluginService : IPluginService {
 
             foreach (string pluginDirectory in plugins) {
 
-                string pluginName = Path.GetFileName(pluginDirectory); ;
+                string assemblyName = Path.GetFileName(pluginDirectory); ;
 
-                if (_plugins.ContainsKey(pluginName)) continue;
+                if (_plugins.ContainsKey(assemblyName)) continue;
 
-                string file = Path.Combine(pluginDirectory, $"{pluginName}.dll");
+                string file = Path.Combine(pluginDirectory, $"{assemblyName}.dll");
 
                 if (!File.Exists(file)) continue;
 
@@ -49,10 +49,10 @@ public class PluginService : IPluginService {
                     sharedTypes: new[] { typeof(IPlugin) },
                     config => config.EnableHotReload = true);
 
-                _plugins.Add(pluginName, loader);
+                _plugins.Add(assemblyName, loader);
 
                 loader.Reloaded += (object sender, PluginReloadedEventArgs eventArgs) => {
-                    PluginReloadEvent?.Invoke(pluginName, eventArgs);
+                    PluginReloadEvent?.Invoke(assemblyName, eventArgs);
                 };
 
             }
@@ -77,6 +77,17 @@ public class PluginService : IPluginService {
 
     }
 
+    public Type[] GetPluginTypesFromAssembly<T>(string assemblyName) where T : IPlugin {
+
+        if (!_plugins.ContainsKey(assemblyName)) return new Type[0];
+
+        return _plugins[assemblyName].LoadDefaultAssembly()
+                .GetTypes()
+                .Where(t => typeof(T).IsAssignableFrom(t) && !t.IsAbstract)
+                .ToArray();
+
+    }
+         
     private static bool IsDirectory(string directory) {
         if (!string.IsNullOrEmpty(Path.GetFileName(directory))
             || !Directory.Exists(directory)) return false;

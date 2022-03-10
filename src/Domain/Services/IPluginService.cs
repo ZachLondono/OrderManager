@@ -9,7 +9,7 @@ public interface IPluginService {
     /// Event is invoked whenever any of the plugins are reloaded
     /// </summary>
     public event PluginReloadHandler? PluginReloadEvent;
-    public delegate void PluginReloadHandler(string pluginName, PluginReloadedEventArgs e);
+    public delegate void PluginReloadHandler(string assemlbyName, PluginReloadedEventArgs e);
 
     /// <summary>
     /// Add a directory in which to look for plugins
@@ -29,5 +29,7 @@ public interface IPluginService {
     /// <typeparam name="T">Type of plugin</typeparam>
     /// <returns>An array of concrete plugins of the given type</returns>
     public Type[] GetPluginTypes<T>() where T : IPlugin;
+
+    public Type[] GetPluginTypesFromAssembly<T>(string assemblyName) where T : IPlugin;
 
 }
