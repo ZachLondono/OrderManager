@@ -5,6 +5,8 @@ using OrderManager.Shared;
 using ReactiveUI;
 using System.Threading.Tasks;
 using OrderManager.Shared.DataError;
+using System;
+using System.Diagnostics;
 
 namespace OrderManager.Features.OrderList;
 
@@ -31,12 +33,15 @@ public class OrderListViewModel : ViewModelBase {
     }
 
     private async Task RefreshContent() {
-        var result = await _sender.Send(new GetOrders.Query());
+        try {
+            var result = await _sender.Send(new GetOrders.Query());
 
-        result.Match(
-            (data) => Content = new FilledOrderListViewModel(data.Orders),
-            (err) => Content = new DataErrorViewModel(err.Message, err.DetailedMessage));
-        
+            result.Match(
+                (data) => Content = new FilledOrderListViewModel(data.Orders),
+                (err) => Content = new DataErrorViewModel(err.Message, err.DetailedMessage));
+        } catch (Exception e) {
+            Debug.WriteLine(e);
+        }
     }
 
 }

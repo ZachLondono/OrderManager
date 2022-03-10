@@ -23,6 +23,7 @@
         </Setter.Value>
       </Setter>
     </Style>
+    
 
     <!-- Normal State -->
     <Style Selector="RadioButton.OrderCategory">
@@ -140,7 +141,7 @@
   </Control.Styles>
 
   <Grid RowDefinitions="Auto,*">
-
+    
     <ItemsControl Items="{Binding OrderFilters}">
       <ItemsControl.ItemsPanel>
         <ItemsPanelTemplate>

@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using Microsoft.Data.Sqlite;
-using Persistance;
 using Dapper;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System;
+using Domain;
 
 namespace OrderManager.Features.OrderDetails;
 

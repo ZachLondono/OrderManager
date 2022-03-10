@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using Dapper;
-using Persistance;
 using PluginContracts.Models;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 using System;
+using Domain;
 
 namespace OrderManager.Features.LoadOrders;
 

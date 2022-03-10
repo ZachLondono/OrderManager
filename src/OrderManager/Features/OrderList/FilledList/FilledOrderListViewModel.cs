@@ -1,5 +1,4 @@
-﻿using Domain.Entities.OrderAggregate;
-using OrderManager.Shared;
+﻿using OrderManager.Shared;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

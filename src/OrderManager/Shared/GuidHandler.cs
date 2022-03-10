@@ -1,7 +1,8 @@
 ﻿using Dapper;
+using System;
 using System.Data;
 
-namespace Persistance;
+namespace OrderManager.Shared;
 
 public abstract class SqliteTypeHandler<T> : SqlMapper.TypeHandler<T> {
     // Parameters are converted by Microsoft.Data.Sqlite

@@ -8,6 +8,7 @@ using OrderManager.Features.LoadOrders;
 using System.Diagnostics;
 using System.Reflection;
 using OrderManager.Shared;
+using Dapper;
 
 namespace OrderManager;
 
@@ -18,6 +19,9 @@ internal class Program {
     internal IServiceProvider ServiceProvider { get; private set; }
 
     private Program() {
+
+        SqlMapper.AddTypeHandler(new GuidHandler());
+
         ServiceProvider = new ServiceCollection()
             .AddMediatR(typeof(Program).GetTypeInfo().Assembly)
             .AddDomain()

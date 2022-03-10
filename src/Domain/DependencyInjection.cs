@@ -6,6 +6,7 @@ namespace Domain;
 public static class DependencyInjection {
 
     public static IServiceCollection AddDomain(this IServiceCollection services) =>
-        services.AddSingleton<IPluginService, PluginService>();
+        services.AddSingleton<IPluginService, PluginService>()
+                .AddSingleton<ConnectionStringManager>();
 
 }

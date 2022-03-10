@@ -18,8 +18,21 @@ public class PluginService : IPluginService {
     public event IPluginService.PluginReloadHandler? PluginReloadEvent;
 
     public PluginService() {
+
         _sources = new HashSet<string>();
         _plugins = new Dictionary<string, PluginLoader>();
+
+        var assembly = System.Reflection.Assembly.GetEntryAssembly();
+        if (assembly is not null) {
+            var baseDir = Path.GetDirectoryName(assembly.Location);
+            if (baseDir is not null) {
+                string defaultSource = Path.Combine(baseDir, "plugins");
+                AddSource(defaultSource);
+            }
+        }
+
+        LoadPlugins();
+
     }
 
     public void AddSource(string directory) {
@@ -87,11 +100,9 @@ public class PluginService : IPluginService {
                 .ToArray();
 
     }
-         
-    private static bool IsDirectory(string directory) {
-        if (!string.IsNullOrEmpty(Path.GetFileName(directory))
-            || !Directory.Exists(directory)) return false;
-        return true;
-    }
+
+    private static bool IsDirectory(string directory) =>
+        string.IsNullOrEmpty(Path.GetFileName(directory))
+            || Directory.Exists(directory);
 
 }
