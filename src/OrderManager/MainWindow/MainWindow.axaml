@@ -67,6 +67,10 @@
     </Style>
   </Window.Styles>
 
+  <Window.KeyBindings>
+    <KeyBinding Command="{Binding OpenConsoleWindow}" Gesture="Ctrl+G" />
+  </Window.KeyBindings>
+  
   <Grid>
     <Border Classes="OuterBorder" BorderBrush="#106EBE" BorderThickness="1">
       <Grid x:Name="WindowGrid">
