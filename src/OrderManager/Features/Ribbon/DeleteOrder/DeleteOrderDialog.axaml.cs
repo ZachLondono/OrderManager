@@ -5,7 +5,7 @@ using Avalonia.ReactiveUI;
 using ReactiveUI;
 using System;
 
-namespace OrderManager.Features.DeleteOrder;
+namespace OrderManager.Features.Ribbon.DeleteOrder;
 public partial class DeleteOrderDialog : ReactiveWindow<DeleteOrderViewModel> {
     public DeleteOrderDialog() {
         InitializeComponent();

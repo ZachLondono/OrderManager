@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OrderManager.Features.DeleteOrder;
+namespace OrderManager.Features.Ribbon.DeleteOrder;
 
 public class DeleteOrderById {
 

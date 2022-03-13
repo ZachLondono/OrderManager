@@ -2,7 +2,7 @@
 using ReactiveUI;
 using System.Reactive;
 
-namespace OrderManager.Features.DeleteOrder;
+namespace OrderManager.Features.Ribbon.DeleteOrder;
 
 public class DeleteOrderViewModel : ViewModelBase {
 
