@@ -25,7 +25,7 @@
                                     Command="{ Binding OpenNewOrderDialogCommand }"/>
               <ribbon:RibbonButton Content="New Product"
                                     MinSize="Large"
-                                    ribbon:KeyTip.KeyTipKeys="N"
+                                    ribbon:KeyTip.KeyTipKeys="P"
                                     Command="{ Binding OpenProductDesignerDialogCommand }"/>
             </ribbon:RibbonGroupBox>
           </ribbon:RibbonTab.Groups>
@@ -34,11 +34,25 @@
             <ribbon:RibbonGroupBox Header="Order">
               <ribbon:RibbonButton Content="Release"
                                     MinSize="Large"
-                                    ribbon:KeyTip.KeyTipKeys="R"/>
+                                    ribbon:KeyTip.KeyTipKeys="R"
+                                    Command="{ Binding ReleaseCurrentOrderCommand }"/>
               <ribbon:RibbonButton Content="Remake"
                                     MinSize="Large"
                                     ribbon:KeyTip.KeyTipKeys="R"
                                     Command="{ Binding RemakeCurrentOrderCommand }"/>
+            </ribbon:RibbonGroupBox>
+          </ribbon:RibbonTab.Groups>
+
+          <ribbon:RibbonTab.Groups>
+            <ribbon:RibbonGroupBox Header="Delete">
+              <ribbon:RibbonButton Content="Delete"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="D"
+                                    Command="{ Binding DeleteCurrentOrderCommand }"/>
+              <ribbon:RibbonButton Content="Archive"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="A"
+                                    Command="{ Binding ArchiveCurrentOrderCommand }"/>
             </ribbon:RibbonGroupBox>
           </ribbon:RibbonTab.Groups>
           

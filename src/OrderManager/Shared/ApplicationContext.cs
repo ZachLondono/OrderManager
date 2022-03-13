@@ -28,9 +28,9 @@ public class ApplicationContext {
     /// <summary>
     /// Event is invoked when an order is added to the application context
     /// </summary>
-    public event OrderAddedHandler? OrderAddedEvent;
+    public event OrderListUpdateHandler? OrderListUpdateEvent;
     public record OrderAddedEventArgs(Guid newId);
-    public delegate Task OrderAddedHandler(object sender, OrderAddedEventArgs e);
+    public delegate Task OrderListUpdateHandler(object sender, OrderAddedEventArgs e);
 
     private readonly List<Guid> _orderList = new();
     public IReadOnlyCollection<Guid> OrderList {
@@ -39,7 +39,12 @@ public class ApplicationContext {
 
     public void AddOrder(Guid orderId) {
         _orderList.Add(orderId);
-        OrderAddedEvent?.Invoke(this, new(orderId));
+        OrderListUpdateEvent?.Invoke(this, new(orderId));
+    }
+
+    public void RemoveOrder(Guid orderId) {
+        _orderList.Remove(orderId);
+        OrderListUpdateEvent?.Invoke(this, new(orderId));
     }
 
 }

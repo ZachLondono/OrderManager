@@ -29,12 +29,12 @@ public class OrderListViewModel : ViewModelBase {
 
         RefreshContent();
 
-        context.OrderAddedEvent += OnOrderAddedEvent;
+        context.OrderListUpdateEvent += OnOrderAddedEvent;
     }
 
     private Task OnOrderAddedEvent(object sender, ApplicationContext.OrderAddedEventArgs e) {
         //TODO: if an order is added, don't refresh all content, just add the new order to the list
-        return Task.FromResult(() => RefreshContent());
+        return Task.Run(() => RefreshContent());
     }
 
     private void RefreshContent() {
@@ -49,7 +49,8 @@ public class OrderListViewModel : ViewModelBase {
             result.Match(
                 (data) => newContent = new FilledOrderListViewModel(data.Orders),
                 (err) => newContent = new DataErrorViewModel(err.Message, err.DetailedMessage));
-            
+
+            _logger.LogTrace("Setting OrderListView Content");
             if (newContent is not null)
                 Content = newContent;
 
