@@ -26,6 +26,7 @@ public class RibbonViewModel : ViewModelBase {
 
     public ReactiveCommand<Unit, Unit> ReleaseCurrentOrderCommand { get; }
 
+    public Interaction<DeleteOrderViewModel, bool> ShowOrderDeleteDialog { get; }
     public ReactiveCommand<Unit, Unit> DeleteCurrentOrderCommand { get; }
 
     public ReactiveCommand<Unit, Unit> ArchiveCurrentOrderCommand { get; }
@@ -82,15 +83,24 @@ public class RibbonViewModel : ViewModelBase {
             _logger.LogTrace("Release command triggered");
         }, canExecute: orderSelected);
 
-        DeleteCurrentOrderCommand = ReactiveCommand.Create(() => {
+        ShowOrderDeleteDialog = new();
+        DeleteCurrentOrderCommand = ReactiveCommand.CreateFromTask(async () => {
             _logger.LogTrace("Delete command triggered");
+
+            if (_context.SelectedOrderId is null) return;
+
+            var vm = new DeleteOrderViewModel();
+            vm.OrderId = ((Guid)_context.SelectedOrderId).ToString();
+            bool doDelete = await ShowOrderDeleteDialog.Handle(vm);
+
+            if (!doDelete) return;
 
             try {
                 if (_context.SelectedOrderId is null) return;
 
                 Guid idToDelete = (Guid)_context.SelectedOrderId;
 
-                sender.Send(new DeleteOrderById.Command(idToDelete));
+                await sender.Send(new DeleteOrderById.Command(idToDelete));
 
                 context.RemoveOrder(idToDelete);
             } catch (Exception ex) {
@@ -101,6 +111,9 @@ public class RibbonViewModel : ViewModelBase {
 
         ArchiveCurrentOrderCommand = ReactiveCommand.Create(() => {
             _logger.LogTrace("Archive command triggered");
+            var dialog = new DeleteOrderDialog();
+            dialog.Show();
+
         }, canExecute: orderSelected);
     }
 

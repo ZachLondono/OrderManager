@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
+using OrderManager.Features.DeleteOrder;
 using OrderManager.Features.LoadOrders;
 using OrderManager.Features.ProductDesigner;
 using OrderManager.Features.RemakeOrder;
@@ -21,6 +22,7 @@ public partial class RibbonView : ReactiveUserControl<RibbonViewModel> {
         this.WhenActivated(d => d(ViewModel!.ShowNewOrderDialog.RegisterHandler(DoShowNewOrderDialogAsync)));
         this.WhenActivated(d => d(ViewModel!.ShowNewProductDialog.RegisterHandler(DoShowNewProductDialogAsync)));
         this.WhenActivated(d => d(ViewModel!.ShowOrderRemakeDialog.RegisterHandler(DoShowOrderRemakeDialogAsync)));
+        this.WhenActivated(d => d(ViewModel!.ShowOrderDeleteDialog.RegisterHandler(DoShowOrderDeleteDialogAsync)));
     }
 
     private async Task DoShowNewOrderDialogAsync(InteractionContext<NewOrderViewModel, Unit> interaction) {
@@ -33,6 +35,17 @@ public partial class RibbonView : ReactiveUserControl<RibbonViewModel> {
 
     private async Task DoShowOrderRemakeDialogAsync(InteractionContext<OrderRemakeViewModel, Unit> interaction) {
         await CreateDialog<OrderRemakeViewModel, OrderRemakeDialog>(interaction);
+    }
+
+    private async Task DoShowOrderDeleteDialogAsync(InteractionContext<DeleteOrderViewModel, bool> interaction) {
+        //await CreateDialog<DeleteOrderViewModel, DeleteOrderDialog>(interaction);
+
+        var dialog = Program.CreateInstance<DeleteOrderDialog>();
+        dialog.DataContext = interaction.Input;
+        var window = Program.GetService<MainWindow.MainWindow>();
+        bool delete = await dialog.ShowDialog<bool>(window);
+        interaction.SetOutput(delete);
+
     }
 
     private async Task CreateDialog<Tvm, Tv>(InteractionContext<Tvm, Unit> interaction) where Tv : Window where Tvm : ViewModelBase {
