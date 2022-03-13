@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using OrderManager.Features.DeleteOrder;
+using OrderManager.Features.Ribbon.DeleteOrder;
 using OrderManager.Features.LoadOrders;
 using OrderManager.Features.ProductDesigner;
 using OrderManager.Features.RemakeOrder;
