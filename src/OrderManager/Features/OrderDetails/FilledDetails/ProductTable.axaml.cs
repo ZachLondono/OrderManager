@@ -11,14 +11,14 @@ using System.Linq;
 namespace OrderManager.Features.OrderDetails.FilledDetails;
 public partial class ProductTable : UserControl {
 
-    private List<OrderItem>? _itemsOrdered;
-    public List<OrderItem>? ItemsOrdered {
+    private List<OrderedProduct>? _itemsOrdered;
+    public List<OrderedProduct>? ItemsOrdered {
         get => _itemsOrdered;
         set => SetAndRaise(ItemsOrderedProperty, ref _itemsOrdered, value);
     }
 
-    public static readonly StyledProperty<List<OrderItem>?> ItemsOrderedProperty = AvaloniaProperty
-                                    .Register<ProductTable, List<OrderItem>?>(nameof(ItemsOrderedProperty));
+    public static readonly StyledProperty<List<OrderedProduct>?> ItemsOrderedProperty = AvaloniaProperty
+                                    .Register<ProductTable, List<OrderedProduct>?>(nameof(ItemsOrderedProperty));
 
 
     private string? _productName;
@@ -73,14 +73,15 @@ public partial class ProductTable : UserControl {
 
                 // Each row has a line number and quantity column, no matter the product type
                 AddToRow(row,headers["#"],$"{i++}");
-                AddToRow(row, headers["Qty"], $"{item.Qty.Value}");
+                AddToRow(row, headers["Qty"], $"{item.Qty}");
 
                 // Then traverse through each item to find all of it's attributes
-                foreach (string key in item.OrderedItem.Options.Keys) {
-                    if (!headers.ContainsKey(key)) {
-                        headers.Add(key, colIdx++);
+                foreach (var option in item.Options) {
+
+                    if (!headers.ContainsKey(option.Key)) {
+                        headers.Add(option.Key, colIdx++);
                     }
-                    AddToRow(row, headers[key], $"{item.OrderedItem.Options[key]}");
+                    AddToRow(row, headers[option.Key], $"{option.Value}");
                 }
 
                 rows.Add(row);

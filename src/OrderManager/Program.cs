@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Reflection;
 using OrderManager.Shared;
 using Dapper;
+using Microsoft.Extensions.Logging;
 
 namespace OrderManager;
 
@@ -17,6 +18,8 @@ internal class Program {
     private static Program? _instance = null; 
 
     internal IServiceProvider ServiceProvider { get; private set; }
+
+    private readonly ILogger<Program>? _logger;
 
     private Program() {
 
@@ -28,18 +31,26 @@ internal class Program {
             .AddSingleton<MainWindow.MainWindow>()
             .AddSingleton<NewOrderProviderFactory>()
             .AddSingleton<ApplicationContext>()
+            .AddLogging(loggerBuilder => {
+                loggerBuilder.AddConsole();
+                loggerBuilder.AddDebug();
+                loggerBuilder.SetMinimumLevel(LogLevel.Trace);
+            })
             .BuildServiceProvider();
+
+        _logger = ServiceProvider.GetService<ILogger<Program>>();
+
     }
 
     public static T CreateInstance<T>() {
         if (_instance is null) _instance = new Program();
-        Debug.WriteLine($"Getting instance of type '{typeof(T)}'");
+        if (_instance._logger is not null) _instance._logger.LogInformation("Getting instance of type '{0}'", typeof(T));
         return ActivatorUtilities.CreateInstance<T>(_instance.ServiceProvider);
     }
 
     public static T GetService<T>() {
         if (_instance is null) _instance = new Program();
-        Debug.WriteLine($"Getting service of type '{typeof(T)}'");
+        if (_instance._logger is not null) _instance._logger.LogInformation("Getting service of type '{0}'", typeof(T));
         var service = _instance.ServiceProvider.GetService<T>();
         if (service is null) throw new InvalidOperationException($"Could not find a sutible service for type '{typeof(T)}'");
         return service;

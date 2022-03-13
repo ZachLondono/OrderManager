@@ -3,10 +3,14 @@ using OrderManager.Features.OrderDetails.CompanyDisplay;
 using OrderManager.Shared;
 using ReactiveUI;
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Unit = System.Reactive.Unit;
 
 namespace OrderManager.Features.OrderDetails.FilledDetails;
+
+public record ProductGroup(string ProductName, List<OrderedProduct> Products);
 
 public class FilledOrderDetailsViewModel : ViewModelBase {
 
@@ -14,6 +18,7 @@ public class FilledOrderDetailsViewModel : ViewModelBase {
     public CompanyDisplayViewModel Customer { get; set; }
     public CompanyDisplayViewModel Vendor { get; set; }
     public CompanyDisplayViewModel Supplier { get; set; }
+    public List<ProductGroup> GroupedProducts { get; set; }
 
     public ReactiveCommand<Guid, Unit> ReleaseOrder { get; }
 
@@ -25,6 +30,12 @@ public class FilledOrderDetailsViewModel : ViewModelBase {
 
         _context = context;
         Details = order;
+
+        GroupedProducts = Details.OrderedProducts
+                                    .GroupBy(p => p.ProductName)
+                                    .Select(g => new ProductGroup(g.Key, g.ToList()))
+                                    .ToList();
+
         Customer = new() { Company = Details.Customer };
         Vendor = new() { Company = Details.Vendor };
         Supplier = new() { Company = Details.Supplier };

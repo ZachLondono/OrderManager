@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.VisualTree;
-using System.Diagnostics;
 using System.Timers;
 
 namespace OrderManager.MainWindow;
@@ -30,7 +29,6 @@ public partial class MainWindow : Window {
         var titleBar = this.FindControl<Control>("PART_TitleBar");
         titleBar.PointerPressed += (object? sender, PointerPressedEventArgs ep) => {
 
-            Debug.WriteLine("TitleBar pressed");
             if (_titlebarSecondClick)
                 WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
             else
@@ -61,6 +59,7 @@ public partial class MainWindow : Window {
         SetupSide("TopRight", StandardCursorType.TopRightCorner, WindowEdge.NorthEast);
         SetupSide("BottomLeft", StandardCursorType.BottomLeftCorner, WindowEdge.SouthWest);
         SetupSide("BottomRight", StandardCursorType.BottomRightCorner, WindowEdge.SouthEast);
+
     }
 
     private void SetupSide(string name, StandardCursorType cursor, WindowEdge edge) {

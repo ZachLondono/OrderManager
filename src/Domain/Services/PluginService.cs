@@ -1,5 +1,7 @@
 ﻿using McMaster.NETCore.Plugins;
+using Microsoft.Extensions.Logging;
 using PluginContracts.Interfaces;
+using System.Diagnostics;
 
 namespace Domain.Services;
 
@@ -17,7 +19,11 @@ public class PluginService : IPluginService {
 
     public event IPluginService.PluginReloadHandler? PluginReloadEvent;
 
-    public PluginService() {
+    private readonly ILogger<PluginService> _logger;
+
+    public PluginService(ILogger<PluginService> logger) {
+
+        _logger = logger;
 
         _sources = new HashSet<string>();
         _plugins = new Dictionary<string, PluginLoader>();
@@ -39,6 +45,7 @@ public class PluginService : IPluginService {
         if (_sources.Contains(directory)
             || !IsDirectory(directory)) return;
 
+        _logger.LogDebug("Adding plugin source {0}", directory);
         _sources.Add(directory);
     }
 
@@ -49,6 +56,9 @@ public class PluginService : IPluginService {
             IEnumerable<string> plugins = Directory.EnumerateDirectories(source);
 
             foreach (string pluginDirectory in plugins) {
+
+                Console.WriteLine($"Loading plugin from directory {pluginDirectory}");
+                _logger.LogDebug("Loading plugin from directory {0}", pluginDirectory);
 
                 string assemblyName = Path.GetFileName(pluginDirectory); ;
 
@@ -65,12 +75,22 @@ public class PluginService : IPluginService {
                 _plugins.Add(assemblyName, loader);
 
                 loader.Reloaded += (object sender, PluginReloadedEventArgs eventArgs) => {
-                    PluginReloadEvent?.Invoke(assemblyName, eventArgs);
+                    try {
+                        
+                        PluginReloadEvent?.Invoke(assemblyName, eventArgs);
+                        Console.WriteLine($"Plugin reloaded: {assemblyName}");
+                        _logger.LogInformation("Plugin reloaded: '{0}'", assemblyName);
+
+                    } catch(Exception e) {
+                        _logger.LogError("Error invoking reload event {0}", e);
+                    }
                 };
 
             }
 
         }
+
+        _logger.LogInformation("Plugins loaded: {0}", _plugins.Keys);
 
         return _plugins.Keys.ToArray();
 

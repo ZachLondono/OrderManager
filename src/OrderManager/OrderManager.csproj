@@ -23,6 +23,9 @@
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.3" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />
     <PackageReference Include="ReactiveUI.Validation" Version="2.2.1" />
   </ItemGroup>
   <ItemGroup>
@@ -30,6 +33,9 @@
     <ProjectReference Include="..\PluginContracts\PluginContracts.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Features\DebugWindow\ConsoleWindow.axaml.cs">
+      <DependentUpon>ConsoleWindow.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Features\OrderDetails\CompanyDisplay\CompanyDisplayView.axaml.cs">
       <DependentUpon>CompanyDisplayView.axaml</DependentUpon>
     </Compile>

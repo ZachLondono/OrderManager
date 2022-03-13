@@ -69,10 +69,10 @@
                TextWrapping="Wrap"
                Margin="0,10,0,0"/>
       
-      <ItemsControl Items="{Binding Details.Products.Values}">
+      <ItemsControl Items="{Binding GroupedProducts}">
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <item:ProductTable ItemsOrdered="{Binding Items}" ProductName="{Binding ProductName}" Margin="0,10,0,10" />
+            <item:ProductTable ItemsOrdered="{Binding Products}" ProductName="{Binding ProductName}" Margin="0,10,0,10" />
           </DataTemplate>
         </ItemsControl.ItemTemplate>
       </ItemsControl>

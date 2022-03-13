@@ -15,7 +15,7 @@ namespace OrderManager.Features.ProductDesigner;
 
 public class ProductDesignerViewModel : ViewModelBase, IValidatableViewModel {
 
-    public IObservable<bool> ContainsDuplicates { get; }
+    //public IObservable<bool> ContainsDuplicates { get; }
 
     private bool _hasError = false;
     public bool HasError {
@@ -40,7 +40,7 @@ public class ProductDesignerViewModel : ViewModelBase, IValidatableViewModel {
         AddAttributeCommand = ReactiveCommand.Create(AddAttribute);
 
         this.ValidationRule(x => x.Attributes,
-                            attr => attr.Count > 1,
+                            attr => (attr?.Count ?? 0) > 1,
                             "Cannot contain duplicates");
 
         Attributes.CollectionChanged += (o, args) => {
@@ -68,7 +68,6 @@ public class ProductDesignerViewModel : ViewModelBase, IValidatableViewModel {
 
 public class ProductAttribute : ReactiveObject {
 
-    private string _name;
     public string Name { get; set; } = string.Empty;
 
     public string DefaultValue { get; set; } = string.Empty;
