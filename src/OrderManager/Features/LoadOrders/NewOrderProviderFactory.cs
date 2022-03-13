@@ -1,5 +1,6 @@
 ﻿using Domain.Services;
 using McMaster.NETCore.Plugins;
+using Microsoft.Extensions.Logging;
 using PluginContracts.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -9,9 +10,12 @@ namespace OrderManager.Features.LoadOrders;
 public class NewOrderProviderFactory {
 
     private readonly Dictionary<string, INewOrderProvider> _providers = new();
+
+    private readonly ILogger<NewOrderProviderFactory> _logger;
     private readonly IPluginService _pluginService;
 
-    public NewOrderProviderFactory(IPluginService pluginService) {
+    public NewOrderProviderFactory(ILogger<NewOrderProviderFactory> logger, IPluginService pluginService) {
+        _logger = logger;
         _pluginService = pluginService;
 
         _pluginService.PluginReloadEvent += _pluginService_PluginReloadEvent;
@@ -44,9 +48,11 @@ public class NewOrderProviderFactory {
                     if (existing.Version >= provider.Version) continue;
                 }
 
-                _providers.Add(provider.PluginName, provider);
+                _providers[provider.PluginName] = provider;
 
-            } catch { }
+            } catch (Exception e){
+                _logger.LogDebug("Error updating order provider\n{0}", e);
+            }
 
         }
     }

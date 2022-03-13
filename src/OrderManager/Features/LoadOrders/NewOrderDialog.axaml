@@ -17,10 +17,19 @@
                 Grid.Column="0"
                 Grid.Row="0"
                 Margin="10" >
-      <TextBlock Text="Providers available:"
-                 HorizontalAlignment="Left"
-                 FontSize="12"
-                 Margin="3"/>
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Text="Providers available:"
+                    HorizontalAlignment="Left"
+                    FontSize="12"
+                    Margin="3"
+                    Grid.Column="0"/>
+        <TextBlock Text="{ Binding SelectedProviderVersion }"
+                    VerticalAlignment="Center"
+                    FontSize="8"
+                    Foreground="DarkGray"
+                    Margin="0,0,10,0"
+                    Grid.Column="1"/>
+      </Grid>
       <Border BorderBrush="Black" BorderThickness="1">
         <ListBox Height="107"
                  SelectionMode="Single,AlwaysSelected"
