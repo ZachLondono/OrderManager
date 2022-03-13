@@ -10,6 +10,7 @@ using System;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Unit = System.Reactive.Unit;
+using OrderManager.Features.Ribbon.ReleaseProfiles;
 
 namespace OrderManager.Features.Ribbon;
 
@@ -30,6 +31,12 @@ public class RibbonViewModel : ViewModelBase {
     public ReactiveCommand<Unit, Unit> DeleteCurrentOrderCommand { get; }
 
     public ReactiveCommand<Unit, Unit> ArchiveCurrentOrderCommand { get; }
+
+    public Interaction<ProfileEditorViewModel, Unit> ShowProfileEditorDialog { get; }
+    public ReactiveCommand<Unit, Unit> NewReleaseProfileCommand { get; }
+
+    public Interaction<ProfileManagerViewModel, Unit> ShowProfileManagerDialog { get; }
+    public ReactiveCommand<Unit, Unit> ReleaseProfileManagerCommand { get; }
 
     private bool _isOrderSelected;
     private bool IsOrderSelected {
@@ -115,6 +122,25 @@ public class RibbonViewModel : ViewModelBase {
             dialog.Show();
 
         }, canExecute: orderSelected);
+
+        ShowProfileEditorDialog = new();
+        NewReleaseProfileCommand = ReactiveCommand.CreateFromTask(async () => {
+            _logger.LogTrace("New release profile command triggered");
+
+            var vm = new ProfileEditorViewModel();
+            await ShowProfileEditorDialog.Handle(vm);
+
+
+        });
+
+        ShowProfileManagerDialog = new();
+        ReleaseProfileManagerCommand = ReactiveCommand.CreateFromTask(async () => {
+            _logger.LogTrace("Release Profile manager command triggered");
+
+            var vm = new ProfileManagerViewModel();
+            await ShowProfileManagerDialog.Handle(vm);
+        });
+
     }
 
 }

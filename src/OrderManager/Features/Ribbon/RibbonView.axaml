@@ -15,6 +15,7 @@
   <Panel>
     <ribbon:Ribbon>
       <ribbon:Ribbon.Tabs>
+        
         <ribbon:RibbonTab Header="Home" ribbon:KeyTip.KeyTipKeys="H">
           
           <ribbon:RibbonTab.Groups>
@@ -57,6 +58,24 @@
           </ribbon:RibbonTab.Groups>
           
         </ribbon:RibbonTab>
+
+        <ribbon:RibbonTab Header="Configuration" ribbon:KeyTip.KeyTipKeys="H">
+
+          <ribbon:RibbonTab.Groups>
+            <ribbon:RibbonGroupBox Header="Release Profiles">
+              <ribbon:RibbonButton Content="New Profile"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="N"
+                                    Command="{ Binding NewReleaseProfileCommand }"/>
+              <ribbon:RibbonButton Content="Profile Manager"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="P"
+                                    Command="{ Binding ReleaseProfileManagerCommand }"/>
+            </ribbon:RibbonGroupBox>
+          </ribbon:RibbonTab.Groups>
+          
+        </ribbon:RibbonTab>
+        
       </ribbon:Ribbon.Tabs>
     </ribbon:Ribbon>
   </Panel>

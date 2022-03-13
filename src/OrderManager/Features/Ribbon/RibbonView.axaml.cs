@@ -7,6 +7,7 @@ using OrderManager.Features.LoadOrders;
 using OrderManager.Features.ProductDesigner;
 using OrderManager.Features.RemakeOrder;
 using OrderManager.Features.Ribbon.DeleteOrder;
+using OrderManager.Features.Ribbon.ReleaseProfiles;
 using OrderManager.Shared;
 using ReactiveUI;
 using System.Reactive;
@@ -23,6 +24,8 @@ public partial class RibbonView : ReactiveUserControl<RibbonViewModel> {
         this.WhenActivated(d => d(ViewModel!.ShowNewProductDialog.RegisterHandler(DoShowNewProductDialogAsync)));
         this.WhenActivated(d => d(ViewModel!.ShowOrderRemakeDialog.RegisterHandler(DoShowOrderRemakeDialogAsync)));
         this.WhenActivated(d => d(ViewModel!.ShowOrderDeleteDialog.RegisterHandler(DoShowOrderDeleteDialogAsync)));
+        this.WhenActivated(d => d(ViewModel!.ShowProfileEditorDialog.RegisterHandler(DoShowProfileEditorDialogAsync)));
+        this.WhenActivated(d => d(ViewModel!.ShowProfileManagerDialog.RegisterHandler(DoShowProfileManagerDialogAsync)));
     }
 
     private async Task DoShowNewOrderDialogAsync(InteractionContext<NewOrderViewModel, Unit> interaction) {
@@ -37,15 +40,20 @@ public partial class RibbonView : ReactiveUserControl<RibbonViewModel> {
         await CreateDialog<OrderRemakeViewModel, OrderRemakeDialog>(interaction);
     }
 
-    private async Task DoShowOrderDeleteDialogAsync(InteractionContext<DeleteOrderViewModel, bool> interaction) {
-        //await CreateDialog<DeleteOrderViewModel, DeleteOrderDialog>(interaction);
+    private async Task DoShowProfileEditorDialogAsync(InteractionContext<ProfileEditorViewModel, Unit> interaction) {
+        await CreateDialog<ProfileEditorViewModel, ProfileEditorDialog>(interaction);
+    }
 
+    private async Task DoShowProfileManagerDialogAsync(InteractionContext<ProfileManagerViewModel, Unit> interaction) {
+        await CreateDialog<ProfileManagerViewModel, ProfileManagerDialog>(interaction);
+    }
+
+    private async Task DoShowOrderDeleteDialogAsync(InteractionContext<DeleteOrderViewModel, bool> interaction) {
         var dialog = Program.CreateInstance<DeleteOrderDialog>();
         dialog.DataContext = interaction.Input;
         var window = Program.GetService<MainWindow.MainWindow>();
         bool delete = await dialog.ShowDialog<bool>(window);
         interaction.SetOutput(delete);
-
     }
 
     private async Task CreateDialog<Tvm, Tv>(InteractionContext<Tvm, Unit> interaction) where Tv : Window where Tvm : ViewModelBase {
