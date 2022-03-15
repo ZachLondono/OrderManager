@@ -45,13 +45,13 @@ public class NewOrderViewModel : ViewModelBase {
 
         AvailableProviders = factory.GetAvailableProviders();
 
-        LoadOrderFromProvider = ReactiveCommand.Create<string>(OnProviderChosen);
+        LoadOrderFromProvider = ReactiveCommand.CreateFromTask<string>(OnProviderChosen);
     }
 
-    private void OnProviderChosen(string providerName) {
+    private async Task OnProviderChosen(string providerName) {
         try {
 
-            var id = _sender.Send(new UploadNewOrder.Command(providerName)).Result;
+            var id = await _sender.Send(new UploadNewOrder.Command(providerName));
             _context.AddOrder(id);
             _context.SelectedOrderId = id;
 

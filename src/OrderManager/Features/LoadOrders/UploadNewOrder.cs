@@ -7,6 +7,8 @@ using Microsoft.Data.Sqlite;
 using System;
 using Domain;
 using Microsoft.Extensions.Logging;
+using PluginContracts.Interfaces;
+using Avalonia.Controls;
 
 namespace OrderManager.Features.LoadOrders;
 
@@ -26,12 +28,29 @@ internal class UploadNewOrder {
             _connectionStringManager = connectionStringManager;
         }
 
-        public Task<Guid> Handle(Command request, CancellationToken cancellationToken) {
+        public async Task<Guid> Handle(Command request, CancellationToken cancellationToken) {
 
             _logger.LogTrace("Getting new order provider with name {0}", request.OrderProvider);
 
-            var provider = _factory.GetProviderByName(request.OrderProvider);
-            OrderDto orderData = provider.GetNewOrder();
+            var plugin = _factory.GetProviderByName(request.OrderProvider);
+
+            OrderDto? orderData = null;
+
+            if (plugin is INewOrderFromFileProvider fileprovider) {
+
+                OpenFileDialog dialog = new OpenFileDialog();
+                dialog.AllowMultiple = false;
+                var result = await dialog.ShowAsync(Program.GetService<MainWindow.MainWindow>());
+
+                if (result is null || result.Length != 1) throw new InvalidOperationException();
+
+                orderData = fileprovider.GetNewOrder(result[0]);
+
+            } else if (plugin is INewOrderProvider provider) {
+                orderData =  provider.GetNewOrder();
+            }
+
+            if (orderData is null) throw new InvalidOperationException();
 
             _logger.LogTrace("New order data recieved {0}", orderData);
 
@@ -90,7 +109,7 @@ internal class UploadNewOrder {
 
                     foreach (var option in product.Options) {
 
-                        int optionId = connection.Execute(productOptionQuery, new {
+                        int optionId = connection.QuerySingle<int>(productOptionQuery, new {
                             ItemId = itemId,
                             Key = option.Key,
                             Value = option.Value
@@ -113,7 +132,7 @@ internal class UploadNewOrder {
 
             _logger.LogInformation("New order created with ID '{0}'", newId);
 
-            return Task.FromResult(newId);
+            return newId;
 
         }
 

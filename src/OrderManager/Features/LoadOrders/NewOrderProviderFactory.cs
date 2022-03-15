@@ -9,7 +9,7 @@ namespace OrderManager.Features.LoadOrders;
 
 public class NewOrderProviderFactory {
 
-    private readonly Dictionary<string, INewOrderProvider> _providers = new();
+    private readonly Dictionary<string, IPlugin> _providers = new();
 
     private readonly ILogger<NewOrderProviderFactory> _logger;
     private readonly IPluginService _pluginService;
@@ -20,7 +20,7 @@ public class NewOrderProviderFactory {
 
         _pluginService.PluginReloadEvent += _pluginService_PluginReloadEvent;
 
-        Type[] providerTypes = _pluginService.GetPluginTypes<INewOrderProvider>();
+        Type[] providerTypes = _pluginService.GetPluginTypes<IPlugin>();
         UpdateProviderList(providerTypes);
 
     }
@@ -37,11 +37,19 @@ public class NewOrderProviderFactory {
     private void UpdateProviderList(Type[] providerTypes) {
         foreach (Type providerType in providerTypes) {
 
-            if (providerType.IsAbstract || !typeof(INewOrderProvider).IsAssignableFrom(providerType)) continue;
+            if (providerType.IsAbstract || (!typeof(INewOrderProvider).IsAssignableFrom(providerType) && !typeof(INewOrderFromFileProvider).IsAssignableFrom(providerType))) continue;
 
             try {
 
-                if (Program.GetInstance(providerType) is not INewOrderProvider provider) continue;
+                IPlugin? provider = null;
+
+                if (typeof(INewOrderFromFileProvider).IsAssignableFrom(providerType)) {
+                    provider = Program.GetInstance(providerType) as INewOrderFromFileProvider;
+                } else if (typeof(INewOrderProvider).IsAssignableFrom(providerType)) {
+                    provider = Program.GetInstance(providerType) as INewOrderProvider;
+                }
+
+                if (provider is null) return;
 
                 if (_providers.ContainsKey(provider.PluginName)) {
                     var existing = _providers[provider.PluginName];
@@ -57,7 +65,7 @@ public class NewOrderProviderFactory {
         }
     }
 
-    public INewOrderProvider GetProviderByName(string providerName) {
+    public IPlugin GetProviderByName(string providerName) {
         return _providers[providerName];
     }
 
