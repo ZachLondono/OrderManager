@@ -18,7 +18,11 @@
 
     <Grid ColumnDefinitions="*,50,*" Grid.Row="1" Margin="20">
 
-      <ListBox Grid.Column="0" Name="LeftListBox" Items="{ Binding ProfileActions }" SelectionMode="Single" SelectedItem="{ Binding LeftSelected }"/>
+      <ListBox Grid.Column="0"
+               Name="LeftListBox"
+               Items="{ Binding ProfileActions }"
+               SelectionMode="Single"
+               SelectedItem="{ Binding LeftSelected }"/>
 
       <Grid RowDefinitions="*,*" Grid.Column="1" Width="50" >
         <Button Name="TransferRightBtn"
@@ -35,7 +39,11 @@
                 Grid.Row="1" />
       </Grid>
 
-      <ListBox Grid.Column="2" Name="RightListBox" Items="{ Binding AvailableActions }" SelectionMode="Single" SelectedItem="{ Binding RightSelected }"/>
+      <ListBox Grid.Column="2"
+               Name="RightListBox"
+               Items="{ Binding AvailableActions }"
+               SelectionMode="Single"
+               SelectedItem="{ Binding RightSelected }"/>
       
     </Grid>
     

@@ -27,12 +27,11 @@
               Command="{ Binding DeleteSelectedProfileCommand }"/>
     </Grid>
 
-    <ListBox Grid.Row="1" Margin="20">
-      <ListBoxItem>Profile A</ListBoxItem>
-      <ListBoxItem>Profile B</ListBoxItem>
-      <ListBoxItem>Profile C</ListBoxItem>
-      <ListBoxItem>Profile D</ListBoxItem>
-    </ListBox>
+    <ListBox Grid.Row="1"
+             Margin="20"
+             Items="{ Binding ReleaseProfiles }"
+             SelectionMode="Single"
+             SelectedItem="{ Binding SelectedProfile }"/>
     
   </Grid>
 </Window>

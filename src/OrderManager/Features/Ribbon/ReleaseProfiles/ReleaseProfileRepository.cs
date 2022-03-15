@@ -19,8 +19,8 @@ public class ReleaseProfileRepository {
 
     public ReleaseProfileEventDomain GetProfileById(Guid id) {
 
-        const string profileQuery = "SELECT [Name] FROM [ReleaseProfiles] WHERE [Id] = @Id;";
-        const string profileActionQuery = "SELECT [Name] FROM [ReleaseProfileActions] WHERE [ProfileId] = @Id;";
+        const string profileQuery = "SELECT [Id], [Name] FROM [ReleaseProfiles] WHERE [Id] = @Id;";
+        const string profileActionQuery = "SELECT [ProfileId], [Name] as ActionName FROM [ReleaseProfileActions] WHERE [ProfileId] = @Id;";
 
         var profile = _connection.QuerySingle<ReleaseProfile>(profileQuery, new { Id = id});
         var actions = _connection.Query<ReleaseProfileAction>(profileActionQuery, new { Id = id });
