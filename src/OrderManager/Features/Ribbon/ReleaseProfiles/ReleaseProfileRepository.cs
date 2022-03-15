@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Data;
 using System.Linq;
@@ -8,16 +9,18 @@ namespace OrderManager.Features.Ribbon.ReleaseProfiles;
 
 public class ReleaseProfileRepository {
 
+    private readonly ILogger<ReleaseProfileRepository> _logger;
     private readonly IDbConnection _connection;
 
-    public ReleaseProfileRepository(IDbConnection connection) {
+    public ReleaseProfileRepository(ILogger<ReleaseProfileRepository> logger, IDbConnection connection) {
+        _logger = logger;
         _connection = connection;
     }
 
     public ReleaseProfileEventDomain GetProfileById(Guid id) {
 
         const string profileQuery = "SELECT [Name] FROM [ReleaseProfiles] WHERE [Id] = @Id;";
-        const string profileActionQuery = "SELECT [Name] FROM [ReleaseProfileAction] WHERE [ProfileId] = @Id;";
+        const string profileActionQuery = "SELECT [Name] FROM [ReleaseProfileActions] WHERE [ProfileId] = @Id;";
 
         var profile = _connection.QuerySingle<ReleaseProfile>(profileQuery, new { Id = id});
         var actions = _connection.Query<ReleaseProfileAction>(profileActionQuery, new { Id = id });
@@ -30,7 +33,13 @@ public class ReleaseProfileRepository {
 
     public void Save(ReleaseProfileEventDomain profile) {
 
+        if (_connection.State != ConnectionState.Open)
+            _connection.Open();
+
         var trx = _connection.BeginTransaction();
+
+        CreateProfile(profile.ProfileName, profile.ProfileId, trx);
+
         var events = profile.GetEvents();
 
         foreach (var domainEvent in events) {
@@ -55,18 +64,40 @@ public class ReleaseProfileRepository {
 
         }
 
+        profile.ClearEvents();
+
         trx.Commit();
-        
+        _connection.Close();
+
+    }
+
+    private Task CreateProfile(string profileName, Guid profileId, IDbTransaction trx) {
+
+        const string command = @"INSERT OR IGNORE INTO [ReleaseProfiles]
+                                ([Id],[Name])
+                                VALUES (@Id, @Name);";
+
+        int rows = _connection.Execute(command, new {
+            Name = profileName,
+            Id = profileId
+        }, trx);
+
+        _logger.LogTrace("Create profile command executed, {rows} effected", rows);
+
+        return Task.CompletedTask;
+
     }
 
     private Task UpdateName(string profileName, Guid profileId, IDbTransaction trx) {
 
         const string command = "UPDATE [ReleaseProfiles] SET [Name] = @Name WHERE [Id] = @Id;";
 
-        _connection.Execute(command, new {
+        int rows = _connection.Execute(command, new {
             Name = profileName,
             Id = profileId
         }, trx);
+
+        _logger.LogTrace("Update name command executed, {rows} effected", rows);
 
         return Task.CompletedTask;
 
@@ -75,14 +106,16 @@ public class ReleaseProfileRepository {
     private Task AddAction(string actionName, int position, Guid profileId, IDbTransaction trx) {
 
         const string command = @"INSERT INTO [ReleaseProfileActions]
-                                ([Name], [Profile], [ProfileId])
+                                ([Name], [Position], [ProfileId])
                                 VALUES (@Name, @Position, @ProfileId);";
 
-        _connection.Execute(command, new {
+        int rows = _connection.Execute(command, new {
             Name = actionName,
             Position = position,
             ProfileId = profileId
         }, trx);
+
+        _logger.LogTrace("Add action command executed, {rows} effected", rows);
 
         return Task.CompletedTask;
 
@@ -92,11 +125,13 @@ public class ReleaseProfileRepository {
 
         const string command = @"UPDATE [ReleaseProfileActions] SET [Position] = @Position WHERE [Name] = @Name AND [ProfileId] = @ProfileId;";
 
-        _connection.Execute(command, new {
+        int rows = _connection.Execute(command, new {
                 Name = actionName,
                 ProfileId = profileId,
                 Position = newPosition
         }, trx);
+
+        _logger.LogTrace("Move action command executed, {rows} effected", rows);
 
         return Task.CompletedTask;
 
@@ -104,12 +139,14 @@ public class ReleaseProfileRepository {
 
     private Task RemoveAction(string actionName, Guid profileId, IDbTransaction trx) {
 
-        const string command = "DELETE FROM [ReleaseProfileAction] WHERE [Name] = @Name AND [ProfileId] = @ProfileId;";
+        const string command = "DELETE FROM [ReleaseProfileActions] WHERE [Name] = @Name AND [ProfileId] = @ProfileId;";
 
-        _connection.Execute(command, new {
+        int rows = _connection.Execute(command, new {
             Name = actionName,
             ProfileId = profileId
         }, trx);
+
+        _logger.LogTrace("Remove action command executed, {rows} effected", rows);
 
         return Task.CompletedTask;
 

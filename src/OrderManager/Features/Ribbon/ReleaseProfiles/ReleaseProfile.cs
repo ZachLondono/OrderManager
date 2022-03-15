@@ -21,11 +21,15 @@ public class ReleaseProfile {
         Actions = actions;
     }
 
+    public ReleaseProfile(Guid id, string name) : this(id, name, new()) { }
+
 }
 
 public record ReleaseProfileAction(Guid ProfileId, string ActionName);
 
 public class ReleaseProfileEventDomain {
+
+    public string ProfileName => _profile.Name;
 
     public Guid ProfileId => _profile.Id;
 
@@ -39,6 +43,10 @@ public class ReleaseProfileEventDomain {
 
     public IEnumerable<object> GetEvents() {
         return _events;
+    }
+
+    public void ClearEvents() {
+        _events.Clear();
     }
 
     /// <summary>
@@ -67,6 +75,8 @@ public class ReleaseProfileEventDomain {
         }
 
     }
+
+    public IEnumerable<string> GetActions() => _profile.Actions.Select(a => a.ActionName).OfType<string>();
 
     public void AddAction(string actionName) {
 
@@ -101,6 +111,8 @@ public class ReleaseProfileEventDomain {
     }
 
     public void ChangeProfileName(string profileName) {
+
+        if (_profile.Name == profileName) return;
 
         _profile.Name = profileName;
 

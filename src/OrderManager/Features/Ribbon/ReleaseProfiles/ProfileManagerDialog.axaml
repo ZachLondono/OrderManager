@@ -12,9 +12,19 @@
   <Grid RowDefinitions="Auto,*">
 
     <Grid Grid.Row="0" ColumnDefinitions="*,*,*" Margin="10">
-      <Button Grid.Column="0" HorizontalAlignment="Center" Content="+ New"/>
-      <Button Grid.Column="1" HorizontalAlignment="Center" Content="Edit"/>
-      <Button Grid.Column="2" HorizontalAlignment="Center" Classes="Danger" Content="Delete"/>
+      <Button Grid.Column="0"
+              HorizontalAlignment="Center"
+              Content="+ New"
+              Command="{ Binding CreateNewProfileCommands }"/>
+      <Button Grid.Column="1"
+              HorizontalAlignment="Center"
+              Content="Edit"
+              Command="{ Binding EditSelectedProfileCommand }"/>
+      <Button Grid.Column="2"
+              HorizontalAlignment="Center"
+              Classes="Danger"
+              Content="Delete"
+              Command="{ Binding DeleteSelectedProfileCommand }"/>
     </Grid>
 
     <ListBox Grid.Row="1" Margin="20">

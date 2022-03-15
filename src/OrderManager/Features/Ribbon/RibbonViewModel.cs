@@ -126,18 +126,25 @@ public class RibbonViewModel : ViewModelBase {
         ShowProfileEditorDialog = new();
         NewReleaseProfileCommand = ReactiveCommand.CreateFromTask(async () => {
             _logger.LogTrace("New release profile command triggered");
+            try {
 
-            var vm = new ProfileEditorViewModel();
-            await ShowProfileEditorDialog.Handle(vm);
+                var logger = Program.GetService<ILogger<ProfileEditorViewModel>>();
+                var sender = Program.GetService<ISender>();
 
+                var profile = await sender.Send(new CreateNewReleaseProfile.Command("Profile A"));
 
+                var vm = new ProfileEditorViewModel(logger, sender, profile);
+                await ShowProfileEditorDialog.Handle(vm);
+            } catch (Exception e) {
+                _logger.LogError("Could not edit profile {exception}", e);
+            }
         });
 
         ShowProfileManagerDialog = new();
         ReleaseProfileManagerCommand = ReactiveCommand.CreateFromTask(async () => {
             _logger.LogTrace("Release Profile manager command triggered");
 
-            var vm = new ProfileManagerViewModel();
+            var vm = Program.CreateInstance<ProfileManagerViewModel>();
             await ShowProfileManagerDialog.Handle(vm);
         });
 

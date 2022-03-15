@@ -10,6 +10,9 @@ using System.Reflection;
 using OrderManager.Shared;
 using Dapper;
 using Microsoft.Extensions.Logging;
+using System.Data;
+using Microsoft.Data.Sqlite;
+using OrderManager.Features.Ribbon.ReleaseProfiles;
 
 namespace OrderManager;
 
@@ -36,6 +39,8 @@ internal class Program {
                 loggerBuilder.AddDebug();
                 loggerBuilder.SetMinimumLevel(LogLevel.Trace);
             })
+            .AddTransient<IDbConnection>(s => new SqliteConnection(s.GetRequiredService<ConnectionStringManager>().GetConnectionString))
+            .AddTransient<ReleaseProfileRepository>()
             .BuildServiceProvider();
 
         _logger = ServiceProvider.GetService<ILogger<Program>>();
