@@ -8,9 +8,6 @@ using Unit = System.Reactive.Unit;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Threading;
-using Domain;
-using Microsoft.Data.Sqlite;
-using Dapper;
 using Domain.Services;
 using PluginContracts.Interfaces;
 
@@ -24,7 +21,6 @@ public class ProfileEditorViewModel : ViewModelBase {
         set {
             _profileName = value;
             _profile.ChangeProfileName(value);
-            _logger.LogTrace("Changing profile name to {newname}", value);
         }
     }
 
@@ -57,6 +53,8 @@ public class ProfileEditorViewModel : ViewModelBase {
         MoveActionToProfileCommand = ReactiveCommand.Create(MoveActionToProfile);
 
         RemoveActionFromProfileCommand = ReactiveCommand.Create(RemoveActionFromProfile);
+
+        ProfileName = profile.ProfileName;
 
         ProfileActions = new(profile.GetActions());
 

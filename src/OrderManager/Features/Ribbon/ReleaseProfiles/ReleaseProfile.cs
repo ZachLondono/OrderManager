@@ -23,9 +23,21 @@ public class ReleaseProfile {
 
     public ReleaseProfile(Guid id, string name) : this(id, name, new()) { }
 
+    public override string ToString() => Name;
+
 }
 
-public record ReleaseProfileAction(Guid ProfileId, string ActionName);
+public class ReleaseProfileAction {
+
+    public Guid ProfileId { get; init; }
+    public string ActionName { get; init; }
+
+    public ReleaseProfileAction(Guid profileId, string actionName) {
+        ProfileId = profileId;
+        ActionName = actionName;
+    }
+
+}
 
 public class ReleaseProfileEventDomain {
 
