@@ -55,59 +55,52 @@ public partial class ProductTable : UserControl {
 
             // Builds a DataGrid which has all the product's options as columns and each line item in a row
 
-            var products = GetValue(ItemsOrderedProperty);
-            if (products is null) return;
+            var items = GetValue(ItemsOrderedProperty);
+            if (items is null) return;
 
-            // Map of the header to the column index
+            var products = items.Select(p => new OrderedProductEventDomain(p));
+
             Dictionary<string, int> headers = new();
             headers.Add("#", 0);
             headers.Add("Qty", 1);
 
-            List<List<string>> rows = new();
-
-            int i = 1;
             int colIdx = 2;
-            foreach (var item in products) {
-
-                var row = new List<string>();
-
-                // Each row has a line number and quantity column, no matter the product type
-                AddToRow(row,headers["#"],$"{i++}");
-                AddToRow(row, headers["Qty"], $"{item.Qty}");
-
-                // Then traverse through each item to find all of it's attributes
-                foreach (var option in item.Options) {
-
-                    if (!headers.ContainsKey(option.Key)) {
+            foreach (var item in products)
+                foreach (var option in item.Options)
+                    if (!headers.ContainsKey(option.Key))
                         headers.Add(option.Key, colIdx++);
-                    }
-                    AddToRow(row, headers[option.Key], $"{option.Value}");
-                }
 
-                rows.Add(row);
-
-            }
 
             var headerNames = headers.Keys.ToList();
-
-            var indices = rows[0].Select((value, index) => index);
-            foreach (var idx in indices) {
-                _prodGrid.Columns.Add(new DataGridTextColumn { Header = $"{headerNames[idx]}", Binding = new Binding($"[{idx}]") });
-            }
-
             _prodGrid.AutoGenerateColumns = false;
-            _prodGrid.Items = rows;
+
+            foreach (var header in headerNames) {
+
+                var binding = new Binding();
+
+                switch (header) {
+                    case "Qty":
+                        binding.Path = "Qty";
+                        break;
+                    // TODO: store line number in product
+                    case "#":
+                        binding.Path = "LineNumber";
+                        break;
+                   default:
+                        binding.Path = $"[{header}]";
+                        break;
+                }
+
+                
+                _prodGrid.Columns.Add(new DataGridTextColumn {
+                    Header = $"{header}",
+                    Binding = binding
+                });
+            }
+           
+            _prodGrid.Items = products;
 
         }
     }
 
-    private void AddToRow(List<string> row, int col, string val) {
-
-        while (row.Count - 1 < col) {
-            row.Add(string.Empty);
-        }
-
-        row[col] = val;
-
-    }
 }

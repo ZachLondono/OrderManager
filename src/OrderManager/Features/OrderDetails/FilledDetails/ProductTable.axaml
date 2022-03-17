@@ -13,7 +13,7 @@
                  TextAlignment="Center" />
       
       <!-- Orders should not be editable once they are uploaded -->
-      <DataGrid Name="ProductGrid" IsReadOnly="True">
+      <DataGrid Name="ProductGrid" IsReadOnly="False">
         <DataGrid.Styles>
           <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
             <Setter Property="Fill" Value="{DynamicResource ContentSelected}"/>

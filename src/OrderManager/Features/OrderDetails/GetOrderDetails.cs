@@ -42,7 +42,7 @@ public class GetOrderDetails {
 
                 details.OrderedProducts = connection.Query<OrderedProduct>(orderItemQuery, new { Id = request.Id.ToString() });
                 foreach (var product in details.OrderedProducts) {
-                    product.Options = connection.Query<ProductOption>(itemOptionsQuery, new { ItemId = product.Id });
+                    product.Options.AddRange(connection.Query<ProductOption>(itemOptionsQuery, new { ItemId = product.Id }));
                 }
 
                 connection.Close();

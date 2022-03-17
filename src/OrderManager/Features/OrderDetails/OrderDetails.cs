@@ -12,6 +12,8 @@ public class OrderDetails {
 
     public string Name { get; set; } = string.Empty;
 
+    public string Comment { get; set; } = string.Empty;
+
     public int CustomerId { get; set; }
     public CompanyDetails? Customer { get; set; }
 
@@ -58,6 +60,8 @@ public class OrderedProduct {
 
     public int Qty { get; set; }
 
+    public int LineNumber { get; set; }
+
     /// <summary>
     /// Id of the product being ordered
     /// </summary>
@@ -71,7 +75,7 @@ public class OrderedProduct {
     /// <summary>
     /// Configuration of the product
     /// </summary>
-    public IEnumerable<ProductOption> Options { get; set; } = Enumerable.Empty<ProductOption>();
+    public List<ProductOption> Options { get; set; } = new List<ProductOption>();
 
 }
 
