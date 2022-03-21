@@ -138,22 +138,44 @@
       <Setter Property="FontSize" Value="10"/>
       <Setter Property="FontWeight" Value="Light"/>
     </Style>
+
+    <Style Selector="ComboBoxItem.Header">
+      <Setter Property="IsEnabled" Value="False"/>
+      <Setter Property="Margin" Value="0"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+      <Setter Property="Foreground" Value="Black"/>
+    </Style>
+    <Style Selector="ComboBoxItem">
+      <Setter Property="Margin" Value="5,0,0,0"/>
+    </Style>
   </Control.Styles>
 
   <Grid RowDefinitions="Auto,*">
-    
-    <ItemsControl Items="{Binding OrderFilters}">
-      <ItemsControl.ItemsPanel>
-        <ItemsPanelTemplate>
-          <StackPanel Orientation="Horizontal" Grid.Row="0"/>
-        </ItemsPanelTemplate>
-      </ItemsControl.ItemsPanel>
-      <ItemsControl.ItemTemplate>
-        <DataTemplate>
-          <RadioButton GroupName="OrderCategory" Classes="OrderCategory" Content="{Binding Name}" IsChecked="{Binding IsChecked}" />
-        </DataTemplate>
-      </ItemsControl.ItemTemplate>
-    </ItemsControl>
+
+    <Grid ColumnDefinitions="Auto, *">
+      <ItemsControl Items="{Binding OrderFilters}" Grid.Column="0">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" Grid.Row="0"/>
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <RadioButton GroupName="OrderCategory" Classes="OrderCategory" Content="{Binding Name}" IsChecked="{Binding IsChecked}" />
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+      <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" Spacing="5">
+        <ComboBox>
+          <ComboBoxItem Classes="Header" Content="Sorting" FontWeight="Bold" Foreground="Black"/>
+          <ComboBoxItem Content="By Date" IsSelected="True"/>
+          <ComboBoxItem Content="By Priority"/>
+          <ComboBoxItem Content="By Name"/>
+          <ComboBoxItem Content="By Number"/>
+        </ComboBox>
+        <ToggleButton Content="|" Command="{ Binding  }" />
+      </StackPanel>
+    </Grid>
 
     <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Row="1" Padding="0,0,25,0" AllowAutoHide="False">
       <ItemsControl Items="{Binding Items}">

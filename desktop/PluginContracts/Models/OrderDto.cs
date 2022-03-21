@@ -7,8 +7,10 @@ public class OrderDto {
     public string Name { get; set; } = string.Empty;
 
     public int SupplierId { get; set; }
+    public CompanyDto? Supplier { get; set; }
 
     public int VendorId { get; set; }
+    public CompanyDto? Vendor { get; set; }
 
     public CompanyDto Customer { get; set; } = default!;
 

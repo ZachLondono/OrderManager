@@ -1,7 +1,10 @@
 ﻿using OrderManager.Shared;
+using ReactiveUI;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Reactive;
 using static OrderManager.Features.OrderList.GetOrders;
 
 namespace OrderManager.Features.OrderList.FilledList;
@@ -12,7 +15,15 @@ public class FilledOrderListViewModel : ViewModelBase {
 
     public ObservableCollection<ListItemViewModel> Items { get; set; }
 
+    public ReactiveCommand<Unit, Unit> OrderDirectionCommand { get; set; }
+
     public FilledOrderListViewModel(IEnumerable<OrderListItem> items) {
+
+        items = items.OrderByDescending(i => i.LastModified);
+
+        OrderDirectionCommand = ReactiveCommand.Create(() => {
+
+        });
 
         List<ListItemViewModel> list = new();
         foreach (var item in items) {

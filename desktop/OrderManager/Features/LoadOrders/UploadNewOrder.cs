@@ -52,7 +52,7 @@ internal class UploadNewOrder {
 
             if (orderData is null) throw new InvalidOperationException();
 
-            _logger.LogTrace("New order data recieved {0}", orderData);
+            _logger.LogTrace("New order data recieved {Order}", orderData);
 
             using var connection = new SqliteConnection(_connectionStringManager.GetConnectionString);
             connection.Open();
@@ -63,7 +63,7 @@ internal class UploadNewOrder {
 
             Guid newId = Guid.NewGuid();
 
-            _logger.LogDebug("Creating new order with ID '{0}'", newId);
+            _logger.LogDebug("Creating new order with ID '{OrderId}'", newId);
             connection.Execute(orderQuery, new {
                 Id = newId.ToString(),
                 orderData.Number,
@@ -79,9 +79,9 @@ internal class UploadNewOrder {
             const string productNameQuery = @"SELECT [Name] FROM [Products] WHERE [Id] = @Id;";
 
             const string productQuery = @"INSERT INTO [OrderItems]
-                                            ([Qty], [ProductId], [OrderId], [ProductName])
+                                            ([Qty], [LineNumber], [ProductId], [OrderId], [ProductName])
                                             VALUES
-                                            (@Qty, @ProductId, @OrderId, @ProductName)
+                                            (@Qty, @LineNumber, @ProductId, @OrderId, @ProductName)
                                             RETURNING Id;";
 
             const string productOptionQuery = @"INSERT INTO [OrderItemOptions]
@@ -96,10 +96,11 @@ internal class UploadNewOrder {
 
                     string productName = connection.QuerySingle<string>(productNameQuery, new { Id = product.ProductId });
 
-                    _logger.LogTrace("Query for name of product with id '{0}' returned '{1}'", product.ProductId, productName);
+                    _logger.LogTrace("Query for name of product with id '{ProductId}' returned '{ProductName}'", product.ProductId, productName);
 
                     int itemId = connection.QuerySingle<int>(productQuery, new {
                         product.Qty,
+                        product.LineNumber,
                         product.ProductId,
                         OrderId = newId.ToString(),
                         ProductName = productName
@@ -111,17 +112,17 @@ internal class UploadNewOrder {
 
                         int optionId = connection.QuerySingle<int>(productOptionQuery, new {
                             ItemId = itemId,
-                            Key = option.Key,
-                            Value = option.Value
+                            option.Key,
+                            option.Value
                         });
 
-                        _logger.LogTrace("New ordered item option id inserted '{0}'", optionId);
+                        _logger.LogTrace("New ordered item option id inserted '{OptionId}'", optionId);
 
                     }
 
                 } catch (Exception e) {
 
-                    _logger.LogError("Could not insert product options\n{0}", e);
+                    _logger.LogError("Could not insert product options\n{exception}", e);
 
                 }
 

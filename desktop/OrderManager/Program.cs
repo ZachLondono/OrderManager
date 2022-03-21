@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using System.Data;
 using Microsoft.Data.Sqlite;
 using OrderManager.Features.Ribbon.ReleaseProfiles;
+using OrderManager.Features.OrderDetails;
 
 namespace OrderManager;
 
@@ -41,6 +42,7 @@ internal class Program {
             })
             .AddTransient<IDbConnection>(s => new SqliteConnection(s.GetRequiredService<ConnectionStringManager>().GetConnectionString))
             .AddTransient<ReleaseProfileRepository>()
+            .AddTransient<OrderDetailsRepository>()
             .BuildServiceProvider();
 
         _logger = ServiceProvider.GetService<ILogger<Program>>();
