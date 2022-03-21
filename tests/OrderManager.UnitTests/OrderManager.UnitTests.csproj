@@ -20,8 +20,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\OrderManager\OrderManager.csproj" />
-  </ItemGroup>
-
 </Project>
