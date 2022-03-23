@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Catalog.Implementation.Domain;
+﻿namespace Catalog.Implementation.Domain;
 
 internal class Product {
 
     public Guid Id { get; init; }
 
-    public string Name { get; init; }
+    public string Name { get; set; }
 
     public IReadOnlyCollection<string> Attributes => _attributes.ToList().AsReadOnly();
     private HashSet<string> _attributes { get; set; } = new HashSet<string>();
