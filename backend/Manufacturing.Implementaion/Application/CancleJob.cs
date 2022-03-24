@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Sales.Contracts;
 
-namespace Manufacturing.Implementaion.Application;
+namespace Manufacturing.Implementation.Application;
 
 internal class CancleJob : INotificationHandler<OrderVoidNotification> {
 

@@ -1,6 +1,6 @@
-﻿using Manufacturing.Implementaion.Domain;
+﻿using Manufacturing.Implementation.Domain;
 
-namespace Manufacturing.Implementaion.Infrastructure;
+namespace Manufacturing.Implementation.Infrastructure;
 
 internal record JobStatusChangeEvent(ManufacturingStatus Status);
 

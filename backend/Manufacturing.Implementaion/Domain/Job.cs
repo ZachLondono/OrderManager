@@ -1,4 +1,4 @@
-﻿namespace Manufacturing.Implementaion.Domain;
+﻿namespace Manufacturing.Implementation.Domain;
 
 internal enum ManufacturingStatus {
     Pending,

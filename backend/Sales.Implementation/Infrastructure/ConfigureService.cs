@@ -5,7 +5,10 @@ namespace Sales.Implementation.Infrastructure;
 
 public static class ConfigureService {
 
-    public static IServiceCollection AddSales(IServiceCollection services) => 
-                services.AddMediatR(typeof(ConfigureService).Assembly);
+    public static IServiceCollection AddSales(this IServiceCollection services) => 
+                services.AddMediatR(typeof(ConfigureService).Assembly)
+                        .AddTransient<OrderRepository>()
+                        .AddTransient<CompanyRepository>()
+                        .AddTransient<OrderedItemRepository>();
 
 }

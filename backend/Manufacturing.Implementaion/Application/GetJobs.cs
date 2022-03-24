@@ -1,7 +1,7 @@
 ﻿using Manufacturing.Contracts;
 using MediatR;
 
-namespace Manufacturing.Implementaion.Application;
+namespace Manufacturing.Implementation.Application;
 
 internal class GetJobs {
 

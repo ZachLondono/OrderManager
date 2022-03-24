@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Manufacturing.Implementaion.Application;
+namespace Manufacturing.Implementation.Application;
 
 internal class ShipJob {
 

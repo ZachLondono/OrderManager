@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace Manufacturing.Implementaion.Infrastructure;
+namespace Manufacturing.Implementation.Infrastructure;
 
 internal class JobRepository {
 

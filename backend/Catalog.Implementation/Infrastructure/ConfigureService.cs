@@ -4,12 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Catalog.Implementation.Infrastructure;
 
 public static class ConfigureService {
-    public static IServiceCollection AddCatalog(IServiceCollection services) =>
+    public static IServiceCollection AddCatalog(this IServiceCollection services) =>
         services.AddMediatR(typeof(ConfigureService).Assembly)
-                .AddTransient<Contracts.Catalog.GetProducts>((s) => {
-                    return () => new Contracts.ProductSummary[0];
-                })
-                .AddTransient<Contracts.Catalog.GetProduct>((s) => {
-                    return (id) => new Contracts.ProductDetails(id, string.Empty, new string[0]);
-                });
+                .AddTransient<ProductRepository>()
+                .AddTransient<Application.Catalog>()
+                .AddTransient<Contracts.CatalogProducts.GetProducts>((s) =>
+                    s.GetRequiredService<Application.Catalog>().GetProducts)
+                .AddTransient<Contracts.CatalogProducts.GetProductDetails>((s) =>
+                    s.GetRequiredService<Application.Catalog>().GetProductDetails);
 }

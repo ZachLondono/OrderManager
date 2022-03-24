@@ -1,4 +1,4 @@
-﻿namespace Manufacturing.Implementaion.Infrastructure.Persistance;
+﻿namespace Manufacturing.Implementation.Infrastructure.Persistance;
 
 internal class Job {
 
