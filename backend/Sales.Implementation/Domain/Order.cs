@@ -7,19 +7,19 @@ public enum OrderStatus {
     Void
 }
 
-internal class Order {
+public class Order {
 
     public Guid Id { get; set; }
+
+    public string Name { get; set; } = string.Empty;
     
-    public string Name { get; set; }
+    public string Number { get; set; } = string.Empty;
+
+    public Company? Customer { get; set; }
     
-    public string Number { get; set; }
+    public Company? Vendor { get; set; }
     
-    public Company Customer { get; set; }
-    
-    public Company Vendor { get; set; }
-    
-    public Company Supplier { get; set; }
+    public Company? Supplier { get; set; }
     
     public OrderStatus Status { get; set; }
     

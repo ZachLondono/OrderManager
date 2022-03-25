@@ -9,7 +9,7 @@ public record ItemOptionUpdatedEvent(Guid ItemId, string option, string value);
 public record OrderPlacedEvent();
 public record OrderCanceledEvent();
 
-internal class OrderContext {
+public class OrderContext {
 
     private readonly Order _order;
     private readonly List<object> _events;

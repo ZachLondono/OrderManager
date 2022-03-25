@@ -5,7 +5,7 @@ namespace Sales.Implementation.Infrastructure;
 internal record ItemOptionSet(string Option, string Value);
 internal record ItemQtySet(int Qty);
 
-internal class OrderedItemContext {
+public class OrderedItemContext {
 
     private readonly OrderedItem _item;
     private readonly List<object> _events;

@@ -9,7 +9,7 @@ internal record NameSetEvent(string Name);
 internal record RoleAddedEvent(string Role);
 internal record RoleRemovedEvent(string Role);
 
-internal class CompanyContext {
+public class CompanyContext {
 
     private readonly Company _company;
     private readonly List<object> _events;

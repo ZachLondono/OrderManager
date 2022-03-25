@@ -2,7 +2,7 @@
 
 namespace Catalog.Implementation.Infrastructure;
 
-internal class ProductRepository {
+public class ProductRepository {
 
     private readonly IDbConnection _connection;
 
@@ -10,12 +10,12 @@ internal class ProductRepository {
         _connection = connection;
     }
 
-    public ProductContext GetProductById(Guid Id) => throw new NotImplementedException();
+    public Task<ProductContext> GetProductById(Guid Id) => throw new NotImplementedException();
 
     /// <summary>
     /// Persists all the events which where applied to the product context
     /// </summary>
     /// <param name="product">Context to which events where applied</param>
-    public void Save(ProductContext product) => throw new NotImplementedException();
+    public Task Save(ProductContext product) => throw new NotImplementedException();
 
 }

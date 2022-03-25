@@ -2,7 +2,7 @@
 
 namespace Sales.Implementation.Infrastructure;
 
-internal class OrderRepository {
+public class OrderRepository {
 
     private readonly IDbConnection _connection;
 
@@ -10,8 +10,8 @@ internal class OrderRepository {
         _connection = connection;
     }
 
-    public OrderContext GetOrderById(Guid id) => throw new NotImplementedException();
+    public Task<OrderContext> GetOrderById(Guid id) => throw new NotImplementedException();
 
-    public void Save(OrderContext order) => throw new NotImplementedException();
+    public Task Save(OrderContext order) => throw new NotImplementedException();
 
 }

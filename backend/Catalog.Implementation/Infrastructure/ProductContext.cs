@@ -9,7 +9,7 @@ internal record AttributeUpdateEvent(string Name);
 /// <summary>
 /// Keeps track of events that are applied to a product
 /// </summary>
-internal class ProductContext {
+public class ProductContext {
     
     private readonly Product _product;
     private readonly List<object> _events = new();

@@ -1,6 +1,6 @@
 ﻿namespace Catalog.Implementation.Domain;
 
-internal class Product {
+public class Product {
 
     public Guid Id { get; init; }
 

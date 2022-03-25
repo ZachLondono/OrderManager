@@ -2,7 +2,7 @@
 
 namespace Sales.Implementation.Infrastructure;
 
-internal class CompanyRepository {
+public class CompanyRepository {
 
     private readonly IDbConnection _connection;
 
@@ -10,8 +10,8 @@ internal class CompanyRepository {
         _connection = connection;
     }
 
-    public CompanyContext GetCompanyById(Guid Id) => throw new NotImplementedException();
+    public Task<CompanyContext> GetCompanyById(Guid Id) => throw new NotImplementedException();
 
-    public void Save(CompanyContext company) => throw new NotImplementedException();
+    public Task Save(CompanyContext company) => throw new NotImplementedException();
 
 }
