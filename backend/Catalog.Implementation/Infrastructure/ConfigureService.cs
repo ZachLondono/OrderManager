@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Catalog.Implementation.Infrastructure;
@@ -6,6 +7,7 @@ namespace Catalog.Implementation.Infrastructure;
 public static class ConfigureService {
     public static IServiceCollection AddCatalog(this IServiceCollection services) =>
         services.AddMediatR(typeof(ConfigureService).Assembly)
+                .AddValidatorsFromAssembly(typeof(ConfigureService).Assembly)
                 .AddTransient<ProductRepository>()
                 .AddTransient<Application.Catalog>()
                 .AddTransient<Contracts.CatalogProducts.GetProducts>((s) =>
