@@ -1,6 +1,6 @@
 ﻿namespace Manufacturing.Implementation.Domain;
 
-internal enum ManufacturingStatus {
+public enum ManufacturingStatus {
     Pending,
     InProgress,
     Complete,
@@ -8,15 +8,15 @@ internal enum ManufacturingStatus {
     Canceled
 }
 
-internal class Job {
+public class Job {
 
     public string Name { get; private set; }
 
     public string Number { get; private set; }
 
-    public string Customer { get; private set; }
+    public string? Customer { get; set; }
 
-    public string Vendor { get; private set; }
+    public string? Vendor { get; set; }
 
     public int ItemCount { get; private set; }
 
@@ -28,7 +28,13 @@ internal class Job {
 
     public ManufacturingStatus Status { get; private set; }
 
-    public Job(string name, string number, string customer, string vendor, int itemCount) {
+    public Job(string name, string number, string? customer, string? vendor, int itemCount) {
+
+        if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("Name cannot be null or empty", nameof(name));
+        if (string.IsNullOrEmpty(number) || string.IsNullOrWhiteSpace(number))
+            throw new ArgumentException("Name cannot be null or empty", nameof(number));
+
         Name = name;
         Number = number;
         Customer = customer;
@@ -37,7 +43,13 @@ internal class Job {
         Status = ManufacturingStatus.Pending;
     }
 
-    public Job(string name, string number, string customer, string vendor, int itemCount, DateTime? releaseDate, DateTime? completeDate, DateTime? shippedDate, ManufacturingStatus status) {
+    public Job(string name, string number, string? customer, string? vendor, int itemCount, DateTime? releaseDate, DateTime? completeDate, DateTime? shippedDate, ManufacturingStatus status) {
+
+        if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("Name cannot be null or empty", nameof(name));
+        if (string.IsNullOrEmpty(number) || string.IsNullOrWhiteSpace(number))
+            throw new ArgumentException("Name cannot be null or empty", nameof(number));
+
         Name = name;
         Number = number;
         Customer = customer;

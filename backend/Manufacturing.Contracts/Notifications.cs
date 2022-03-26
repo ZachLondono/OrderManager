@@ -2,8 +2,8 @@
 
 namespace Manufacturing.Contracts;
 
-public record JobReleasedNotification(string Name, string Number, string Customer, DateTime ReleaseDate) : INotification;
+public record JobReleasedNotification(Guid JobId, string Name, string Number, string Customer, DateTime ReleaseDate) : INotification;
 
-public record JobCompleteNotification(string Name, string Number, string Customer, DateTime CompleteDate) : INotification;
+public record JobCompleteNotification(Guid JobId, string Name, string Number, string Customer, DateTime CompleteDate) : INotification;
 
-public record JobShippedNotification(string Name, string Number, string Customer, DateTime ShipDate) : INotification;
+public record JobShippedNotification(Guid JobId, string Name, string Number, string Customer, DateTime ShipDate) : INotification;
