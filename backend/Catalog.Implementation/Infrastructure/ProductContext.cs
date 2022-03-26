@@ -4,7 +4,7 @@ namespace Catalog.Implementation.Infrastructure;
 
 internal record NameChangeEvent(string Name);
 internal record AttributeAddedEvent(string Name);
-internal record AttributeUpdateEvent(string Name);
+internal record AttributeRemovedEvent(string Name);
 
 /// <summary>
 /// Keeps track of events that are applied to a product
@@ -20,10 +20,19 @@ public class ProductContext {
         _product = product;
     }
 
-    public void SetName(string name) => throw new NotImplementedException();
+    public void SetName(string name) {
+        _product.Name = name;
+        _events.Add(new NameChangeEvent(name));
+    }
 
-    public void AddAttribute(string name) => throw new NotImplementedException();
+    public void AddAttribute(string name) {
+        _product.AddAttribute(name);
+        _events.Add(new AttributeAddedEvent(name));
+    }
 
-    public void RemoveAttribute(string name) => throw new NotImplementedException();
+    public void RemoveAttribute(string name) {
+        _product.RemoveAttribute(name);
+        _events.Add(new AttributeRemovedEvent(name));
+    }
 
 }

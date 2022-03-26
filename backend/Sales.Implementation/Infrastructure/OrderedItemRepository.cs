@@ -14,4 +14,6 @@ public class OrderedItemRepository {
 
     public Task Save(OrderedItemContext item) => throw new NotImplementedException();
 
+    public Task Delete(Guid itemId) => throw new NotImplementedException();
+
 }

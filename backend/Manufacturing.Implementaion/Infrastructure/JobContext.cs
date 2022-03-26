@@ -15,10 +15,19 @@ internal class JobContext {
         _job = job;
     }
 
-    public void ReleaseToProduction() => throw new NotImplementedException();
+    public void ReleaseToProduction() {
+        _job.ReleaseToProduction();
+        _events.Add(new JobStatusChangeEvent(ManufacturingStatus.InProgress));
+    }
 
-    public void Complete() => throw new NotImplementedException();
+    public void Complete() {
+        _job.Complete();
+        _events.Add(new JobStatusChangeEvent(ManufacturingStatus.Complete));
+    }
 
-    public void Ship() => throw new NotImplementedException();
+    public void Ship() {
+        _job.Ship();
+        _events.Add(new JobStatusChangeEvent(ManufacturingStatus.Shipped));
+    }
 
 }
