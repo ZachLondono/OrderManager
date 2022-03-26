@@ -3,11 +3,11 @@
 namespace Sales.Implementation.Infrastructure;
 
 internal record ContactAddedEvent(Contact contact);
-internal record ContactRemovedEvent(Contact contact);
-internal record AddressSetEvent(string Line1, string Line2, string Line3, string City, string State, string Zip);
+internal record ContactRemovedEvent(string contact);
+internal record AddressSetEvent(Address Address);
 internal record NameSetEvent(string Name);
-internal record RoleAddedEvent(string Role);
-internal record RoleRemovedEvent(string Role);
+internal record RoleAddedEvent(CompanyRole Role);
+internal record RoleRemovedEvent(CompanyRole Role);
 
 public class CompanyContext {
 
@@ -19,16 +19,41 @@ public class CompanyContext {
         _events = new();
     }
 
-    public void AddContact(Contact contact) => throw new NotImplementedException();
+    public void AddContact(Contact contact) {
+        _company.AddContact(contact);
+        _events.Add(new ContactAddedEvent(contact));
+    }
 
-    public void RemoveContact(Contact contact) => throw new NotImplementedException();
+    public void RemoveContact(string name) {
+        _company.RemoveContactByName(name);
+        _events.Add(new ContactRemovedEvent(name));
+    }
 
-    public void SetAddress(string Line1, string Line2, string Line3, string City, string State, string Zip) => throw new NotImplementedException();
+    public void SetAddress(string Line1, string Line2, string Line3, string City, string State, string Zip) {
+        _company.Address = new() {
+            Line1 = Line1,
+            Line2 = Line2,
+            Line3 = Line3,
+            City = City,
+            State = State,
+            Zip = Zip
+        };
+        _events.Add(new AddressSetEvent(_company.Address));
+    }
 
-    public void SetName(string name) => throw new NotImplementedException();
+    public void SetName(string name) {
+        _company.Name = name;
+        _events.Add(new NameSetEvent(name));
+    }
 
-    public void AddRole(string role) => throw new NotImplementedException();
+    public void AddRole(CompanyRole role) {
+        _company.AddRole(role);
+        _events.Add(new RoleAddedEvent(role));
+    }
 
-    public void RemoveRole(string role) => throw new NotImplementedException();
+    public void RemoveRole(CompanyRole role) {
+        _company.RemoveRole(role);
+        _events.Add(new RoleRemovedEvent(role));
+    }
 
 }

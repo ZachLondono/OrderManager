@@ -15,8 +15,14 @@ public class OrderedItemContext {
         _events = new();
     }
 
-    public void SetItemOption(string option, string value) => throw new NotImplementedException();
+    public void SetItemOption(string option, string value) {
+        _item.SetOption(option, value);
+        _events.Add(new ItemOptionSet(option, value));
+    }
 
-    public void SetQty(int qty) => throw new NotImplementedException();
+    public void SetQty(int qty) {
+        _item.SetQuantity(qty);
+        _events.Add(new ItemQtySet(qty));
+    }
 
 }

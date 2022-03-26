@@ -4,9 +4,9 @@ namespace Sales.Implementation.Infrastructure;
 
 public record ItemAddedEvent(OrderedItem Item);
 public record ItemRemovedEvent(Guid Id);
-public record ItemUpdatedEvent(OrderedItem Item);
-public record ItemOptionUpdatedEvent(Guid ItemId, string option, string value);
 public record OrderPlacedEvent();
+public record OrderConfirmedEvent();
+public record OrderCompletedEvent();
 public record OrderCanceledEvent();
 
 public class OrderContext {
@@ -19,16 +19,33 @@ public class OrderContext {
         _events = new();
     }
 
-    public void AddItem(OrderedItem item) => throw new NotImplementedException();
+    public void AddItem(OrderedItem item) {
+        _order.AddItem(item);
+        _events.Add(new ItemAddedEvent(item));
+    }
 
-    public void RemoveItem(Guid id) => throw new NotImplementedException();
+    public void RemoveItem(Guid id) {
+        _order.RemoveItem(id);
+        _events.Add(new ItemRemovedEvent(id));
+    }
 
-    public void UpdateItem(OrderedItem item) => throw new NotImplementedException();
+    public void PlaceOrder() {
+        throw new NotImplementedException();
+    }
 
-    public void SetItemOption(Guid id, string option, string value) => throw new NotImplementedException();
+    public void ConfirmOrder() {
+        _order.ConfirmOrder();
+        _events.Add(new OrderConfirmedEvent());
+    }
 
-    public void PlaceOrder() => throw new NotImplementedException();
+    public void CompleteOrder() {
+        _order.CompleteOrder();
+        _events.Add(new OrderCompletedEvent());
+    }
 
-    public void VoidOrder() => throw new NotImplementedException();
+    public void VoidOrder() {
+        _order.VoidOrder();
+        _events.Add(new OrderCanceledEvent());
+    }
 
 }
