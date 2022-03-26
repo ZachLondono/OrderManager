@@ -2,7 +2,7 @@
 
 namespace Catalog.Implementation.Application;
 
-internal class UpdateProductAttribute {
+public class UpdateProductAttribute {
 
     public record Command(Guid ProductId, string OldAttribute, string NewAttribute) : IRequest;
 

@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Catalog.Implementation.Application;
 
-internal class GetProductDetails {
+public class GetProductDetails {
 
     public record Query(Guid ProductId) : IRequest<ProductDetails>;
 

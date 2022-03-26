@@ -2,7 +2,7 @@
 
 namespace Catalog.Implementation.Application;
 
-internal class RemoveProductAttribute {
+public class RemoveProductAttribute {
 
     public record Command(Guid ProductId, string Attribute) : IRequest;
 

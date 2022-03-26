@@ -2,7 +2,7 @@
 
 namespace Catalog.Implementation.Application;
 
-internal class SetProductName {
+public class SetProductName {
 
     public record Command(Guid ProductId, string Name) : IRequest;
 

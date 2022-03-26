@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Catalog.Implementation.Application;
 
-internal class GetProducts {
+public class GetProducts {
 
     public record Query() : IRequest<ProductSummary[]>;
 
