@@ -79,5 +79,9 @@ public class Job {
         Status = ManufacturingStatus.Shipped;
     }
 
+    public void Cancel() {
+        Status = ManufacturingStatus.Canceled;
+    }
+
 
 }

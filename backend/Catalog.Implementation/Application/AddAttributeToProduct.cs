@@ -40,6 +40,8 @@ public class AddAttributeToProduct {
 
             product.AddAttribute(request.Name);
 
+            await _repository.Save(product);
+
         }
     }
 

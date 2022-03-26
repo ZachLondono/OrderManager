@@ -14,6 +14,11 @@ internal class JobContext {
     public JobContext(Job job) {
         _job = job;
     }
+    
+    public void Cancel() {
+        _job.Cancel();
+        _events.Add(new JobStatusChangeEvent(ManufacturingStatus.Canceled));
+    }
 
     public void ReleaseToProduction() {
         _job.ReleaseToProduction();

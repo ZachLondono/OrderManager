@@ -2,7 +2,7 @@
 
 namespace Manufacturing.Implementation.Infrastructure;
 
-internal class JobRepository {
+public class JobRepository {
 
     private IDbConnection _connection;
 
@@ -10,8 +10,8 @@ internal class JobRepository {
         _connection = connection;
     }
 
-    public JobContext GetJobById(Guid jobId) => throw new NotImplementedException();
+    public Task<JobContext> GetJobById(Guid jobId) => throw new NotImplementedException();
 
-    public void Save(JobContext context) => throw new NotImplementedException();
+    public Task Save(JobContext context) => throw new NotImplementedException();
 
 }
