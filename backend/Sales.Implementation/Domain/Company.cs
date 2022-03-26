@@ -50,7 +50,21 @@ public class Company {
     }
 
     public void AddContact(Contact contact) {
+
+        if (_contacts.Where(c => c.Name == contact.Name).Any())
+            throw new InvalidOperationException($"Company already contains contact with the given name '{contact.Name}'");
+
         _contacts.Add(contact);
+    }
+
+    public void RemoveContactByName(string name) {
+        Contact? contact = _contacts.Where(c => c.Name == name).FirstOrDefault();
+
+        if (contact is null)
+            throw new InvalidOperationException("Company does not have a contact with the given name");
+
+        _contacts.Remove(contact);
+
     }
 
     public void RemoveContact(Contact contact) {
