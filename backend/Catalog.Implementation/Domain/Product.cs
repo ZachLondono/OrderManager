@@ -11,7 +11,7 @@ public class Product {
     public IReadOnlyCollection<string> Attributes => _attributes.ToList().AsReadOnly();
     private HashSet<string> _attributes { get; set; } = new HashSet<string>();
 
-    public Product(string name, Guid id) {
+    public Product(Guid id, string name) {
         if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Product name cannot be null or empty", nameof(name));
         Name = name;
