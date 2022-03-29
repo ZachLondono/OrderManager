@@ -9,6 +9,10 @@ public class OrderedItemContext {
 
     private readonly OrderedItem _item;
     private readonly List<object> _events;
+    public IReadOnlyCollection<object> Events => _events.AsReadOnly();
+
+    public Guid Id => _item.Id;
+    public int Qty => _item.Quantity;
 
     public OrderedItemContext(OrderedItem item) {
         _item = item;
