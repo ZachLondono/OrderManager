@@ -1,5 +1,4 @@
-﻿using Catalog.Contracts;
-using System.Data;
+﻿using System.Data;
 using Dapper;
 using Catalog.Implementation.Domain;
 using Microsoft.Extensions.Logging;
@@ -16,37 +15,44 @@ public class ProductRepository {
         _logger = logger;
     }
 
-    public async Task<ProductContext> GetProductById(Guid Id) {
+    /// <summary>
+    /// Adds a new product with the given name
+    /// </summary>
+    /// <param name="name">The name for the new product</param>
+    /// <returns>A ProductContext to track changes to product</returns>
+    public async Task<ProductContext> Add(string name) {
 
-        const string query = "SELECT [Id], [Name] FROM [Products] WHERE [Id] = @Id;";
-        const string attrQuery = "SELECT [Option] FROM [Attributes] WHERE [ProductId] = @ProductId;";
+        var newId = Guid.NewGuid();
+        var product = new Product(newId, name);
 
-        var productDto = await _connection.QuerySingleAsync<Persistance.Product>(query, new { Id = Id });
-        var attributes = await _connection.QueryAsync<string>(attrQuery, new { ProductId = Id });
+        const string query = "INSERT INTO [Products] ([Id], [Name]) VALUES (@Id, @Name);";
 
-        var product = new Product(productDto.Id, productDto.Name);
-        foreach (var attribute in attributes) {
-            try { 
-                product.AddAttribute(attribute);
-            } catch(Exception e) {
-                _logger.LogWarning("Could not add attribute to product: {Exception}", e);
-            }
-        }
+        int rows = await _connection.ExecuteAsync(query, new {
+            Id = newId,
+            Name = name
+        });
+
+
+        if (rows == 0)
+            _logger.LogWarning("No rows affected inserting new product {Name}", name);
 
         return new(product);
+
     }
 
-    public async Task<ProductSummary[]> GetProducts() {
+    /// <summary>
+    /// Removes a product and all of its attributes
+    /// </summary>
+    /// <param name="product">The product to remove</param>
+    public async Task Remove(Guid productId) {
 
-        var productDtos = await _connection.QueryAsync<Persistance.Product>("SELECT [Id], [Name] FROM [Products];");
+        const string query1 = "DELETE FROM [Products] WHERE [Id] = @Id";
+        const string query2 = "DELETE FROM [ProductAttributes] WHERE [ProductId] = @Id";
 
-        List<ProductSummary> products = new();
+        int rows = await _connection.ExecuteAsync(query1, new { productId });
+        rows += await _connection.ExecuteAsync(query2, new { productId });
 
-        foreach (var product in productDtos) {
-            products.Add(new(product.Id, product.Name));
-        }
-
-        return products.ToArray();
+        _logger.LogInformation("Product deleted, {Rows} affected", rows);
 
     }
 
@@ -78,29 +84,40 @@ public class ProductRepository {
     private async Task ApplyAttributeRemove(ProductContext product, IDbTransaction trx, AttributeRemovedEvent attributeRemoved) {
         const string query = @"DELETE FROM [ProductAttributes]
                                 WHERE [ProductId] = @ProductId And [Name] = @Name;";
-        await _connection.ExecuteAsync(query, new {
+        int rows = await _connection.ExecuteAsync(query, new {
             ProductId = product.Id,
             attributeRemoved.Name
         }, trx);
+
+        if (rows == 0)
+            _logger.LogWarning("No rows affected removing attribute name {Name} from product {ProductId}", attributeRemoved.Name, product.Id);
+
     }
 
     private async Task ApplyAttributeAdd(ProductContext product, IDbTransaction trx, AttributeAddedEvent attributeAdded) {
         const string query = @"INSERT INTO [ProductAttributes] ([ProductId], [Name], [Default])
                                 VALUES (@ProductId, @Name, @Default);";
-        await _connection.ExecuteAsync(query, new {
+        int rows = await _connection.ExecuteAsync(query, new {
             ProductId = product.Id,
             attributeAdded.Name,
             Default = ""
         }, trx);
+
+        if (rows == 0)
+            _logger.LogWarning("No rows affected inserting new attribute {Name} into product {ProductId}", attributeAdded.Name, product.Id);
+
     }
 
     private async Task ApplyNameChange(ProductContext product, IDbTransaction trx, NameChangeEvent namechange) {
         const string query = @"UPDATE [Products]
                                 SET [Name] = @Name
                                 WHERE [Id] = @Id;";
-        await _connection.ExecuteAsync(query, new {
+        int rows = await _connection.ExecuteAsync(query, new {
             product.Id,
             namechange.Name
         }, trx);
+
+        if (rows == 0)
+            _logger.LogWarning("No rows affected setting product name {Name} for product {ProductId}", namechange.Name, product.Id);
     }
 }

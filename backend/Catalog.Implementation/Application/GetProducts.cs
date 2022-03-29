@@ -1,6 +1,7 @@
 ﻿using Catalog.Contracts;
-using Catalog.Implementation.Infrastructure;
+using Dapper;
 using MediatR;
+using System.Data;
 
 namespace Catalog.Implementation.Application;
 
@@ -10,14 +11,17 @@ public class GetProducts {
 
     public class Handler : IRequestHandler<Query, ProductSummary[]> {
 
-        private readonly ProductRepository _repository;
+        private readonly IDbConnection _connection;
 
-        public Handler(ProductRepository repository) {
-            _repository = repository;
+        public Handler(IDbConnection connection) {
+            _connection = connection;
         }
 
         public async Task<ProductSummary[]> Handle(Query request, CancellationToken cancellationToken) {
-            return await _repository.GetProducts();
+            var productDtos = await _connection.QueryAsync<Infrastructure.Persistance.Product>("SELECT [Id], [Name] FROM [Products];");
+            return productDtos
+                    .Select(p => new ProductSummary(p.Id, p.Name))
+                    .ToArray();
         }
     }
 

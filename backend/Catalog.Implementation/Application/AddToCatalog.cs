@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Catalog.Implementation.Infrastructure;
+using FluentValidation;
 using MediatR;
 
 namespace Catalog.Implementation.Application;
@@ -23,9 +24,16 @@ public class AddToCatalog {
     }
 
     public class Handler : IRequestHandler<Command, Guid> {
-        public Task<Guid> Handle(Command request, CancellationToken cancellationToken) {
-            //return Task.FromResult(Guid.NewGuid());
-            throw new NotImplementedException();
+
+        private readonly ProductRepository _repository;
+
+        public Handler(ProductRepository repository) {
+            _repository = repository;
+        }
+
+        public async Task<Guid> Handle(Command request, CancellationToken cancellationToken) {
+            var product = await _repository.Add(request.Name);
+            return product.Id;
         }
     }
 
