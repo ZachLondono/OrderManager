@@ -1,14 +1,15 @@
-﻿using Manufacturing.Implementation.Domain;
+﻿using Manufacturing.Contracts;
+using Manufacturing.Implementation.Domain;
 
 namespace Manufacturing.Implementation.Infrastructure;
 
 internal record JobStatusChangeEvent(ManufacturingStatus Status);
 
-internal class JobContext {
+public class JobContext {
 
-    private List<object> _events = new();
-    private Job _job;
-    
+    private readonly List<object> _events = new();
+    private readonly Job _job;
+
     public IReadOnlyCollection<object> Events => _events.AsReadOnly();
 
     public JobContext(Job job) {
@@ -34,5 +35,16 @@ internal class JobContext {
         _job.Ship();
         _events.Add(new JobStatusChangeEvent(ManufacturingStatus.Shipped));
     }
+
+    public JobDetails Details() => new() {
+        Name = _job.Name,
+        Number = _job.Number,
+        Customer = _job.Customer,
+        ItemCount = _job.ItemCount,
+        Vendor = _job.Vendor,
+        ReleaseDate = _job.ReleaseDate,
+        CompleteDate = _job.CompleteDate,
+        ShippedDate = _job.ShippedDate,
+    };
 
 }

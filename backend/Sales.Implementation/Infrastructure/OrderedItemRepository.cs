@@ -1,18 +1,40 @@
 ﻿using System.Data;
 using System.Text.Json;
 using Dapper;
+using Microsoft.Extensions.Logging;
+using Sales.Implementation.Domain;
 
 namespace Sales.Implementation.Infrastructure;
 
 public class OrderedItemRepository {
 
     private readonly IDbConnection _connection;
+    private readonly ILogger<OrderedItemRepository> _logger;
 
-    public OrderedItemRepository(IDbConnection connection) {
+    public OrderedItemRepository(IDbConnection connection, ILogger<OrderedItemRepository> logger) {
         _connection = connection;
+        _logger = logger;
     }
 
-    public Task<OrderedItemContext> GetItemById(Guid Id) => throw new NotImplementedException();
+    public async Task<OrderedItemContext> GetItemById(Guid id) {
+
+        const string query = "SELECTE [Id], [ProductName], [ProductId], [Options], [Qty], [OrderId] FROM [OrderedItems] WHERE [Id] = @Id;";
+
+        var itemDto = await _connection.QuerySingleAsync<Persistance.OrderedItem>(query, new { Id = id });
+
+        var item = new OrderedItem(id, itemDto.ProductId, itemDto.OrderId);
+        item.SetQuantity(itemDto.Qty);
+
+        var options = JsonSerializer.Deserialize<Dictionary<string, string>>(itemDto.Options);
+        if (options is not null) { 
+            foreach (var key in options.Keys) {
+                item[key] = options[key];
+            }
+        }
+
+        return new(item);
+
+    }
 
     public async Task Remove(Guid itemId) {
         const string command = @"DELETE FROM [OrderedItems] WHERE [Id] = @Id;";

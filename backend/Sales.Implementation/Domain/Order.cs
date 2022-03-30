@@ -28,13 +28,13 @@ public class Order {
     
     public Dictionary<string, string> Fields { get; set; } = new();
     
-    public DateTime? CompletionDate { get; private set; }
+    public DateTime? CompletionDate { get; set; }
 
-    public DateTime? ConfirmationDate { get; private set; }
+    public DateTime? ConfirmationDate { get; set; }
     
-    public DateTime PlacedDate { get; init; }
+    public DateTime? PlacedDate { get; set; }
 
-    public Order(Guid id, string name, string number, DateTime placedDate) {
+    public Order(Guid id, string name, string number, DateTime? placedDate) {
         Id = id;
         Name = name;
         Number = number;

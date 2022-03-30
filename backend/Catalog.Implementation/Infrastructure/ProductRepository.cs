@@ -15,6 +15,27 @@ public class ProductRepository {
         _logger = logger;
     }
 
+    public async Task<ProductContext> GetProductById(Guid id) {
+
+        const string query = "SELECT [Id], [Name] FROM [Products] WHERE [Id] = @Id;";
+        const string attrQuery = "SELECT [Option] FROM [Attributes] WHERE [ProductId] = @ProductId;";
+
+        var productDto = await _connection.QuerySingleAsync<Persistance.Product>(query, new { Id = id });
+        var attributes = await _connection.QueryAsync<string>(attrQuery, new { ProductId = id });
+
+        var product = new Product(productDto.Id, productDto.Name);
+        foreach (var attribute in attributes) {
+            try {
+                product.AddAttribute(attribute);
+            } catch (Exception e) {
+                _logger.LogWarning("Could not add attribute to product: {Exception}", e);
+            }
+        }
+
+        return new(product);
+
+    }
+
     /// <summary>
     /// Adds a new product with the given name
     /// </summary>
