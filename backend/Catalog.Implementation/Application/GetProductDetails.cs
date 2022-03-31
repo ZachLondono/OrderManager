@@ -7,7 +7,7 @@ namespace Catalog.Implementation.Application;
 
 public class GetProductDetails {
 
-    public record Query(Guid ProductId) : IRequest<ProductDetails>;
+    public record Query(int ProductId) : IRequest<ProductDetails>;
 
     public class Handler : IRequestHandler<Query, ProductDetails> {
 
@@ -22,10 +22,12 @@ public class GetProductDetails {
             const string query = "SELECT [Id], [Name] FROM [Products] WHERE [Id] = @Id;";
             const string attrQuery = "SELECT [Option] FROM [Attributes] WHERE [ProductId] = @ProductId;";
 
-            var productDto = await _connection.QuerySingleAsync<Infrastructure.Persistance.Product>(query, new { Id = request.ProductId });
+            var product = await _connection.QuerySingleAsync<ProductDetails>(query, new { Id = request.ProductId });
             var attributes = await _connection.QueryAsync<string>(attrQuery, new { request.ProductId });
+            
+            product.Attributes = attributes.ToArray();
 
-            return new ProductDetails(productDto.Id, productDto.Name, attributes.ToArray());
+            return product;
 
         }
     }

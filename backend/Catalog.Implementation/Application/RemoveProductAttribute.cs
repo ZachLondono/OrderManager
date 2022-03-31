@@ -5,7 +5,7 @@ namespace Catalog.Implementation.Application;
 
 public class RemoveProductAttribute {
 
-    public record Command(Guid ProductId, string Attribute) : IRequest;
+    public record Command(int ProductId, string Attribute) : IRequest;
 
     public class Handler : AsyncRequestHandler<Command> {
 

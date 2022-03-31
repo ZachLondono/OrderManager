@@ -6,7 +6,7 @@ namespace Catalog.Implementation.Application;
 
 public class AddAttributeToProduct {
 
-    public record Command(Guid ProductId, string Name) : IRequest;
+    public record Command(int ProductId, string Name) : IRequest;
 
     public class Validation : AbstractValidator<Command> {
 

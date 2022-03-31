@@ -5,7 +5,7 @@ namespace Catalog.Implementation.Application;
 
 public class UpdateProductAttribute {
 
-    public record Command(Guid ProductId, string OldAttribute, string NewAttribute) : IRequest;
+    public record Command(int ProductId, string OldAttribute, string NewAttribute) : IRequest;
 
     public class Handler : AsyncRequestHandler<Command> {
 

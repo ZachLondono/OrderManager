@@ -2,7 +2,7 @@
 
 internal class Product {
 
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
     public string Name { get; set; } = string.Empty;
 
@@ -10,9 +10,9 @@ internal class Product {
 
 internal class ProductAttribute {
 
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
-    public Guid ProductId { get; set; }
+    public int ProductId { get; set; }
 
     public string Option { get; set; } = string.Empty;
 

@@ -15,7 +15,7 @@ public class ProductRepository {
         _logger = logger;
     }
 
-    public async Task<ProductContext> GetProductById(Guid id) {
+    public async Task<ProductContext> GetProductById(int id) {
 
         const string query = "SELECT [Id], [Name] FROM [Products] WHERE [Id] = @Id;";
         const string attrQuery = "SELECT [Option] FROM [Attributes] WHERE [ProductId] = @ProductId;";
@@ -43,19 +43,14 @@ public class ProductRepository {
     /// <returns>A ProductContext to track changes to product</returns>
     public async Task<ProductContext> Add(string name) {
 
-        var newId = Guid.NewGuid();
-        var product = new Product(newId, name);
+        const string query = @"INSERT INTO [Products] ([Name]) VALUES (@Name);
+                                SELECT SCOPE_IDENTITY();";
 
-        const string query = "INSERT INTO [Products] ([Id], [Name]) VALUES (@Id, @Name);";
-
-        int rows = await _connection.ExecuteAsync(query, new {
-            Id = newId,
+        int newId = await _connection.QuerySingleAsync<int>(query, new {
             Name = name
         });
 
-
-        if (rows == 0)
-            _logger.LogWarning("No rows affected inserting new product {Name}", name);
+        var product = new Product(newId, name);
 
         return new(product);
 
@@ -65,7 +60,7 @@ public class ProductRepository {
     /// Removes a product and all of its attributes
     /// </summary>
     /// <param name="product">The product to remove</param>
-    public async Task Remove(Guid productId) {
+    public async Task Remove(int productId) {
 
         const string query1 = "DELETE FROM [Products] WHERE [Id] = @Id";
         const string query2 = "DELETE FROM [ProductAttributes] WHERE [ProductId] = @Id";

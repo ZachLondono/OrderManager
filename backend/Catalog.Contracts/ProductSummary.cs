@@ -2,13 +2,8 @@
 
 public class ProductSummary {
 
-    public Guid Id { get; init; }
+    public int Id { get; set; }
 
-    public string Name { get; init; }
-
-    public ProductSummary(Guid id, string name) {
-        Id = id;
-        Name = name;
-    }
+    public string Name { get; set; } = string.Empty;
 
 }

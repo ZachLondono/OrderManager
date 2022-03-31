@@ -5,7 +5,7 @@ namespace Catalog.Implementation.Application;
 
 public class SetProductName {
 
-    public record Command(Guid ProductId, string Name) : IRequest;
+    public record Command(int ProductId, string Name) : IRequest;
 
     public class Handler : AsyncRequestHandler<Command> {
 

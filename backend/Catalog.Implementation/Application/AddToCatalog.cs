@@ -6,7 +6,7 @@ namespace Catalog.Implementation.Application;
 
 public class AddToCatalog {
 
-    public record Command(string Name) : IRequest<Guid>;
+    public record Command(string Name) : IRequest<int>;
 
     public class Validation : AbstractValidator<Command> {
 
@@ -23,7 +23,7 @@ public class AddToCatalog {
 
     }
 
-    public class Handler : IRequestHandler<Command, Guid> {
+    public class Handler : IRequestHandler<Command, int> {
 
         private readonly ProductRepository _repository;
 
@@ -31,7 +31,7 @@ public class AddToCatalog {
             _repository = repository;
         }
 
-        public async Task<Guid> Handle(Command request, CancellationToken cancellationToken) {
+        public async Task<int> Handle(Command request, CancellationToken cancellationToken) {
             var product = await _repository.Add(request.Name);
             return product.Id;
         }

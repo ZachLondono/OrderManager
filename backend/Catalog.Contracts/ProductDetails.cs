@@ -2,16 +2,10 @@
 
 public class ProductDetails {
 
-    public Guid Id { get; init; }
+    public int Id { get; set; }
 
-    public string Name { get; init; }
+    public string Name { get; set; } = string.Empty;
 
-    public string[] Attributes { get; init; }
-
-    public ProductDetails(Guid id, string name, string[] attributes) {
-        Id = id;
-        Name = name;
-        Attributes = attributes;
-    }
+    public string[] Attributes { get; set; } = Array.Empty<string>();
 
 }

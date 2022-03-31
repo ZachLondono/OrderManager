@@ -18,10 +18,8 @@ public class GetProducts {
         }
 
         public async Task<ProductSummary[]> Handle(Query request, CancellationToken cancellationToken) {
-            var productDtos = await _connection.QueryAsync<Infrastructure.Persistance.Product>("SELECT [Id], [Name] FROM [Products];");
-            return productDtos
-                    .Select(p => new ProductSummary(p.Id, p.Name))
-                    .ToArray();
+            var products = await _connection.QueryAsync<ProductSummary>("SELECT [Id], [Name] FROM [Products];");
+            return products.ToArray();
         }
     }
 

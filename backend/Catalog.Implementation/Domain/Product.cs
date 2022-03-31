@@ -4,14 +4,14 @@ namespace Catalog.Implementation.Domain;
 
 public class Product {
 
-    public Guid Id { get; init; }
+    public int Id { get; init; }
 
     public string Name { get; set; }
 
     public IReadOnlyCollection<string> Attributes => _attributes.ToList().AsReadOnly();
     private HashSet<string> _attributes { get; set; } = new HashSet<string>();
 
-    public Product(Guid id, string name) {
+    public Product(int id, string name) {
         if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Product name cannot be null or empty", nameof(name));
         Name = name;
