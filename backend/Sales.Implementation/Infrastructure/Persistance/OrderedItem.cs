@@ -2,19 +2,19 @@
 
 public class OrderedItem {
 
-    public Guid Id { get; init; }
+    public int Id { get; init; }
 
     public string ProductName { get; init; }
 
-    public Guid ProductId { get; init; }
+    public int ProductId { get; init; }
 
     public int Qty { get; init; }
 
     public string Options { get; init; }
 
-    public Guid OrderId { get; init; }
+    public int OrderId { get; init; }
 
-    public OrderedItem(Guid id, string productName, Guid productId, int qty, string options, Guid orderId) {
+    public OrderedItem(int id, string productName, int productId, int qty, string options, int orderId) {
         Id = id;
         ProductName = productName;
         ProductId = productId;

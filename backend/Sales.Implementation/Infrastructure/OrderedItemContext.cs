@@ -11,7 +11,7 @@ public class OrderedItemContext {
     private readonly List<object> _events;
     public IReadOnlyCollection<object> Events => _events.AsReadOnly();
 
-    public Guid Id => _item.Id;
+    public int Id => _item.Id;
     public int Qty => _item.Quantity;
 
     public OrderedItemContext(OrderedItem item) {

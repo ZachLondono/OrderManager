@@ -6,7 +6,7 @@ namespace Sales.Implementation.Application.Companies;
 
 internal class AddRole {
 
-    public record Command(Guid CompanyId, string Role) : IRequest;
+    public record Command(int CompanyId, string Role) : IRequest;
 
     public class Handler : AsyncRequestHandler<Command> {
 

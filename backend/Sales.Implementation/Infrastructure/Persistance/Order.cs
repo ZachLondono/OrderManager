@@ -2,17 +2,17 @@
 
 internal class Order {
 
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
     public string Name { get; set; } = string.Empty;
 
     public string Number { get; set; } = string.Empty;
 
-    public Guid CustomerId { get; set; }
+    public int CustomerId { get; set; }
 
-    public Guid VendorId { get; set; }
+    public int VendorId { get; set; }
 
-    public Guid SupplierId { get; set; }
+    public int SupplierId { get; set; }
 
     public DateTime? PlacedDate { get; set; }
 

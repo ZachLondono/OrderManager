@@ -16,7 +16,7 @@ public class OrderRepository {
         _logger = logger;
     }
 
-    public async Task<OrderContext> GetOrderById(Guid id) {
+    public async Task<OrderContext> GetOrderById(int id) {
 
         const string query = @"SELECT [Id], [Name], [Number], [Status], [Fields], [PlaceDate], [CompletionDate], [ConfirmationDate], [VendorId], [SupplierId], [CustomerId]
                                 FROM [Orders] WHERE [Id] = @Id;";

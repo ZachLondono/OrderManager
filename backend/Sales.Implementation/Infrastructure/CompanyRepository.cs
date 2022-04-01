@@ -10,7 +10,7 @@ public class CompanyRepository {
         _connection = connection;
     }
 
-    public Task<CompanyContext> GetCompanyById(Guid Id) => throw new NotImplementedException();
+    public Task<CompanyContext> GetCompanyById(int Id) => throw new NotImplementedException();
 
     public Task Save(CompanyContext company) => throw new NotImplementedException();
 

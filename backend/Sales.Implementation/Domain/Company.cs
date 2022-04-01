@@ -10,7 +10,7 @@ public enum CompanyRole {
 
 public class Company {
     
-    public Guid Id { get; init; }
+    public int Id { get; init; }
     
     public string Name { get; set; }
 
@@ -22,7 +22,7 @@ public class Company {
     private readonly List<CompanyRole> _roles;
     public ReadOnlyCollection<CompanyRole> Roles => _roles.AsReadOnly();
 
-    public Company(Guid id, string name) {
+    public Company(int id, string name) {
         Id = id;
         Name = name;
         Address = new();
@@ -30,7 +30,7 @@ public class Company {
         _contacts = new();
     }
 
-    public Company(Guid id, string name, List<Contact> contacts, Address adderss, List<CompanyRole> roles) {
+    public Company(int id, string name, List<Contact> contacts, Address adderss, List<CompanyRole> roles) {
         Id = id;
         Name = name;
         Address = adderss;

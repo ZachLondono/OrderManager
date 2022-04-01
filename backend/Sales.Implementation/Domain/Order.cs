@@ -9,7 +9,7 @@ public enum OrderStatus {
 
 public class Order {
 
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
     public string Name { get; set; }
     
@@ -34,7 +34,7 @@ public class Order {
     
     public DateTime? PlacedDate { get; set; }
 
-    public Order(Guid id, string name, string number, DateTime? placedDate) {
+    public Order(int id, string name, string number, DateTime? placedDate) {
         Id = id;
         Name = name;
         Number = number;
@@ -53,7 +53,7 @@ public class Order {
         _items.Remove(item);
     }
     
-    public void RemoveItem(Guid itemId) {
+    public void RemoveItem(int itemId) {
         var idx = _items.FindIndex(i => i.Id.Equals(itemId));
         _items.RemoveAt(idx);
     }

@@ -5,9 +5,9 @@ namespace Sales.Implementation.Application.Companies;
 
 internal class CreateCompany {
 
-    public record Command(string Name) : IRequest<Guid>;
+    public record Command(string Name) : IRequest<int>;
 
-    public class Handler : IRequestHandler<Command, Guid> {
+    public class Handler : IRequestHandler<Command, int> {
 
         private readonly CompanyRepository _repo;
 
@@ -15,7 +15,7 @@ internal class CreateCompany {
             _repo = repo;
         }
 
-        public Task<Guid> Handle(Command request, CancellationToken cancellationToken) {
+        public Task<int> Handle(Command request, CancellationToken cancellationToken) {
             throw new NotImplementedException();
         }
     }

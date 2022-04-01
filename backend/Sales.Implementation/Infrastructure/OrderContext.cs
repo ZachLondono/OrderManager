@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 namespace Sales.Implementation.Infrastructure;
 
 public record ItemAddedEvent(OrderedItem Item);
-public record ItemRemovedEvent(Guid ItemId);
+public record ItemRemovedEvent(int ItemId);
 public record OrderPlacedEvent(DateTime TimeStamp);
 public record OrderConfirmedEvent(DateTime TimeStamp);
 public record OrderCompletedEvent(DateTime TimeStamp);
@@ -27,7 +27,7 @@ public class OrderContext {
         _events.Add(new ItemAddedEvent(item));
     }
 
-    public void RemoveItem(Guid id) {
+    public void RemoveItem(int id) {
         _order.RemoveItem(id);
         _events.Add(new ItemRemovedEvent(id));
     }

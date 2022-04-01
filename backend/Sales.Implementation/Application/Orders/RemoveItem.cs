@@ -5,7 +5,7 @@ namespace Sales.Implementation.Application.Orders;
 
 internal class RemoveItem {
 
-    public record Command(Guid OrderId, Guid ItemId) : IRequest;
+    public record Command(int OrderId, int ItemId) : IRequest;
 
     public class Handler : AsyncRequestHandler<Command> {
 

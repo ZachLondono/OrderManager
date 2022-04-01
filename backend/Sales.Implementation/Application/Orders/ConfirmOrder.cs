@@ -5,7 +5,7 @@ namespace Sales.Implementation.Application.Orders;
 
 internal class ConfirmOrder {
 
-    public record Command(Guid OrderId) : IRequest;
+    public record Command(int OrderId) : IRequest;
 
     public class Handler : AsyncRequestHandler<Command> {
 

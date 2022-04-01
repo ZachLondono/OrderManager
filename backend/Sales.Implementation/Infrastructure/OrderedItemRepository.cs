@@ -16,7 +16,7 @@ public class OrderedItemRepository {
         _logger = logger;
     }
 
-    public async Task<OrderedItemContext> GetItemById(Guid id) {
+    public async Task<OrderedItemContext> GetItemById(int id) {
 
         const string query = "SELECTE [Id], [ProductName], [ProductId], [Options], [Qty], [OrderId] FROM [OrderedItems] WHERE [Id] = @Id;";
 
@@ -36,21 +36,20 @@ public class OrderedItemRepository {
 
     }
 
-    public async Task Remove(Guid itemId) {
+    public async Task Remove(int itemId) {
         const string command = @"DELETE FROM [OrderedItems] WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new { Id = itemId });
     }
 
-    public async Task<Guid> Create(string productName, Guid productId, Guid orderId) {
+    public async Task<int> Create(string productName, int productId, int orderId) {
 
         const string command = @"INSERT INTO [OrderedItems]
-                                ([Id], [ProductName], [ProductId], [OrderId], [Qty], [Options])
-                                VALUES (@Id, @ProductName, @ProductId, @OrderId, @Qty, @Options);";
+                                ([ProductName], [ProductId], [OrderId], [Qty], [Options])
+                                VALUES (@ProductName, @ProductId, @OrderId, @Qty, @Options);
+                                SELECT SCOPE_IDENTITY();";
         
-        Guid newId = Guid.NewGuid();
-
-        await _connection.ExecuteAsync(command, new {
-            Id = newId,
+        
+        int newId = await _connection.QuerySingleAsync<int>(command, new {
             ProductName = productName,
             ProductId = productId,
             OrderId = orderId,

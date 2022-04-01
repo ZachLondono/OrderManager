@@ -2,7 +2,7 @@
 
 public class OrderedItemDetails {
     
-    public Guid ProductId { get; set; }
+    public int ProductId { get; set; }
 
     public string Name { get; set; } = string.Empty;
 

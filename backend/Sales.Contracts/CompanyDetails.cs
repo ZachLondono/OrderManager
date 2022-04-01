@@ -2,7 +2,7 @@
 
 public class CompanyDetails {
 
-    public Guid CompanyId { get; set; }
+    public int CompanyId { get; set; }
     
     public string Name { get; set; } = string.Empty;
 

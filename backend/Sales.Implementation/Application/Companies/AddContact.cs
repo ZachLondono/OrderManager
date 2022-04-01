@@ -5,7 +5,7 @@ namespace Sales.Implementation.Application.Companies;
 
 internal class AddContact {
 
-    public record Command(Guid CompanyId, string Name, string? Email, string? Phone) : IRequest;
+    public record Command(int CompanyId, string Name, string? Email, string? Phone) : IRequest;
 
     public class Handler : AsyncRequestHandler<Command> {
 

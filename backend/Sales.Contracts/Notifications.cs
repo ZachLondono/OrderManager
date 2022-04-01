@@ -6,7 +6,7 @@ public record OrderConfirmedNotification(ConfirmedOrder Order) : INotification;
 
 public class ConfirmedOrder {
 
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     
     public string Name { get; set; } = string.Empty;
     
@@ -20,4 +20,4 @@ public class ConfirmedOrder {
 
 }
 
-public record OrderVoidNotification(Guid OrderId) : INotification;
+public record OrderVoidNotification(int OrderId) : INotification;

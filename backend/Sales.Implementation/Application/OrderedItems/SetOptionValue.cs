@@ -5,7 +5,7 @@ namespace Sales.Implementation.Application.OrderedItems;
 
 internal class SetOptionValue {
 
-    public record Command(Guid ItemId, string Option, string Value) : IRequest;
+    public record Command(int ItemId, string Option, string Value) : IRequest;
 
     public class Handler : AsyncRequestHandler<Command> {
 
