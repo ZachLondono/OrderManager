@@ -5,7 +5,7 @@ namespace Manufacturing.Implementation.Application;
 
 internal class ShipJob {
 
-    public record Command(Guid Id) : IRequest;
+    public record Command(int Id) : IRequest;
 
     public class Handler : AsyncRequestHandler<Command> {
         private readonly JobRepository _repo;

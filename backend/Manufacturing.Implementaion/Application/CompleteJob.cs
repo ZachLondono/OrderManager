@@ -5,7 +5,7 @@ namespace Manufacturing.Implementation.Application;
 
 internal class CompleteJob {
 
-    public record Command(Guid Id) : IRequest;
+    public record Command(int Id) : IRequest;
 
     public class Handler : AsyncRequestHandler<Command> {
         

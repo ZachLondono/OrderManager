@@ -1,24 +1,32 @@
-﻿using Manufacturing.Contracts;
-using Manufacturing.Implementation.Infrastructure;
+﻿using Dapper;
+using Manufacturing.Contracts;
 using MediatR;
+using System.Data;
 
 namespace Manufacturing.Implementation.Application;
 
 internal class GetJobById {
     
-    public record Query(Guid Id) : IRequest<JobDetails>;
+    public record Query(int Id) : IRequest<JobDetails>;
 
     public class Handler : IRequestHandler<Query, JobDetails> {
         
-        private readonly JobRepository _repo;
+        private readonly IDbConnection _connection;
 
-        public Handler(JobRepository repo) {
-            _repo = repo;
+        public Handler(IDbConnection connection) {
+            _connection = connection;
         }
 
         public async Task<JobDetails> Handle(Query request, CancellationToken cancellationToken) {
-            var job = await _repo.GetJobById(request.Id);
-            return job.Details();
+
+            const string query = @"SELECT [Id], [Name], [Number], [Customer], [ItemCount], [Vendor], [ReleaseDate], [CompleteDate], [ShipDate]
+                                    FROM [Jobs]
+                                    WHERE [Id] = @Id;";
+
+            var job = await _connection.QuerySingleAsync<JobDetails>(query, new { request.Id });
+
+            return job;
+
         }
     }
 
