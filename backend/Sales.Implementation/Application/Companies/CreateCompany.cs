@@ -1,5 +1,6 @@
 ﻿using MediatR;
-using Sales.Implementation.Infrastructure;
+using System.Data;
+using Dapper;
 
 namespace Sales.Implementation.Application.Companies;
 
@@ -9,14 +10,22 @@ internal class CreateCompany {
 
     public class Handler : IRequestHandler<Command, int> {
 
-        private readonly CompanyRepository _repo;
+        private readonly IDbConnection _connection;
 
-        public Handler(CompanyRepository repo) {
-            _repo = repo;
+        public Handler(IDbConnection connection) {
+            _connection = connection;
         }
 
-        public Task<int> Handle(Command request, CancellationToken cancellationToken) {
-            throw new NotImplementedException();
+        public async Task<int> Handle(Command request, CancellationToken cancellationToken) {
+
+            const string command = "INSERT INTO [Companies] ([Name]) VALUES (@Name);";
+
+            int newId = await _connection.QuerySingleAsync<int>(command, new {
+                Name = request.Name
+            });
+
+            return newId;
+
         }
     }
 
