@@ -12,9 +12,9 @@ public class ConfirmedOrder {
     
     public string Number { get; set; } = string.Empty;
     
-    public string Customer { get; set; } = string.Empty;
+    public int CustomerId { get; set; }
     
-    public string Vendor { get; set; } = string.Empty;
+    public int VendorId { get; set; }
 
     public int ItemCount { get; set; }
 

@@ -1,6 +1,6 @@
-﻿using Catalog.Implementation.Infrastructure;
-using FluentValidation;
+﻿using Dapper;
 using MediatR;
+using System.Data;
 
 namespace Catalog.Implementation.Application;
 
@@ -8,32 +8,21 @@ public class AddToCatalog {
 
     public record Command(string Name) : IRequest<int>;
 
-    public class Validation : AbstractValidator<Command> {
-
-        public Validation() {
-
-            RuleFor(x => x.Name)
-                .NotEmpty()
-                .NotEmpty()
-                .WithMessage("Attribute name cannot be empty");
-
-            // TODO: make sure product with given name does not already exist
-
-        }
-
-    }
-
     public class Handler : IRequestHandler<Command, int> {
 
-        private readonly ProductRepository _repository;
+        private readonly IDbConnection _connection;
 
-        public Handler(ProductRepository repository) {
-            _repository = repository;
+        public Handler(IDbConnection connection) {
+            _connection = connection;
         }
 
         public async Task<int> Handle(Command request, CancellationToken cancellationToken) {
-            var product = await _repository.Add(request.Name);
-            return product.Id;
+            const string query = @"INSERT INTO [Products] ([Name]) VALUES (@Name);
+                                SELECT SCOPE_IDENTITY();";
+
+            int newId = await _connection.QuerySingleAsync<int>(query, request);
+
+            return newId;
         }
     }
 
