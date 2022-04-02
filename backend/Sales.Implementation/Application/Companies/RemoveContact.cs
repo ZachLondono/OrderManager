@@ -5,7 +5,7 @@ namespace Sales.Implementation.Application.Companies;
 
 internal class RemoveContact {
 
-    public record Command(int CompanyId, string Name) : IRequest;
+    public record Command(int CompanyId, int ContactId) : IRequest;
 
     public class Handler : AsyncRequestHandler<Command> {
 
@@ -17,7 +17,7 @@ internal class RemoveContact {
 
         protected override async Task Handle(Command request, CancellationToken cancellationToken) {
             var company = await _repo.GetCompanyById(request.CompanyId);
-            company.RemoveContact(request.Name);
+            company.RemoveContact(request.ContactId);
             await _repo.Save(company);
         }
     }

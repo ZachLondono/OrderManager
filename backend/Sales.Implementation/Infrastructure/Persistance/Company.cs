@@ -1,6 +1,6 @@
 ﻿namespace Sales.Implementation.Infrastructure.Persistance;
 
-public class Companies {
+public class Company {
 
     public int Id { get; set; }
 

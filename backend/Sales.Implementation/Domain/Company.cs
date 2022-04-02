@@ -57,18 +57,9 @@ public class Company {
         _contacts.Add(contact);
     }
 
-    public void RemoveContactByName(string name) {
-        Contact? contact = _contacts.Where(c => c.Name == name).FirstOrDefault();
-
-        if (contact is null)
-            throw new InvalidOperationException("Company does not have a contact with the given name");
-
-        _contacts.Remove(contact);
-
-    }
-
-    public void RemoveContact(Contact contact) {
-        _contacts.Remove(contact);
+    public void RemoveContact(int contactId) {
+        Contact? contact = _contacts.Where(c => c.Id == contactId).FirstOrDefault();
+        if (contact is not null) _contacts.Remove(contact);
     }
 
 }
