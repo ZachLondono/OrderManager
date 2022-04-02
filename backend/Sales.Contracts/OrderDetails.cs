@@ -8,18 +8,24 @@ public class OrderDetails {
 
     public string Number { get; set; } = string.Empty;
 
-    public string Customer { get; set; } = string.Empty;
+    public int CustomerId { get; set; }
 
-    public string Vendor { get; set; } = string.Empty;
+    public int VendorId { get; set; }
 
-    public string Supplier { get; set; } = string.Empty;
+    public int SupplierId { get; set; }
 
     public string Status { get; set; } = string.Empty;
 
-    public DateTime ConfirmationDate { get; set; }
+    public DateTime? PlacedDate { get; set; }
 
-    public Dictionary<string, string> OrderFields { get; set; } = new();
+    public DateTime? ConfirmationDate { get; set; }
 
-    public OrderedItemDetails[] OrderedItems { get; set; } = new OrderedItemDetails[0];
+    public DateTime? CompletionDate { get; set; }
+
+    public DateTime? CanceledDate { get; set; }
+
+    public string Fields { get; set; } = string.Empty;
+
+    public IEnumerable<int> OrderedItems { get; set; } = Enumerable.Empty<int>();
 
 }
