@@ -4,7 +4,7 @@ using Sales.Implementation.Infrastructure;
 
 namespace Sales.Implementation.Application.Orders;
 
-public static class OrderCompleted {
+public static class CompleteOrder {
 
     public class Handler : INotificationHandler<JobCompleteNotification> {
 
@@ -15,7 +15,7 @@ public static class OrderCompleted {
         }
         public async Task Handle(JobCompleteNotification notification, CancellationToken cancellationToken) {
             var order = await _orderRepo.GetOrderById(notification.JobId);
-            order.ConfirmOrder();
+            order.CompleteOrder();
             await _orderRepo.Save(order);
         }
 

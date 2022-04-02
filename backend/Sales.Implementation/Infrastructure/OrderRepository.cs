@@ -26,17 +26,19 @@ public class OrderRepository {
         var fields = JsonSerializer.Deserialize<Dictionary<string,string>>(orderDto.OrderFields);
         if (fields is null) fields = new();
 
-        var order = new Order(id, orderDto.Name, orderDto.Number, orderDto.PlacedDate) {
+        const string itemQuery = @"SELECT [Id] FROM [OrderedItems] WHERE [OrderId] = @OrderId;";
+        var items = await _connection.QueryAsync<int>(itemQuery, new { OrderId = id });
+
+        var status = Enum.Parse<OrderStatus>(orderDto.Status);
+
+        var order = new Order(id, orderDto.Name, orderDto.Number, items.ToArray(), status, orderDto.PlacedDate) {
             Fields = fields,
             CompletionDate = orderDto.CompletionDate,
             ConfirmationDate = orderDto.ConfirmationDate,
-            //VendorId = orderDto.VendorId,
-            //SupplierId = orderDto.SupplierId,
-            //CustomerId = orderDto.CustomerId,
-            Status = Enum.Parse<OrderStatus>(orderDto.Status)
+            VendorId = orderDto.VendorId,
+            SupplierId = orderDto.SupplierId,
+            CustomerId = orderDto.CustomerId
         };
-        
-        //TODO: ordereditems in the order should be ids instead of references
 
         return new(order);
 
@@ -50,13 +52,7 @@ public class OrderRepository {
         
         foreach (var e in events) {
 
-            if (e is ItemAddedEvent addedEvent) {
-                await ApplyItemAdd(addedEvent, order, trx);
-            } else if (e is ItemRemovedEvent removedEvent) {
-                await ApplyItemRemove(removedEvent, order, trx);
-            } else if (e is OrderPlacedEvent placedEvent) {
-                await ApplyOrderPlace(placedEvent, order, trx);
-            } else if (e is OrderConfirmedEvent confirmedEvent) {
+            if (e is OrderConfirmedEvent confirmedEvent) {
                 await ApplyOrderConfirmation(confirmedEvent, order, trx);
             } else if (e is OrderCompletedEvent completedEvent) {
                 await ApplyOrderCompletion(completedEvent, order, trx);
@@ -70,12 +66,31 @@ public class OrderRepository {
 
     }
 
-    private Task ApplyItemAdd(ItemAddedEvent e, OrderContext order, IDbTransaction trx) => throw new NotImplementedException();
-    private Task ApplyItemRemove(ItemRemovedEvent e, OrderContext order, IDbTransaction trx) => throw new NotImplementedException();
-    private Task ApplyOrderPlace(OrderPlacedEvent e, OrderContext order, IDbTransaction trx) => throw new NotImplementedException();
-    private Task ApplyOrderConfirmation(OrderConfirmedEvent e, OrderContext order, IDbTransaction trx) => throw new NotImplementedException();
-    private Task ApplyOrderCompletion(OrderCompletedEvent e, OrderContext order, IDbTransaction trx) => throw new NotImplementedException();
-    private Task ApplyOrderCancel(OrderCanceledEvent e, OrderContext order, IDbTransaction trx) => throw new NotImplementedException();
+    private async Task ApplyOrderConfirmation(OrderConfirmedEvent e, OrderContext order, IDbTransaction trx) {
+        const string command = "UPDATE [Orders] SET [Status] = @Status, [ConfirmedDate] = @TimeStamp WHERE [Id] = @Id;";
+        await _connection.ExecuteAsync(command, new {
+            Id = order.Id,
+            Status = OrderStatus.Confirmed.ToString(),
+            e.TimeStamp
+        }, trx);
+    }
 
+    private async Task ApplyOrderCompletion(OrderCompletedEvent e, OrderContext order, IDbTransaction trx) {
+        const string command = "UPDATE [Orders] SET [Status] = @Status, [CompletedDate] = @TimeStamp WHERE [Id] = @Id;";
+        await _connection.ExecuteAsync(command, new {
+            Id = order.Id,
+            Status = OrderStatus.Completed.ToString(),
+            e.TimeStamp
+        }, trx);
+    }
+
+    private async Task ApplyOrderCancel(OrderCanceledEvent e, OrderContext order, IDbTransaction trx) {
+        const string command = "UPDATE [Orders] SET [Status] = @Status, [CanceledDate] = @TimeStamp WHERE [Id] = @Id;";
+        await _connection.ExecuteAsync(command, new {
+            Id = order.Id,
+            Status = OrderStatus.Void.ToString(),
+            e.TimeStamp
+        }, trx);
+    }
 
 }

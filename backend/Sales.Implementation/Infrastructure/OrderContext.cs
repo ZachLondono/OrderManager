@@ -3,8 +3,6 @@ using System.Collections.ObjectModel;
 
 namespace Sales.Implementation.Infrastructure;
 
-public record ItemAddedEvent(OrderedItem Item);
-public record ItemRemovedEvent(int ItemId);
 public record OrderPlacedEvent(DateTime TimeStamp);
 public record OrderConfirmedEvent(DateTime TimeStamp);
 public record OrderCompletedEvent(DateTime TimeStamp);
@@ -17,23 +15,11 @@ public class OrderContext {
 
     public ReadOnlyCollection<object> Events => _events.AsReadOnly();
 
+    public int Id => _order.Id;
+
     public OrderContext(Order order) {
         _order = order;
         _events = new();
-    }
-
-    public void AddItem(OrderedItem item) {
-        _order.AddItem(item);
-        _events.Add(new ItemAddedEvent(item));
-    }
-
-    public void RemoveItem(int id) {
-        _order.RemoveItem(id);
-        _events.Add(new ItemRemovedEvent(id));
-    }
-
-    public void PlaceOrder() {
-        throw new NotImplementedException();
     }
 
     public void ConfirmOrder() {

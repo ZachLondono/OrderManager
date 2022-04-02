@@ -15,16 +15,15 @@ public class Order {
     
     public string Number { get; set; }
 
-    public Company? Customer { get; set; }
+    public int CustomerId { get; set; }
     
-    public Company? Vendor { get; set; }
+    public int VendorId { get; set; }
     
-    public Company? Supplier { get; set; }
+    public int SupplierId { get; set; }
     
     public OrderStatus Status { get; set; }
 
-    private readonly List<OrderedItem> _items;
-    public IReadOnlyCollection<OrderedItem> Items => _items;
+    public int[] Items;
     
     public Dictionary<string, string> Fields { get; set; } = new();
     
@@ -34,28 +33,13 @@ public class Order {
     
     public DateTime? PlacedDate { get; set; }
 
-    public Order(int id, string name, string number, DateTime? placedDate) {
+    public Order(int id, string name, string number, int[] items, OrderStatus status, DateTime? placedDate) {
         Id = id;
         Name = name;
         Number = number;
+        Items = items;
+        Status = status;
         PlacedDate = placedDate;
-        _items = new List<OrderedItem>();
-        Status = OrderStatus.Bid;
-    }
-
-    public void AddItem(OrderedItem item) {
-        if (item is null)
-            throw new ArgumentNullException(nameof(item));
-        _items.Add(item);
-    }
-
-    public void RemoveItem(OrderedItem item) {
-        _items.Remove(item);
-    }
-    
-    public void RemoveItem(int itemId) {
-        var idx = _items.FindIndex(i => i.Id.Equals(itemId));
-        _items.RemoveAt(idx);
     }
 
     public void ConfirmOrder() {
