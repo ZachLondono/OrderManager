@@ -19,8 +19,14 @@ public class UpdateProductAttribute {
 
             var product = await _repository.GetProductById(request.ProductId);
 
-            product.RemoveAttribute(request.OldAttribute);
-            product.AddAttribute(request.NewAttribute);
+            var attribute = product.Attributes.Where(a => a.Name.Equals(request.OldAttribute)).FirstOrDefault();
+
+            if (attribute is not null) {
+                product.RemoveAttribute(request.OldAttribute);
+
+                attribute.Name = request.NewAttribute;
+                product.AddAttribute(attribute);
+            }
 
             await _repository.Save(product);
 

@@ -5,7 +5,7 @@ namespace Catalog.Implementation.Application;
 
 public class AddAttributeToProduct {
 
-    public record Command(int ProductId, string Name) : IRequest;
+    public record Command(int ProductId, string Name, string Default) : IRequest;
 
     public class Handler : AsyncRequestHandler<Command> {
 
@@ -19,7 +19,10 @@ public class AddAttributeToProduct {
 
             var product = await _repository.GetProductById(request.ProductId);
 
-            product.AddAttribute(request.Name);
+            product.AddAttribute(new() {
+                Name = request.Name,
+                Default = request.Default
+            });
 
             await _repository.Save(product);
 

@@ -18,7 +18,7 @@ public class GetProducts {
         }
 
         public async Task<IEnumerable<ProductSummary>> Handle(Query request, CancellationToken cancellationToken) {
-            var products = await _connection.QueryAsync<ProductSummary>("SELECT [Id], [Name] FROM [Products];");
+            var products = await _connection.QueryAsync<ProductSummary>("SELECT [Id], [Name] FROM [Catalog].[Products];");
             return products.ToArray();
         }
     }

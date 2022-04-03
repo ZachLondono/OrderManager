@@ -11,7 +11,7 @@ internal class Catalog {
         _sender = sender;
     }
 
-    internal Task<ProductSummary[]> GetProducts() {
+    internal Task<IEnumerable<ProductSummary>> GetProducts() {
         return _sender.Send(new GetProducts.Query());
     }
 

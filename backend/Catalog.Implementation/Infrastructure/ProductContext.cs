@@ -15,6 +15,7 @@ public class ProductContext {
     private readonly List<object> _events = new();
 
     public int Id => _product.Id;
+    public IEnumerable<ProductAttribute> Attributes => _product.Attributes;
 
     public IReadOnlyCollection<object> Events => _events.AsReadOnly();
 

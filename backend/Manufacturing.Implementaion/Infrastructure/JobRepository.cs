@@ -36,7 +36,8 @@ public class JobRepository {
     }
 
     public async Task Save(JobContext context) {
-
+        
+        _connection.Open();
         var trx = _connection.BeginTransaction();
         var events = context.Events;
 
@@ -55,6 +56,7 @@ public class JobRepository {
         }
 
         trx.Commit();
+        _connection.Close();
 
     }
 

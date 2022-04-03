@@ -46,6 +46,7 @@ public class OrderRepository {
 
     public async Task Save(OrderContext order) {
 
+        _connection.Open();
         var trx = _connection.BeginTransaction();
 
         var events = order.Events;
@@ -63,6 +64,7 @@ public class OrderRepository {
         }
 
         trx.Commit();
+        _connection.Close();
 
     }
 

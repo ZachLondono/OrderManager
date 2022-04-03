@@ -45,6 +45,7 @@ public class OrderedItemRepository {
 
     public async Task Save(OrderedItemContext item) {
 
+        _connection.Open();
         var trx = _connection.BeginTransaction();
 
         var events = item.Events;
@@ -59,6 +60,7 @@ public class OrderedItemRepository {
         }
 
         trx.Commit();
+        _connection.Close();
 
     }
 

@@ -81,6 +81,7 @@ public class ProductRepository {
     /// <param name="product">Context to which events where applied</param>
     public async Task Save(ProductContext product) {
 
+        _connection.Open();
         var trx = _connection.BeginTransaction();
 
         var events = product.Events;
@@ -97,7 +98,7 @@ public class ProductRepository {
         }
 
         trx.Commit();
-
+        _connection.Close();
     }
 
     private async Task ApplyAttributeRemove(ProductContext product, IDbTransaction trx, AttributeRemovedEvent attributeRemoved) {

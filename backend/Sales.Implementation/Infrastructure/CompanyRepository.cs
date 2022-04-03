@@ -62,6 +62,7 @@ public class CompanyRepository {
 
     public async Task Save(CompanyContext company) {
 
+        _connection.Open();
         var trx = _connection.BeginTransaction();
         var events = company.Events;
 
@@ -82,6 +83,7 @@ public class CompanyRepository {
         }
 
         trx.Commit();
+        _connection.Close();
 
     }
 
