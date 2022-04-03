@@ -19,8 +19,8 @@ public class GetJobs {
 
         public async Task<IEnumerable<JobSummary>> Handle(Query request, CancellationToken cancellationToken) {
             
-            const string query = @"SELECT [Id], [Name], [Number], [Customer], [ItemCount], [Vendor]
-                                    FROM [Jobs];";
+            const string query = @"SELECT [Id], [Name], [Number], [CustomerId], [VendorId], [ItemCount]
+                                    FROM [Manufacturing].[Jobs];";
 
             var jobs = await _connection.QueryAsync<JobSummary>(query);
 

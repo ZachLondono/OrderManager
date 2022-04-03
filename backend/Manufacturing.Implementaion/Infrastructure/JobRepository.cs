@@ -6,7 +6,7 @@ namespace Manufacturing.Implementation.Infrastructure;
 
 public class JobRepository {
 
-    private IDbConnection _connection;
+    private readonly IDbConnection _connection;
 
     public JobRepository(IDbConnection connection) {
         _connection = connection;
@@ -14,8 +14,8 @@ public class JobRepository {
 
     public async Task<JobContext> GetJobById(int jobId) {
 
-        const string query = @"SELECT [Id], [Name], [Number], [Customer], [Vendor], [ItemCount], [ReleaseDate], [CompleteDate], [ShipDate], [Status]
-                                FROM [Jobs]
+        const string query = @"SELECT [Id], [Name], [Number], [CustomerId], [VendorId], [ItemCount], [ReleasedDate], [CompletedDate], [ShippedDate], [Status]
+                                FROM [Manufacturing].[Jobs]
                                 WHERE [Id] = @Id;";
 
         var job = await _connection.QuerySingleAsync<Persistance.Job>(query, new { Id = jobId });
@@ -25,12 +25,12 @@ public class JobRepository {
         return new(new Job(job.Id,
                             job.Name,
                             job.Number, 
-                            job.Customer,
-                            job.Vendor,
+                            job.CustomerId,
+                            job.VendorId,
                             job.ItemCount,
-                            job.ReleaseDate,
-                            job.CompleteDate,
-                            job.ShipDate,
+                            job.ReleasedDate,
+                            job.CompletedDate,
+                            job.ShippedDate,
                             status));
 
     }
@@ -42,7 +42,7 @@ public class JobRepository {
 
         foreach (var e in events) {
 
-            if (e is JobCanceledEvent cancelEvent) {
+            if (e is JobCanceledEvent) {
                 await ApplyCancel(context, trx);
             } else if (e is JobReleasedEvent releaseEvent) {
                 await ApplyRelease(context, releaseEvent, trx);
@@ -59,7 +59,7 @@ public class JobRepository {
     }
 
     private async Task ApplyCancel(JobContext context, IDbTransaction trx) {
-        const string command = "UPDATE [Jobs] SET [Status] = @Status WHERE [Id] = @Id;";
+        const string command = "UPDATE [Manufacturing].[Jobs] SET [Status] = @Status WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new {
             Status = ManufacturingStatus.Canceled.ToString(),
             Id = context.Id
@@ -67,7 +67,7 @@ public class JobRepository {
     }
 
     private async Task ApplyRelease(JobContext context, JobReleasedEvent releaseEvent, IDbTransaction trx) {
-        const string command = "UPDATE [Jobs] SET [Status] = @Status, [ReleaseDate] = @Date WHERE [Id] = @Id;";
+        const string command = "UPDATE [Manufacturing].[Jobs] SET [Status] = @Status, [ReleasedDate] = @Date WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new {
             Status = ManufacturingStatus.InProgress.ToString(),
             Id = context.Id,
@@ -76,7 +76,7 @@ public class JobRepository {
     }
 
     private async Task ApplyComplete(JobContext context, JobCompletedEvent completeEvent, IDbTransaction trx) {
-        const string command = "UPDATE [Jobs] SET [Status] = @Status, [CompleteDate] = @Date WHERE [Id] = @Id;";
+        const string command = "UPDATE [Manufacturing].[Jobs] SET [Status] = @Status, [CompletedDate] = @Date WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new {
             Status = ManufacturingStatus.Completed.ToString(),
             Id = context.Id,
@@ -85,7 +85,7 @@ public class JobRepository {
     }
 
     private async Task ApplyShip(JobContext context, JobShippedEvent shipEvent, IDbTransaction trx) {
-        const string command = "UPDATE [Jobs] SET [Status] = @Status, [ShipDate] = @Date WHERE [Id] = @Id;";
+        const string command = "UPDATE [Manufacturing].[Jobs] SET [Status] = @Status, [ShippedDate] = @Date WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new {
             Status = ManufacturingStatus.Shipped.ToString(),
             Id = context.Id,

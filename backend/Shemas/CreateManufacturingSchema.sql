@@ -1,6 +1,6 @@
 create schema Manufacturing;
 Go
-create table Manufacturing.Job (
+create table Manufacturing.Jobs (
 	[Id] int IDENTITY(1,1) PRIMARY KEY,
 	[Name] varchar(255) NOT NULL,
 	[Number] varchar(255) NOT NULL,

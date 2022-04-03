@@ -16,10 +16,10 @@ public class PostJob : INotificationHandler<OrderConfirmedNotification> {
 
     public async Task Handle(OrderConfirmedNotification notification, CancellationToken cancellationToken) {
 
-        const string query = @"INSERT INTO [] ([Id], [Name], [Number], [CustomerId], [VendorId], [ItemCount], [Status])
-                                VALUES (@Id, @Name, @Number, @Customer, @Vendor, @ItemCount, @Status);";
+        const string query = @"INSERT INTO [Manufacturing].[Jobs] ([Id], [Name], [Number], [CustomerId], [VendorId], [ItemCount], [Status])
+                                VALUES (@Id, @Name, @Number, @CustomerId, @VendorId, @ItemCount, @Status);";
 
-        await _connection.QuerySingleAsync<int>(query, new { 
+        await _connection.ExecuteAsync(query, new { 
             notification.Order.Id,
             notification.Order.Name,
             notification.Order.Number,

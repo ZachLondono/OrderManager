@@ -8,17 +8,17 @@ internal class Job {
 
     public string Number { get; set; } = string.Empty;
 
-    public string Customer { get; set; } = string.Empty;
+    public int CustomerId { get; set; }
 
-    public string Vendor { get; set; } = string.Empty;
+    public int VendorId { get; set; }
 
     public int ItemCount { get; set; }
 
-    public DateTime? ReleaseDate { get; set; }
+    public DateTime? ReleasedDate { get; set; }
 
-    public DateTime? CompleteDate { get; set; }
+    public DateTime? CompletedDate { get; set; }
 
-    public DateTime? ShipDate { get; set; }
+    public DateTime? ShippedDate { get; set; }
 
     public string Status { get; set; } = string.Empty;
 
