@@ -6,6 +6,6 @@ public class ProductDetails {
 
     public string Name { get; set; } = string.Empty;
 
-    public string[] Attributes { get; set; } = Array.Empty<string>();
+    public IEnumerable<ProductAttribute> Attributes { get; set; } = Enumerable.Empty<ProductAttribute>();
 
 }

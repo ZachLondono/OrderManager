@@ -8,8 +8,8 @@ public class Product {
 
     public string Name { get; set; }
 
-    public IReadOnlyCollection<string> Attributes => _attributes.ToList().AsReadOnly();
-    private HashSet<string> _attributes { get; set; } = new HashSet<string>();
+    public IReadOnlyCollection<ProductAttribute> Attributes => _attributes.ToList().AsReadOnly();
+    private HashSet<ProductAttribute> _attributes { get; set; } = new();
 
     public Product(int id, string name) {
         if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
@@ -18,20 +18,21 @@ public class Product {
         Id = id;
     }
 
-    public void AddAttribute(string name) {
-        if (name is null)
-            throw new ArgumentNullException(nameof(name));
-        if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("Attribute name cannot be empty", nameof(name));
-        if (_attributes.Contains(name))
-            throw new ArgumentException($"Attribute already contains value '{name}'", nameof(name));
-        _attributes.Add(name);
+    public void AddAttribute(ProductAttribute attribute) {
+        if (attribute is null)
+            throw new ArgumentNullException(nameof(attribute));
+        if (string.IsNullOrWhiteSpace(attribute.Name))
+            throw new ArgumentException("Attribute name cannot be empty", nameof(attribute));
+        if (_attributes.Any(a => a.Name.Equals(attribute.Name)))
+            throw new ArgumentException($"Product already contains attribute '{attribute.Name}'", nameof(attribute));
+        _attributes.Add(attribute);
     }
 
     public void RemoveAttribute(string name) {
         if (name is null)
             throw new ArgumentNullException(nameof(name));
-        _attributes.Remove(name);
+        var attribute = _attributes.Where(a => a.Name.Equals(name)).FirstOrDefault();
+        if (attribute is not null) _attributes.Remove(attribute);
     }
 
 }

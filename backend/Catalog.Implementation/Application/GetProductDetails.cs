@@ -19,13 +19,13 @@ public class GetProductDetails {
 
         public async Task<ProductDetails> Handle(Query request, CancellationToken cancellationToken) {
             
-            const string query = "SELECT [Id], [Name] FROM [Products] WHERE [Id] = @Id;";
-            const string attrQuery = "SELECT [Option] FROM [Attributes] WHERE [ProductId] = @ProductId;";
+            const string query = "SELECT [Id], [Name] FROM [Catalog].[Products] WHERE [Id] = @Id;";
+            const string attrQuery = "SELECT [Name], [Default] FROM [Catalog].[ProductAttributes] WHERE [ProductId] = @ProductId;";
 
             var product = await _connection.QuerySingleAsync<ProductDetails>(query, new { Id = request.ProductId });
-            var attributes = await _connection.QueryAsync<string>(attrQuery, new { request.ProductId });
+            var attributes = await _connection.QueryAsync<ProductAttribute>(attrQuery, new { request.ProductId });
             
-            product.Attributes = attributes.ToArray();
+            product.Attributes = attributes;
 
             return product;
 

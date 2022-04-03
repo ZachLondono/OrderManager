@@ -3,7 +3,7 @@
 namespace Catalog.Implementation.Infrastructure;
 
 internal record NameChangeEvent(string Name);
-internal record AttributeAddedEvent(string Name);
+internal record AttributeAddedEvent(string Name, string Default);
 internal record AttributeRemovedEvent(string Name);
 
 /// <summary>
@@ -27,9 +27,9 @@ public class ProductContext {
         _events.Add(new NameChangeEvent(name));
     }
 
-    public void AddAttribute(string name) {
-        _product.AddAttribute(name);
-        _events.Add(new AttributeAddedEvent(name));
+    public void AddAttribute(ProductAttribute attribute) {
+        _product.AddAttribute(attribute);
+        _events.Add(new AttributeAddedEvent(attribute.Name, attribute.Default));
     }
 
     public void RemoveAttribute(string name) {

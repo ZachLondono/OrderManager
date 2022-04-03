@@ -17,7 +17,7 @@ public class AddToCatalog {
         }
 
         public async Task<int> Handle(Command request, CancellationToken cancellationToken) {
-            const string query = @"INSERT INTO [Products] ([Name]) VALUES (@Name);
+            const string query = @"INSERT INTO [Catalog].[Products] ([Name]) VALUES (@Name);
                                 SELECT SCOPE_IDENTITY();";
 
             int newId = await _connection.QuerySingleAsync<int>(query, request);

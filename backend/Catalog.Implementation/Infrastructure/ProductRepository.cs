@@ -17,16 +17,19 @@ public class ProductRepository {
 
     public async Task<ProductContext> GetProductById(int id) {
 
-        const string query = "SELECT [Id], [Name] FROM [Products] WHERE [Id] = @Id;";
-        const string attrQuery = "SELECT [Option] FROM [Attributes] WHERE [ProductId] = @ProductId;";
+        const string query = "SELECT [Id], [Name] FROM [Catalog].[Products] WHERE [Id] = @Id;";
+        const string attrQuery = "SELECT [Id], [ProductId] [Option], [Default] FROM [Catalog].[ProductAttributes] WHERE [ProductId] = @ProductId;";
 
         var productDto = await _connection.QuerySingleAsync<Persistance.Product>(query, new { Id = id });
-        var attributes = await _connection.QueryAsync<string>(attrQuery, new { ProductId = id });
+        var attributes = await _connection.QueryAsync<Persistance.ProductAttribute>(attrQuery, new { ProductId = id });
 
         var product = new Product(productDto.Id, productDto.Name);
         foreach (var attribute in attributes) {
             try {
-                product.AddAttribute(attribute);
+                product.AddAttribute(new() {
+                    Name = attribute.Name,
+                    Default = attribute.Default
+                });
             } catch (Exception e) {
                 _logger.LogWarning("Could not add attribute to product: {Exception}", e);
             }
@@ -43,7 +46,7 @@ public class ProductRepository {
     /// <returns>A ProductContext to track changes to product</returns>
     public async Task<ProductContext> Add(string name) {
 
-        const string query = @"INSERT INTO [Products] ([Name]) VALUES (@Name);
+        const string query = @"INSERT INTO [Catalog].[Products] ([Name]) VALUES (@Name);
                                 SELECT SCOPE_IDENTITY();";
 
         int newId = await _connection.QuerySingleAsync<int>(query, new {
@@ -62,11 +65,11 @@ public class ProductRepository {
     /// <param name="product">The product to remove</param>
     public async Task Remove(int productId) {
 
-        const string query1 = "DELETE FROM [Products] WHERE [Id] = @Id";
-        const string query2 = "DELETE FROM [ProductAttributes] WHERE [ProductId] = @Id";
+        const string query1 = "DELETE FROM [Catalog].[Products] WHERE [Id] = @Id";
+        const string query2 = "DELETE FROM [Catalog].[ProductAttributes] WHERE [ProductId] = @Id";
 
-        int rows = await _connection.ExecuteAsync(query1, new { productId });
-        rows += await _connection.ExecuteAsync(query2, new { productId });
+        int rows = await _connection.ExecuteAsync(query1, new { Id = productId });
+        rows += await _connection.ExecuteAsync(query2, new { Id = productId });
 
         _logger.LogInformation("Product deleted, {Rows} affected", rows);
 
@@ -98,7 +101,7 @@ public class ProductRepository {
     }
 
     private async Task ApplyAttributeRemove(ProductContext product, IDbTransaction trx, AttributeRemovedEvent attributeRemoved) {
-        const string query = @"DELETE FROM [ProductAttributes]
+        const string query = @"DELETE FROM [Catalog].[ProductAttributes]
                                 WHERE [ProductId] = @ProductId And [Name] = @Name;";
         int rows = await _connection.ExecuteAsync(query, new {
             ProductId = product.Id,
@@ -111,12 +114,12 @@ public class ProductRepository {
     }
 
     private async Task ApplyAttributeAdd(ProductContext product, IDbTransaction trx, AttributeAddedEvent attributeAdded) {
-        const string query = @"INSERT INTO [ProductAttributes] ([ProductId], [Name], [Default])
+        const string query = @"INSERT INTO [Catalog].[ProductAttributes] ([ProductId], [Name], [Default])
                                 VALUES (@ProductId, @Name, @Default);";
         int rows = await _connection.ExecuteAsync(query, new {
             ProductId = product.Id,
             attributeAdded.Name,
-            Default = ""
+            attributeAdded.Default
         }, trx);
 
         if (rows == 0)
@@ -125,7 +128,7 @@ public class ProductRepository {
     }
 
     private async Task ApplyNameChange(ProductContext product, IDbTransaction trx, NameChangeEvent namechange) {
-        const string query = @"UPDATE [Products]
+        const string query = @"UPDATE [Catalog].[Products]
                                 SET [Name] = @Name
                                 WHERE [Id] = @Id;";
         int rows = await _connection.ExecuteAsync(query, new {

@@ -7,9 +7,9 @@ namespace Catalog.Implementation.Application;
 
 public class GetProducts {
 
-    public record Query() : IRequest<ProductSummary[]>;
+    public record Query() : IRequest<IEnumerable<ProductSummary>>;
 
-    public class Handler : IRequestHandler<Query, ProductSummary[]> {
+    public class Handler : IRequestHandler<Query, IEnumerable<ProductSummary>> {
 
         private readonly IDbConnection _connection;
 
@@ -17,7 +17,7 @@ public class GetProducts {
             _connection = connection;
         }
 
-        public async Task<ProductSummary[]> Handle(Query request, CancellationToken cancellationToken) {
+        public async Task<IEnumerable<ProductSummary>> Handle(Query request, CancellationToken cancellationToken) {
             var products = await _connection.QueryAsync<ProductSummary>("SELECT [Id], [Name] FROM [Products];");
             return products.ToArray();
         }
