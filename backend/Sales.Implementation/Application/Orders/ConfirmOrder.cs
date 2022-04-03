@@ -3,7 +3,7 @@ using Sales.Implementation.Infrastructure;
 
 namespace Sales.Implementation.Application.Orders;
 
-internal class ConfirmOrder {
+public class ConfirmOrder {
 
     public record Command(int OrderId) : IRequest;
 

@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Manufacturing.Implementation.Application;
 
-internal class ShipJob {
+public class ShipJob {
 
     public record Command(int Id) : IRequest;
 

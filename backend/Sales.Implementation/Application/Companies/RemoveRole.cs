@@ -4,7 +4,7 @@ using Sales.Implementation.Infrastructure;
 
 namespace Sales.Implementation.Application.Companies;
 
-internal class RemoveRole {
+public class RemoveRole {
 
     public record Command(int CompanyId, string Role) : IRequest;
 

@@ -3,7 +3,7 @@ using Sales.Implementation.Infrastructure;
 
 namespace Sales.Implementation.Application.OrderedItems;
 
-internal class SetOptionValue {
+public class SetOptionValue {
 
     public record Command(int ItemId, string Option, string Value) : IRequest;
 

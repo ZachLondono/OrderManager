@@ -6,7 +6,7 @@ using System.Data;
 
 namespace Manufacturing.Implementation.Application;
 
-internal class PostJob : INotificationHandler<OrderConfirmedNotification> {
+public class PostJob : INotificationHandler<OrderConfirmedNotification> {
 
     private readonly IDbConnection _connection;
 

@@ -3,7 +3,7 @@ using Sales.Implementation.Infrastructure;
 
 namespace Sales.Implementation.Application.Orders;
 
-internal class VoidOrder {
+public class VoidOrder {
 
     public record Command(int OrderId) : IRequest;
 

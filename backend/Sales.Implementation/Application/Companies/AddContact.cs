@@ -3,7 +3,7 @@ using Sales.Implementation.Infrastructure;
 
 namespace Sales.Implementation.Application.Companies;
 
-internal class AddContact {
+public class AddContact {
 
     public record Command(int CompanyId, string Name, string? Email, string? Phone) : IRequest;
 

@@ -3,7 +3,7 @@ using Sales.Implementation.Infrastructure;
 
 namespace Sales.Implementation.Application.Companies;
 
-internal class SetName {
+public class SetName {
 
     public record Command(int CompanyId, string Name) : IRequest;
 

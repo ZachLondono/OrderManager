@@ -5,7 +5,7 @@ using Sales.Contracts;
 
 namespace Sales.Implementation.Application.Companies;
 
-internal class GetCompanyDetails {
+public class GetCompanyDetails {
 
     public record Query(int Id) : IRequest<CompanyDetails>;
 

@@ -4,6 +4,6 @@ public static class CatalogProducts {
 
     public delegate Task<ProductSummary[]> GetProducts();
 
-    public delegate Task<ProductDetails> GetProductDetails(string id);
+    public delegate Task<ProductDetails> GetProductDetails(int id);
 
 }

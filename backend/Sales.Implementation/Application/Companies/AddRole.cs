@@ -4,7 +4,7 @@ using Sales.Implementation.Infrastructure;
 
 namespace Sales.Implementation.Application.Companies;
 
-internal class AddRole {
+public class AddRole {
 
     public record Command(int CompanyId, string Role) : IRequest;
 

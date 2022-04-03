@@ -5,7 +5,7 @@ using System.Data;
 
 namespace Manufacturing.Implementation.Application;
 
-internal class GetJobById {
+public class GetJobById {
     
     public record Query(int Id) : IRequest<JobDetails>;
 

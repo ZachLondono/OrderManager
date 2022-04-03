@@ -5,7 +5,7 @@ using Sales.Contracts;
 
 namespace Sales.Implementation.Application.Companies;
 
-internal class GetCompanies {
+public class GetCompanies {
 
     public record Query() : IRequest<IEnumerable<CompanySummary>>;
 

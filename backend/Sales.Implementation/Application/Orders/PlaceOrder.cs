@@ -5,7 +5,7 @@ using Sales.Implementation.Domain;
 
 namespace Sales.Implementation.Application.Orders;
 
-internal class PlaceOrder {
+public class PlaceOrder {
 
     public record Command(string Name, string Number, int CustomerId, int VendorId, int SupplierId, string Fields) : IRequest<int>;
 

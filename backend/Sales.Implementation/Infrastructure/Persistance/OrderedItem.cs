@@ -2,25 +2,16 @@
 
 public class OrderedItem {
 
-    public int Id { get; init; }
+    public int Id { get; set; }
 
-    public string ProductName { get; init; }
+    public string ProductName { get; set; } = string.Empty;
 
-    public int ProductId { get; init; }
+    public int ProductId { get; set; }
 
-    public int Qty { get; init; }
+    public int Qty { get; set; }
 
-    public string Options { get; init; }
+    public string Options { get; set; } = string.Empty;
 
-    public int OrderId { get; init; }
-
-    public OrderedItem(int id, string productName, int productId, int qty, string options, int orderId) {
-        Id = id;
-        ProductName = productName;
-        ProductId = productId;
-        Qty = qty;
-        Options = options;
-        OrderId = orderId;
-    }
+    public int OrderId { get; set; }
 
 }

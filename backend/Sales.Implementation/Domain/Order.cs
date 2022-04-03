@@ -27,9 +27,9 @@ public class Order {
     
     public Dictionary<string, string> Fields { get; set; } = new();
     
-    public DateTime? CompletionDate { get; set; }
+    public DateTime? CompletedDate { get; set; }
 
-    public DateTime? ConfirmationDate { get; set; }
+    public DateTime? ConfirmedDate { get; set; }
     
     public DateTime? PlacedDate { get; set; }
 
@@ -43,14 +43,14 @@ public class Order {
     }
 
     public void ConfirmOrder() {
-        ConfirmationDate = DateTime.Now;
+        ConfirmedDate = DateTime.Now;
         Status = OrderStatus.Confirmed;
     }
 
     public void CompleteOrder() {
-        if (ConfirmationDate is null)
-            ConfirmationDate = DateTime.Now;
-        CompletionDate = DateTime.Now;
+        if (ConfirmedDate is null)
+            ConfirmedDate = DateTime.Now;
+        CompletedDate = DateTime.Now;
         Status = OrderStatus.Completed;
     }
 

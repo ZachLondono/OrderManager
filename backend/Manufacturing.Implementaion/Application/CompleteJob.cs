@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Manufacturing.Implementation.Application;
 
-internal class CompleteJob {
+public class CompleteJob {
 
     public record Command(int Id) : IRequest;
 

@@ -5,11 +5,11 @@ using System.Data;
 
 namespace Manufacturing.Implementation.Application;
 
-internal class GetJobs {
+public class GetJobs {
 
-    public record Query() : IRequest<JobSummary[]>;
+    public record Query() : IRequest<IEnumerable<JobSummary>>;
 
-    public class Handler : IRequestHandler<Query, JobSummary[]> {
+    public class Handler : IRequestHandler<Query, IEnumerable<JobSummary>> {
 
         private readonly IDbConnection _connection;
 
@@ -17,14 +17,14 @@ internal class GetJobs {
             _connection = connection;
         }
 
-        public async Task<JobSummary[]> Handle(Query request, CancellationToken cancellationToken) {
+        public async Task<IEnumerable<JobSummary>> Handle(Query request, CancellationToken cancellationToken) {
             
             const string query = @"SELECT [Id], [Name], [Number], [Customer], [ItemCount], [Vendor]
                                     FROM [Jobs];";
 
             var jobs = await _connection.QueryAsync<JobSummary>(query);
 
-            return jobs.ToArray();
+            return jobs;
 
         }
     }

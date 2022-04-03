@@ -3,7 +3,7 @@ using Sales.Implementation.Infrastructure;
 
 namespace Sales.Implementation.Application.OrderedItems;
 
-internal class SetQty {
+public class SetQty {
 
     public record Command(int ItemId, int Qty) : IRequest;
 

@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using MediatR;
 using Catalog.Implementation.Application;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
 using FluentValidation;
 
@@ -24,8 +22,7 @@ public class CatalogFunctions {
     public async Task<IActionResult> AddToCatalog([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"Catalog/{nameof(AddToCatalog)}")] 
                                                   AddToCatalog.Command command) {
         try {
-            await Task.CompletedTask;
-            Guid newId = await _sender.Send(command);
+            int newId = await _sender.Send(command);
             return new CreatedResult($"/Catalog/GetProductDetails/{newId}", new { Id = newId });
         } catch (ValidationException e) {
             return new BadRequestObjectResult(new ProblemDetails {
@@ -92,27 +89,23 @@ public class CatalogFunctions {
 
         string id = req.Query["id"];
 
-        Guid productId;
+        int productId;
         try {
-            productId = Guid.Parse(id);
+            productId = int.Parse(id);
+            if (productId <= 0) {
+                throw new InvalidOperationException("Invalid id");
+            }
         } catch {
             return new BadRequestObjectResult(new ProblemDetails {
                 Title = "Invalid Id",
-                Detail = "Id is not a valid Guid",
+                Detail = "Id is not a valid integer",
                 Status = StatusCodes.Status400BadRequest
             });
         }
 
-        try {
-            var result = await _sender.Send(new GetProductDetails.Query(productId));
-            return result is not null ? new OkObjectResult(result) : new BadRequestResult();
-        } catch (ValidationException e) {
-            return new BadRequestObjectResult(new ProblemDetails {
-                Title = "Invalid Request",
-                Detail = e.Message,
-                Status = StatusCodes.Status400BadRequest
-            });
-        }
+        var result = await _sender.Send(new GetProductDetails.Query(productId));
+        return result is not null ? new OkObjectResult(result) : new BadRequestResult();
+        
     }
 
 }

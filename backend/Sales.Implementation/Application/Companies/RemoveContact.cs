@@ -3,7 +3,7 @@ using Sales.Implementation.Infrastructure;
 
 namespace Sales.Implementation.Application.Companies;
 
-internal class RemoveContact {
+public class RemoveContact {
 
     public record Command(int CompanyId, int ContactId) : IRequest;
 

@@ -33,8 +33,8 @@ public class OrderRepository {
 
         var order = new Order(id, orderDto.Name, orderDto.Number, items.ToArray(), status, orderDto.PlacedDate) {
             Fields = fields,
-            CompletionDate = orderDto.CompletionDate,
-            ConfirmationDate = orderDto.ConfirmationDate,
+            CompletedDate = orderDto.CompletionDate,
+            ConfirmedDate = orderDto.ConfirmationDate,
             VendorId = orderDto.VendorId,
             SupplierId = orderDto.SupplierId,
             CustomerId = orderDto.CustomerId
