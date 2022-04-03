@@ -18,7 +18,9 @@ public class OrderedItemRepository {
 
     public async Task<OrderedItemContext> GetItemById(int id) {
 
-        const string query = "SELECTE [Id], [ProductName], [ProductId], [Options], [Qty], [OrderId] FROM [OrderedItems] WHERE [Id] = @Id;";
+        const string query = @"SELECT [Id], [OrderId], [ProductId], [ProductName], [Qty], [Options]
+                                FROM [Sales].[OrderedItems]
+                                WHERE [Id] = @Id;";
 
         var itemDto = await _connection.QuerySingleAsync<Persistance.OrderedItem>(query, new { Id = id });
 
@@ -37,28 +39,8 @@ public class OrderedItemRepository {
     }
 
     public async Task Remove(int itemId) {
-        const string command = @"DELETE FROM [OrderedItems] WHERE [Id] = @Id;";
+        const string command = @"DELETE FROM [Sales].[OrderedItems] WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new { Id = itemId });
-    }
-
-    public async Task<int> Create(string productName, int productId, int orderId) {
-
-        const string command = @"INSERT INTO [OrderedItems]
-                                ([ProductName], [ProductId], [OrderId], [Qty], [Options])
-                                VALUES (@ProductName, @ProductId, @OrderId, @Qty, @Options);
-                                SELECT SCOPE_IDENTITY();";
-        
-        
-        int newId = await _connection.QuerySingleAsync<int>(command, new {
-            ProductName = productName,
-            ProductId = productId,
-            OrderId = orderId,
-            Qty = 0,
-            Options = "{}"
-        });
-
-        return newId;
-
     }
 
     public async Task Save(OrderedItemContext item) {
@@ -81,9 +63,9 @@ public class OrderedItemRepository {
     }
 
     private async Task ApplyItemQtySet(IDbTransaction trx, OrderedItemContext item, ItemQtySet itemQtySet) {
-        const string query = @"UPDATE [OrderedItems]
-                                        SET [Qty] = @Qty
-                                        WHERE [Id] = @Id;";
+        const string query = @"UPDATE [Sales].[OrderedItems]
+                                SET [Qty] = @Qty
+                                WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(query, new {
             Id = item.Id,
             Qty = itemQtySet.Qty,
@@ -92,12 +74,12 @@ public class OrderedItemRepository {
 
     private async Task ApplyItemOptionSet(IDbTransaction trx, OrderedItemContext item, ItemOptionSet itemOptionSet) {
         const string query = @"SELECT [Options]
-                                        FROM [OrderedItems]
-                                        WHERE [Id] = @Id;";
+                                FROM [Sales].[OrderedItems]
+                                WHERE [Id] = @Id;";
 
-        const string command = @"UPDATE [OrderedItems]
-                                        SET [Options] = @Options 
-                                        WHERE [Id] = @Id;";
+        const string command = @"UPDATE [Sales].[OrderedItems]
+                                SET [Options] = @Options 
+                                WHERE [Id] = @Id;";
         string json = await _connection.QuerySingleAsync<string>(query, new {
             Id = item.Id
         }, trx);

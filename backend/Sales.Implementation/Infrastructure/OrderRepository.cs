@@ -18,23 +18,23 @@ public class OrderRepository {
 
     public async Task<OrderContext> GetOrderById(int id) {
 
-        const string query = @"SELECT [Id], [Name], [Number], [Status], [Fields], [PlaceDate], [CompletionDate], [ConfirmationDate], [VendorId], [SupplierId], [CustomerId]
-                                FROM [Orders] WHERE [Id] = @Id;";
+        const string query = @"SELECT [Id], [Name], [Number], [Status], [Fields], [PlaceDate], [CompletedDate], [ConfirmedDate], [VendorId], [SupplierId], [CustomerId]
+                                FROM [Sales].[Orders] WHERE [Id] = @Id;";
 
         var orderDto = await _connection.QuerySingleAsync<Persistance.Order>(query, new { Id = id });
 
         var fields = JsonSerializer.Deserialize<Dictionary<string,string>>(orderDto.OrderFields);
         if (fields is null) fields = new();
 
-        const string itemQuery = @"SELECT [Id] FROM [OrderedItems] WHERE [OrderId] = @OrderId;";
+        const string itemQuery = @"SELECT [Id] FROM [Sales].[OrderedItems] WHERE [OrderId] = @OrderId;";
         var items = await _connection.QueryAsync<int>(itemQuery, new { OrderId = id });
 
         var status = Enum.Parse<OrderStatus>(orderDto.Status);
 
         var order = new Order(id, orderDto.Name, orderDto.Number, items.ToArray(), status, orderDto.PlacedDate) {
             Fields = fields,
-            CompletedDate = orderDto.CompletionDate,
-            ConfirmedDate = orderDto.ConfirmationDate,
+            CompletedDate = orderDto.CompletedDate,
+            ConfirmedDate = orderDto.ConfirmedDate,
             VendorId = orderDto.VendorId,
             SupplierId = orderDto.SupplierId,
             CustomerId = orderDto.CustomerId
@@ -67,27 +67,30 @@ public class OrderRepository {
     }
 
     private async Task ApplyOrderConfirmation(OrderConfirmedEvent e, OrderContext order, IDbTransaction trx) {
-        const string command = "UPDATE [Orders] SET [Status] = @Status, [ConfirmedDate] = @TimeStamp WHERE [Id] = @Id;";
+        const string command = @"UPDATE [Sales].[Orders] SET [Status] = @Status, [ConfirmedDate] = @TimeStamp
+                                WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new {
-            Id = order.Id,
+            order.Id,
             Status = OrderStatus.Confirmed.ToString(),
             e.TimeStamp
         }, trx);
     }
 
     private async Task ApplyOrderCompletion(OrderCompletedEvent e, OrderContext order, IDbTransaction trx) {
-        const string command = "UPDATE [Orders] SET [Status] = @Status, [CompletedDate] = @TimeStamp WHERE [Id] = @Id;";
+        const string command = @"UPDATE [Sales].[Orders] SET [Status] = @Status, [CompletedDate] = @TimeStamp
+                                WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new {
-            Id = order.Id,
+            order.Id,
             Status = OrderStatus.Completed.ToString(),
             e.TimeStamp
         }, trx);
     }
 
     private async Task ApplyOrderCancel(OrderCanceledEvent e, OrderContext order, IDbTransaction trx) {
-        const string command = "UPDATE [Orders] SET [Status] = @Status, [CanceledDate] = @TimeStamp WHERE [Id] = @Id;";
+        const string command = @"UPDATE [Sales].[Orders] SET [Status] = @Status, [CanceledDate] = @TimeStamp
+                                WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new {
-            Id = order.Id,
+            order.Id,
             Status = OrderStatus.Void.ToString(),
             e.TimeStamp
         }, trx);

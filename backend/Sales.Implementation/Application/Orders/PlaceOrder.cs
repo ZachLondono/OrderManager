@@ -19,7 +19,7 @@ public class PlaceOrder {
 
         public async Task<int> Handle(Command request, CancellationToken cancellationToken) {
 
-            const string command = @"INSERT INTO [Orders] ([Name], [Number], [CustomerId], [VendorId], [SupplierId], [Fields], [Status], [PlacedDate])
+            const string command = @"INSERT INTO [Sales].[Orders] ([Name], [Number], [CustomerId], [VendorId], [SupplierId], [Fields], [Status], [PlacedDate])
                                     VALUES (@Name, @Number, @CustomerId, @VendorId, @SupplierId, @Fields, @Status, @PlacedDate);";
 
             int newId = await _connection.QuerySingleAsync<int>(command, new {

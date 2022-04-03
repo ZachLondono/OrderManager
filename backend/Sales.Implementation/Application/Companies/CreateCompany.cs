@@ -18,11 +18,11 @@ public class CreateCompany {
 
         public async Task<int> Handle(Command request, CancellationToken cancellationToken) {
 
-            const string command = @"INSERT INTO [Companies] ([Name]) VALUES (@Name);
+            const string command = @"INSERT INTO [Sales].[Companies] ([Name]) VALUES (@Name);
                                     SELECT SCOPE_IDENTITY();";
 
             int newId = await _connection.QuerySingleAsync<int>(command, new {
-                Name = request.Name
+                request.Name
             });
 
             return newId;

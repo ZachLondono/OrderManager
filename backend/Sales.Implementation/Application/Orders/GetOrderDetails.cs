@@ -19,13 +19,14 @@ public class GetOrderDetails {
 
         public async Task<OrderDetails> Handle(Query request, CancellationToken cancellationToken) {
 
-            const string query = @"SELECT [Id], [Name], [Number], [CustomerId], [VendorId], [SupplierId], [Status], [PlacedDate], [ConfirmationDate], [CompletionDate], [CanceldDate], [Fields]
-                                    FROM [Orders]
+            const string query = @"SELECT [Id], [Name], [Number], [CustomerId], [VendorId], [SupplierId], [PlacedDate], [ConfirmedDate], [CompletedDate], [Status], [Fields]
+                                    FROM [Sales].[Orders]
                                     WHERE [Id] = @Id;";
 
             var order = await _connection.QuerySingleAsync<OrderDetails>(query, request);
 
-            const string itemQuery = @"SELECT [Id] FROM [OrderedItems] WHERE [OrderId] = @OrderId";
+            const string itemQuery = @"SELECT [Id] FROM [Sales].[OrderedItems]
+                                        WHERE [OrderId] = @OrderId";
 
             var items = await _connection.QueryAsync<int>(itemQuery, new { OrderId = request.Id });
             order.OrderedItems = items;

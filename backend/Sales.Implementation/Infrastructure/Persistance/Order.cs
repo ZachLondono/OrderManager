@@ -16,9 +16,9 @@ internal class Order {
 
     public DateTime? PlacedDate { get; set; }
 
-    public DateTime? ConfirmationDate { get; set; }
+    public DateTime? ConfirmedDate { get; set; }
     
-    public DateTime? CompletionDate { get; set; }
+    public DateTime? CompletedDate { get; set; }
 
     public string Status { get; set; } = string.Empty;
 

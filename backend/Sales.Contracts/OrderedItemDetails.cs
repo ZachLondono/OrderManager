@@ -8,7 +8,7 @@ public class OrderedItemDetails {
 
     public string Name { get; set; } = string.Empty;
 
-    public int Quantity { get; set; }
+    public int Qty { get; set; }
 
     public string Options { get; set; } = string.Empty;
 

@@ -18,11 +18,9 @@ public class OrderDetails {
 
     public DateTime? PlacedDate { get; set; }
 
-    public DateTime? ConfirmationDate { get; set; }
+    public DateTime? ConfirmedDate { get; set; }
 
-    public DateTime? CompletionDate { get; set; }
-
-    public DateTime? CanceledDate { get; set; }
+    public DateTime? CompletedDate { get; set; }
 
     public string Fields { get; set; } = string.Empty;
 

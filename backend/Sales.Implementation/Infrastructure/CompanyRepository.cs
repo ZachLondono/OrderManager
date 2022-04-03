@@ -14,7 +14,9 @@ public class CompanyRepository {
 
     public async Task<CompanyContext> GetCompanyById(int id) {
 
-        const string query = @"SELECT [Id], [Name], [Line1], [Line2], [Line3], [City], [State], [Zip] FROM [Companies] WHERE [Id] = @Id;";
+        const string query = @"SELECT [Id], [Name], [Line1], [Line2], [Line3], [City], [State], [Zip]
+                                FROM [Sales].[Companies]
+                                WHERE [Id] = @Id;";
         var companyDto = await _connection.QuerySingleAsync<Persistance.Company>(query, new {
             Id = id
         });
@@ -36,7 +38,9 @@ public class CompanyRepository {
                 roles.Add(role);
         }
 
-        const string contactQuery = @"SELECT [Id], [Name], [Email], [Phone] FROM [Contacts] WHERE [Id] = @Id;";
+        const string contactQuery = @"SELECT [Id], [Name], [Email], [Phone]
+                                    FROM [Sales].[Contacts]
+                                    WHERE [Id] = @Id;";
         var contactDtos = await _connection.QueryAsync<Persistance.Contact>(contactQuery, new {
             CompanyId = id
         });
@@ -82,7 +86,7 @@ public class CompanyRepository {
     }
 
     private async Task ApplyContactAdd(CompanyContext company, ContactAddedEvent e, IDbTransaction trx) {
-        const string command = @"INSERT INTO [Contacts] ([Name], [CompanyId], [Email], [Phone])
+        const string command = @"INSERT INTO [Sales].[Contacts] ([Name], [CompanyId], [Email], [Phone])
                                 VALUES (@Name, @CompanyId, @Email, @Phone);";
         await _connection.ExecuteAsync(command, new {
             e.Contact.Name,
@@ -93,7 +97,7 @@ public class CompanyRepository {
     }
 
     private async Task ApplyContactRemove(CompanyContext company, ContactRemovedEvent e, IDbTransaction trx) {
-        const string command = @"DELETE FROM [Contacts]
+        const string command = @"DELETE FROM [Sales].[Contacts]
                                 WHERE [Id] = @ContactId;";
         await _connection.ExecuteAsync(command, new {
             e.ContactId
@@ -101,7 +105,7 @@ public class CompanyRepository {
     }
 
     private async Task ApplyAddressSet(CompanyContext company, AddressSetEvent e, IDbTransaction trx) {
-        const string command = @"UPDATE [Companies]
+        const string command = @"UPDATE [Sales].[Companies]
                                 SET [Line1] = @Line1, [Line2] = @Line2, [Line3] = @Line3, [City] = @City, [State] = @State, [Zip] = @Zip
                                 WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new {
@@ -116,7 +120,7 @@ public class CompanyRepository {
     }
 
     private async Task ApplyNameSet(CompanyContext company, NameSetEvent e, IDbTransaction trx) {
-        const string command = @"UPDATE [Companies]
+        const string command = @"UPDATE [Sales].[Companies]
                                 SET [Name] = @Name,
                                 WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new {
@@ -127,7 +131,7 @@ public class CompanyRepository {
 
     private async Task ApplyRoleAdd(CompanyContext company, RoleAddedEvent e, IDbTransaction trx) {
 
-        const string query = @"SELECT [Roles] FROM [Companies] WHERE [Id] = @Id;";
+        const string query = @"SELECT [Roles] FROM [Sales].[Companies] WHERE [Id] = @Id;";
 
         string roles = await _connection.QuerySingleAsync<string>(query, new {
             Id = company.Id
@@ -135,7 +139,7 @@ public class CompanyRepository {
 
         roles += $",{e.Role}";
 
-        const string command = @"UPDATE [Companies] SET [Roles] = @Roles WHERE [Id] = @Id;";
+        const string command = @"UPDATE [Sales].[Companies] SET [Roles] = @Roles WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new {
             Roles = roles,
             Id = company.Id
@@ -145,7 +149,7 @@ public class CompanyRepository {
 
     private async Task ApplyRoleRemove(CompanyContext company, RoleRemovedEvent e, IDbTransaction trx) {
 
-        const string query = @"SELECT [Roles] FROM [Companies] WHERE [Id] = @Id;";
+        const string query = @"SELECT [Roles] FROM [Sales].[Companies] WHERE [Id] = @Id;";
 
         string roles = await _connection.QuerySingleAsync<string>(query, new {
             Id = company.Id
@@ -156,7 +160,7 @@ public class CompanyRepository {
 
         roles = string.Join(',', rolesArr);
 
-        const string command = @"UPDATE [Companies] SET [Roles] = @Roles WHERE [Id] = @Id;";
+        const string command = @"UPDATE [Sales].[Companies] SET [Roles] = @Roles WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new {
             Roles = roles,
             Id = company.Id

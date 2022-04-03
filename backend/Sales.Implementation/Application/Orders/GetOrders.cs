@@ -20,7 +20,7 @@ public class GetOrders {
         public async Task<IEnumerable<OrderSummary>> Handle(Query request, CancellationToken cancellationToken) {
 
             const string query = @"SELECT [Id], [Name], [Number], [CustomerId], [PlacedDate], [Status]
-                                    FROM [Orders];";
+                                    FROM [Sales].[Orders];";
 
             var orders = await _connection.QueryAsync<OrderSummary>(query);
 

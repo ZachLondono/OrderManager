@@ -13,6 +13,7 @@ public static class CompleteOrder {
         public Handler(OrderRepository orderRepo) {
             _orderRepo = orderRepo;
         }
+
         public async Task Handle(JobCompleteNotification notification, CancellationToken cancellationToken) {
             var order = await _orderRepo.GetOrderById(notification.JobId);
             order.CompleteOrder();

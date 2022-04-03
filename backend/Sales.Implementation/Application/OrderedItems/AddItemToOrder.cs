@@ -18,8 +18,10 @@ public class AddItemToOrder {
 
         public async Task<int> Handle(Command request, CancellationToken cancellationToken) {
 
-            const string command = @"INSERT INTO [OrderedItems] ([OrderId], [ProductId], [ProductName], [Qty], [Options])
-                                    VALUES (@OrderId, @ProductId, @ProductName, @Qty, @Options);";
+            const string command = @"INSERT INTO [Sales].[OrderedItems]
+                                ([OrderId], [ProductId], [ProductName], [Qty], [Options])
+                                VALUES (@OrderId, @ProductId, @ProductName, @Qty, @Options);
+                                SELECT SCOPE_IDENTITY();";
 
             int newId = await _connection.QuerySingleAsync<int>(command, request);
 

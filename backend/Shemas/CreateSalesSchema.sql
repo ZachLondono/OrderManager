@@ -8,8 +8,8 @@ create table Sales.Orders (
 	[VendorId] int FOREIGN KEY REFERENCES Companies(Id),
 	[SupplierId] int FOREIGN KEY REFERENCES Companies(Id),
 	[PlacedDate] datetime,
-	[ConfirmationDate] datetime,
-	[CompletionDate] datetime,
+	[ConfirmedDate] datetime,
+	[CompletedDate] datetime,
 	[Status] varchar(255) NOT NULL,
 	[Fields] varchar(MAX)
 );

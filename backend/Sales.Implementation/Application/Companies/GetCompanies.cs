@@ -19,7 +19,7 @@ public class GetCompanies {
 
         public async Task<IEnumerable<CompanySummary>> Handle(Query request, CancellationToken cancellationToken) {
 
-            const string query = "SELECT [Id], [Name], [Roles] FROM [Companies];";
+            const string query = "SELECT [Id], [Name], [Roles] FROM [Sales].[Companies];";
 
             var companies = await _connection.QueryAsync<CompanySummary>(query);
 
