@@ -7,6 +7,7 @@ using MediatR;
 using Catalog.Implementation.Application;
 using System;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 
 namespace Functions.Endpoints;
 
@@ -79,9 +80,16 @@ public class CatalogFunctions {
     }
 
     [FunctionName(nameof(GetProducts))]
-    public async Task<IActionResult> GetProducts([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"Catalog/{nameof(GetProducts)}")] HttpRequest req) {
-        var result = await _sender.Send(new GetProducts.Query());
-        return result is not null ? new OkObjectResult(result) : new BadRequestResult();
+    public async Task<IActionResult> GetProducts([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"Catalog/{nameof(GetProducts)}")] ILogger log) {
+        log.LogInformation("Getting products");
+        try { 
+            var result = await _sender.Send(new GetProducts.Query());
+            log.LogInformation("Got products {Result}", result);
+            return result is not null ? new OkObjectResult(result) : new BadRequestResult();
+        } catch (Exception e) {
+            log.LogError("Error getting producs {e}", e);
+            return new BadRequestObjectResult(e);
+        }
     }
 
     [FunctionName(nameof(GetProductDetails))]

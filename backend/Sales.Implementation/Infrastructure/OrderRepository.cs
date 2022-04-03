@@ -18,6 +18,8 @@ public class OrderRepository {
 
     public async Task<OrderContext> GetOrderById(int id) {
 
+        _logger.LogInformation("Getting order with ID: {ID}", id);
+
         const string query = @"SELECT [Id], [Name], [Number], [Status], [Fields], [PlaceDate], [CompletedDate], [ConfirmedDate], [VendorId], [SupplierId], [CustomerId]
                                 FROM [Sales].[Orders] WHERE [Id] = @Id;";
 
@@ -40,6 +42,8 @@ public class OrderRepository {
             CustomerId = orderDto.CustomerId
         };
 
+        _logger.LogInformation("Order with ID {ID} found {Order}", id, order);
+
         return new(order);
 
     }
@@ -50,7 +54,7 @@ public class OrderRepository {
         var trx = _connection.BeginTransaction();
 
         var events = order.Events;
-        
+
         foreach (var e in events) {
 
             if (e is OrderConfirmedEvent confirmedEvent) {
@@ -65,6 +69,8 @@ public class OrderRepository {
 
         trx.Commit();
         _connection.Close();
+
+        _logger.LogInformation("Applied {EventCount} events to order with ID {ID}", events.Count, order.Id);
 
     }
 

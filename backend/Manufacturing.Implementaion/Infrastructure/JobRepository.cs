@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Manufacturing.Implementation.Domain;
+using Microsoft.Extensions.Logging;
 using System.Data;
 
 namespace Manufacturing.Implementation.Infrastructure;
@@ -7,9 +8,11 @@ namespace Manufacturing.Implementation.Infrastructure;
 public class JobRepository {
 
     private readonly IDbConnection _connection;
+    private readonly ILogger<JobRepository> _logger;
 
-    public JobRepository(IDbConnection connection) {
+    public JobRepository(IDbConnection connection, ILogger<JobRepository> logger) {
         _connection = connection;
+        _logger = logger;
     }
 
     public async Task<JobContext> GetJobById(int jobId) {
@@ -21,6 +24,8 @@ public class JobRepository {
         var job = await _connection.QuerySingleAsync<Persistance.Job>(query, new { Id = jobId });
 
         ManufacturingStatus status = (ManufacturingStatus) Enum.Parse(typeof(ManufacturingStatus), job.Status);
+
+        _logger.LogInformation("Found job with ID {ID}, {Job}", job);
 
         return new(new Job(job.Id,
                             job.Name,
@@ -58,13 +63,15 @@ public class JobRepository {
         trx.Commit();
         _connection.Close();
 
+        _logger.LogInformation("Applied {EventCount} events to job with Id {ID}", events.Count, context.Id);
+
     }
 
     private async Task ApplyCancel(JobContext context, IDbTransaction trx) {
         const string command = "UPDATE [Manufacturing].[Jobs] SET [Status] = @Status WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new {
             Status = ManufacturingStatus.Canceled.ToString(),
-            Id = context.Id
+            context.Id
         }, trx);
     }
 
@@ -72,7 +79,7 @@ public class JobRepository {
         const string command = "UPDATE [Manufacturing].[Jobs] SET [Status] = @Status, [ReleasedDate] = @Date WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new {
             Status = ManufacturingStatus.InProgress.ToString(),
-            Id = context.Id,
+            context.Id,
             Date = releaseEvent.ReleaseTimestamp
         }, trx);
     }
@@ -81,7 +88,7 @@ public class JobRepository {
         const string command = "UPDATE [Manufacturing].[Jobs] SET [Status] = @Status, [CompletedDate] = @Date WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new {
             Status = ManufacturingStatus.Completed.ToString(),
-            Id = context.Id,
+            context.Id,
             Date = completeEvent.CompleteTimestamp
         }, trx);
     }
@@ -90,7 +97,7 @@ public class JobRepository {
         const string command = "UPDATE [Manufacturing].[Jobs] SET [Status] = @Status, [ShippedDate] = @Date WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new {
             Status = ManufacturingStatus.Shipped.ToString(),
-            Id = context.Id,
+            context.Id,
             Date = shipEvent.ShipTimestamp
         }, trx);
     }

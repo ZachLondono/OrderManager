@@ -35,6 +35,8 @@ public class ProductRepository {
             }
         }
 
+        _logger.LogInformation("Found product with ID {ID}, {Product}", id, product);
+
         return new(product);
 
     }
@@ -99,6 +101,9 @@ public class ProductRepository {
 
         trx.Commit();
         _connection.Close();
+
+        _logger.LogInformation("Applied {EventCount} events to product with Id {ID}", events.Count, product.Id);
+
     }
 
     private async Task ApplyAttributeRemove(ProductContext product, IDbTransaction trx, AttributeRemovedEvent attributeRemoved) {

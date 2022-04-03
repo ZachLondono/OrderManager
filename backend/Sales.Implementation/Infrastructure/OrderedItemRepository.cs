@@ -18,6 +18,8 @@ public class OrderedItemRepository {
 
     public async Task<OrderedItemContext> GetItemById(int id) {
 
+        _logger.LogInformation("Getting ordered item with ID: {ID}", id);
+
         const string query = @"SELECT [Id], [OrderId], [ProductId], [ProductName], [Qty], [Options]
                                 FROM [Sales].[OrderedItems]
                                 WHERE [Id] = @Id;";
@@ -33,6 +35,8 @@ public class OrderedItemRepository {
                 item[key] = options[key];
             }
         }
+
+        _logger.LogInformation("Found ordered item with ID: {ID}, {Item}", id, item);
 
         return new(item);
 
@@ -62,6 +66,8 @@ public class OrderedItemRepository {
         trx.Commit();
         _connection.Close();
 
+        _logger.LogInformation("Applied {EventCount} events to ordered item {Item}", events.Count, item);
+
     }
 
     private async Task ApplyItemQtySet(IDbTransaction trx, OrderedItemContext item, ItemQtySet itemQtySet) {
@@ -69,8 +75,8 @@ public class OrderedItemRepository {
                                 SET [Qty] = @Qty
                                 WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(query, new {
-            Id = item.Id,
-            Qty = itemQtySet.Qty,
+            item.Id,
+            itemQtySet.Qty,
         }, trx);
     }
 
@@ -83,7 +89,7 @@ public class OrderedItemRepository {
                                 SET [Options] = @Options 
                                 WHERE [Id] = @Id;";
         string json = await _connection.QuerySingleAsync<string>(query, new {
-            Id = item.Id
+            item.Id
         }, trx);
 
         var options = JsonSerializer.Deserialize<Dictionary<string, string>>(json);

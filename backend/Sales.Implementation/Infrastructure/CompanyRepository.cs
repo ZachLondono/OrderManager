@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.Extensions.Logging;
 using Sales.Implementation.Domain;
 using System.Data;
 
@@ -7,9 +8,11 @@ namespace Sales.Implementation.Infrastructure;
 public class CompanyRepository {
 
     private readonly IDbConnection _connection;
+    private readonly ILogger<CompanyRepository> _logger;
 
-    public CompanyRepository(IDbConnection connection) {
+    public CompanyRepository(IDbConnection connection, ILogger<CompanyRepository> logger) {
         _connection = connection;
+        _logger = logger;
     }
 
     public async Task<CompanyContext> GetCompanyById(int id) {
@@ -33,8 +36,7 @@ public class CompanyRepository {
         List<CompanyRole> roles = new();
         var roleSplit = companyDto.Roles.Split(',');
         foreach (var str in roleSplit) {
-            CompanyRole role;
-            if (Enum.TryParse(str, out role))
+            if (Enum.TryParse(str, out CompanyRole role))
                 roles.Add(role);
         }
 
@@ -56,6 +58,8 @@ public class CompanyRepository {
 
         Company company = new(companyDto.Id, companyDto.Name, contacts, address, roles);
 
+        _logger.LogInformation("Found company with ID {ID}, {Company}", id, company);
+
         return new(company);
 
     }
@@ -70,7 +74,7 @@ public class CompanyRepository {
             if (e is ContactAddedEvent contactAdd) {
                 await ApplyContactAdd(company, contactAdd, trx);
             } else if (e is ContactRemovedEvent contactRemove) {
-                await ApplyContactRemove(company, contactRemove, trx);
+                await ApplyContactRemove(contactRemove, trx);
             } else if (e is AddressSetEvent addressSet) {
                 await ApplyAddressSet(company, addressSet, trx);
             } else if (e is NameSetEvent nameSet) {
@@ -85,6 +89,8 @@ public class CompanyRepository {
         trx.Commit();
         _connection.Close();
 
+        _logger.LogInformation("Applied {EventCount} events to company with ID {ID}", events.Count, company.Id);
+
     }
 
     private async Task ApplyContactAdd(CompanyContext company, ContactAddedEvent e, IDbTransaction trx) {
@@ -98,7 +104,7 @@ public class CompanyRepository {
         }, trx);
     }
 
-    private async Task ApplyContactRemove(CompanyContext company, ContactRemovedEvent e, IDbTransaction trx) {
+    private async Task ApplyContactRemove(ContactRemovedEvent e, IDbTransaction trx) {
         const string command = @"DELETE FROM [Sales].[Contacts]
                                 WHERE [Id] = @ContactId;";
         await _connection.ExecuteAsync(command, new {
@@ -117,7 +123,7 @@ public class CompanyRepository {
             e.Address.City,
             e.Address.State,
             e.Address.Zip,
-            Id = company.Id,
+            company.Id,
         }, trx);
     }
 
@@ -126,8 +132,8 @@ public class CompanyRepository {
                                 SET [Name] = @Name,
                                 WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new {
-            Id = company.Id,
-            Name = e.Name
+            company.Id,
+            e.Name
         }, trx);
     }
 
@@ -136,7 +142,7 @@ public class CompanyRepository {
         const string query = @"SELECT [Roles] FROM [Sales].[Companies] WHERE [Id] = @Id;";
 
         string roles = await _connection.QuerySingleAsync<string>(query, new {
-            Id = company.Id
+            company.Id
         }, trx);
 
         roles += $",{e.Role}";
@@ -144,7 +150,7 @@ public class CompanyRepository {
         const string command = @"UPDATE [Sales].[Companies] SET [Roles] = @Roles WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new {
             Roles = roles,
-            Id = company.Id
+            company.Id
         }, trx);
 
     }
@@ -154,7 +160,7 @@ public class CompanyRepository {
         const string query = @"SELECT [Roles] FROM [Sales].[Companies] WHERE [Id] = @Id;";
 
         string roles = await _connection.QuerySingleAsync<string>(query, new {
-            Id = company.Id
+            company.Id
         }, trx);
 
         var rolesArr = roles.Split(',')
@@ -165,7 +171,7 @@ public class CompanyRepository {
         const string command = @"UPDATE [Sales].[Companies] SET [Roles] = @Roles WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new {
             Roles = roles,
-            Id = company.Id
+            company.Id
         }, trx);
 
     }
