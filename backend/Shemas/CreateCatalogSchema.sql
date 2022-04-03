@@ -7,7 +7,7 @@ create table [Catalog].Products (
 
 create table [Catalog].ProductAttributes (
 	[Id] int IDENTITY(1,1) PRIMARY KEY,
-	[ProductId] int FOREIGN KEY REFERENCES Products(Id),
+	[ProductId] int FOREIGN KEY REFERENCES [Catalog].Products(Id),
 	[Name] varchar(255) Not Null,
 	[Default] varchar(255) Not Null
 );
