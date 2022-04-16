@@ -1,8 +1,9 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
+using System.Diagnostics;
 
-namespace OrderManager.ApplicationCore.Services;
+namespace OrderManager.ApplicationCore.Common;
 
 public static class FormulaService {
 
@@ -51,8 +52,14 @@ public static class FormulaService {
 		Dictionary<string, PortableExecutableReference> metadata = new();
 
 		for (int i = 0; i < arguments.Length; i++) {
+			
 			var arg = arguments[i];
-			args += $"{arg.Type.Name} {arg.Name}" + (i < arguments.Length - 1 ? "," : string.Empty);
+
+			var typeName = arg.Type.Name;
+			if (typeName.Contains('`'))
+				typeName = typeName.Substring(0, typeName.IndexOf('`'));
+			args += $"{typeName} {arg.Name}" + (i < arguments.Length - 1 ? "," : string.Empty);
+			
 			namespaces += $"using {arg.Type.Namespace};\n";
 
 			var location = arg.Type.Assembly.Location;
@@ -63,9 +70,11 @@ public static class FormulaService {
 		string code = $@"{namespaces}
 						public static class FormulaExecutor {{
 							public static string Execute({args}) {{
-								return ${formula};
+								return $""{formula}"";
 							}}
 						}}";
+
+		Debug.WriteLine(code);
 
 		return new(code, metadata.Values.ToArray());
 
