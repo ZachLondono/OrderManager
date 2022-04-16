@@ -6,8 +6,6 @@ public class EmailTemplate {
 
     public string Name { get; private set; }
 
-    public string TemplatePath { get; private set; }
-
     public string Subject { get; private set; }
 
     public string Body { get; private set; }
@@ -21,10 +19,9 @@ public class EmailTemplate {
     private readonly List<string> _bcc;
     public IReadOnlyCollection<string> Bcc => _bcc;
 
-    public EmailTemplate(int id, string name, string templatePath) {
+    public EmailTemplate(int id, string name) {
         Id = id;
         Name = name;
-        TemplatePath = templatePath;
         Subject = "";
         Body = "";
         _to = new();
@@ -32,10 +29,9 @@ public class EmailTemplate {
         _bcc = new();
     }
 
-    public EmailTemplate(int id, string name, string templatePath, string subject, string body, IEnumerable<string> to, IEnumerable<string> cc, IEnumerable<string> bcc) {
+    public EmailTemplate(int id, string name, string subject, string body, IEnumerable<string> to, IEnumerable<string> cc, IEnumerable<string> bcc) {
         Id = id;
         Name = name;
-        TemplatePath = templatePath;
         Subject = subject;
         Body = body;
         _to = new(to);
@@ -45,10 +41,6 @@ public class EmailTemplate {
 
     public void SetName(string name) {
         Name = name;
-    }
-
-    public void SetTemplatePath(string templatePath) {
-        TemplatePath = templatePath;
     }
 
     public void SetBody(string body) {

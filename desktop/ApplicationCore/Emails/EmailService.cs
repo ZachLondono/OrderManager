@@ -14,14 +14,8 @@ public class EmailService {
         _repo = repo;
     }
 
-    public Task<EmailTemplateContext> CreateEmailTemplate(string templatePath) {
-        string? fileName = Path.GetFileNameWithoutExtension(templatePath);
-
-        if (fileName is null) {
-            throw new InvalidDataException($"Could not find file from path '{templatePath}'");
-        }
-
-        return _repo.Add(fileName, templatePath);
+    public Task<EmailTemplateContext> CreateEmailTemplate(string templateName) {
+        return _repo.Add(templateName);
     }
 
     public async Task SendEmail(Order order, EmailTemplate template, string sender) {

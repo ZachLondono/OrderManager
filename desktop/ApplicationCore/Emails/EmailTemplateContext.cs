@@ -3,7 +3,6 @@
 namespace OrderManager.ApplicationCore.Emails;
 
 public record EmailNameChangedEvent(string Name);
-public record EmailTemplatePathChangedEvent(string TemplatePath);
 public record EmailBodyChangedEvent(string Body);
 public record EmailSubjectChangedEvent(string Subject);
 public record EmailToAddedEvent(string To);
@@ -28,11 +27,6 @@ public class EmailTemplateContext {
     public void SetName(string name) {
         _template.SetName(name);
         _events.Add(new EmailNameChangedEvent(name));
-    }
-
-    public void SetTemplatePath(string templatePath) {
-        _template.SetTemplatePath(templatePath);
-        _events.Add(new EmailTemplatePathChangedEvent(templatePath));
     }
 
     public void SetBody(string body) {
