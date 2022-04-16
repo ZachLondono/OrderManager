@@ -60,7 +60,6 @@ public class AllmoxyOrderProvider : INewOrderFromFileProvider {
                     { "Height", dimensions["height"]?.InnerText ?? "" },
                     { "Width", dimensions["width"]?.InnerText ?? "" },
                     { "Depth", dimensions["depth"]?.InnerText ?? "" },
-                    { "Qty", drawerbox["qty"]?.InnerText ?? "" },
                     { "Material", drawerbox["material"]?.InnerText ?? "" },
                     { "Bottom", drawerbox["bottom"]?.InnerText ?? ""},
                     { "Insert", drawerbox["insert"]?.InnerText ?? ""},
@@ -88,6 +87,8 @@ public class AllmoxyOrderProvider : INewOrderFromFileProvider {
             if (!TryGetAttribute(drawerbox, "lineNumber", out string? line)) line = "0";
 
             product.LineNumber = int.Parse($"{line}{group}");
+
+            product.Qty = int.Parse(drawerbox["qty"]?.InnerText ?? "0");
 
             order.Products.Add(product);
 

@@ -5,11 +5,20 @@ namespace TestOrderProvider;
 
 public class TestOrderProvider : INewOrderProvider {
     
-    public string PluginName => "Test Order Provider";
+    public string PluginName => "Test Order Provider6";
 
-    public int Version => 1;
+    public int Version => 10;
 
     public OrderDto GetNewOrder() {
+
+        Console.WriteLine($"Loading order from plugin '{PluginName}', v{Version}");
+
+        int _min = 1000;
+        int _max = 9999;
+        Random _rdm = new Random();
+        string number =  $"OT{_rdm.Next(_min, _max)}";
+
+        Console.WriteLine($"Random new order Number {number}");
 
         return new OrderDto {
             Customer = new() {
@@ -23,7 +32,7 @@ public class TestOrderProvider : INewOrderProvider {
                 Contact = "Bob Saget"
             },
             Name = "Test Order",
-            Number = "OT111",
+            Number = number,
             SupplierId = 1,
             VendorId = 1,
             Products = new List<ProductDto> {

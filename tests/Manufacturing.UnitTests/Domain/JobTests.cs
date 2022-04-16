@@ -39,7 +39,7 @@ public class JobTests {
     public void ShouldReleaseJob() {
         var j = new Job("nae", "number", "customer", "vendor", 1);
         j.ReleaseToProduction();
-        j.ReleaseDate
+        j.ReleasedDate
             .Should()
             .NotBeNull()
             .And
@@ -53,31 +53,31 @@ public class JobTests {
     public void ShouldCompleteJob() {
         var j = new Job("nae", "number", "customer", "vendor", 1);
         j.Complete();
-        j.ReleaseDate
+        j.ReleasedDate
             .Should()
             .NotBeNull()
             .And
             .BeBefore(DateTime.Now);
-        j.CompleteDate
+        j.CompletedDate
             .Should()
             .NotBeNull()
             .And
             .BeBefore(DateTime.Now);
         j.Status
             .Should()
-            .Be(ManufacturingStatus.Complete);
+            .Be(ManufacturingStatus.Completed);
     }
 
     [Fact]
     public void ShouldShipJob() {
         var j = new Job("nae", "number", "customer", "vendor", 1);
         j.Ship();
-        j.ReleaseDate
+        j.ReleasedDate
             .Should()
             .NotBeNull()
             .And
             .BeBefore(DateTime.Now);
-        j.CompleteDate
+        j.CompletedDate
             .Should()
             .NotBeNull()
             .And
