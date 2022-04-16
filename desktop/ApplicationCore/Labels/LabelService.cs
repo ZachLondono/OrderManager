@@ -24,6 +24,10 @@ public class LabelService {
 
         string? fileName = Path.GetFileNameWithoutExtension(templatePath);
 
+        if (fileName is null) {
+            throw new InvalidDataException($"Could not find file from path '{templatePath}'");
+        }
+
         IEnumerable<string> fieldNames = await _printer.GetLabelFields(templatePath);
 
         Dictionary<string, string> fields = new();
