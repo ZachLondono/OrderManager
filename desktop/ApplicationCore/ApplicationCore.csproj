@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\PluginContracts\PluginContracts.csproj" />
   </ItemGroup>
 
 </Project>
