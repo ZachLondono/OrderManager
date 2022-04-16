@@ -7,8 +7,4 @@
     <RootNamespace>OrderManager.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="ReleaseProfile\" />
-  </ItemGroup>
-
 </Project>
