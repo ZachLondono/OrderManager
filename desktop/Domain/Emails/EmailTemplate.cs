@@ -63,11 +63,24 @@ public class EmailTemplate {
         _to.Add(to);
     }
 
+    public void RemoveTo(string To) {
+        _to.Remove(To);
+    }
+
     public void AddCc(string cc) {
         _cc.Add(cc);
+    }
+
+    public void RemoveCc(string cc) {
+        _cc.Remove(cc);
     }
 
     public void AddBcc(string bcc) {
         _bcc.Add(bcc);
     }
+
+    public void RemoveBcc(string bcc) {
+        _bcc.Remove(bcc);
+    }
+
 }

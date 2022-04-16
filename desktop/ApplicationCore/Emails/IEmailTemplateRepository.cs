@@ -2,7 +2,7 @@
 
 public interface IEmailTemplateRepository {
 
-    public Task Add(string name, string templatePath) => throw new NotImplementedException();
+    public Task<EmailTemplateContext> Add(string name, string templatePath) => throw new NotImplementedException();
 
     public Task Remove(int id) => throw new NotImplementedException();
 
