@@ -1,14 +1,12 @@
-﻿using OrderManager.Domain.Emails;
-using OrderManager.Domain.Labels;
-using OrderManager.Domain.Profiles;
+﻿using OrderManager.Domain.Profiles;
 
 namespace OrderManager.ApplicationCore.Profiles;
 
 public record ProfileNameChangeEvent(string Name);
-public record ProfileEmailAddedEvent(EmailTemplate Email);
-public record ProfileEmailRemovedEvent(EmailTemplate Email);
-public record ProfileLabelAddedEvent(LabelFieldMap Label);
-public record ProfileLabelRemovedEvent(LabelFieldMap Label);
+public record ProfileEmailAddedEvent(int EmailId);
+public record ProfileEmailRemovedEvent(int EmailId);
+public record ProfileLabelAddedEvent(int LabelId);
+public record ProfileLabelRemovedEvent(int LabelId);
 public record ProfilePluginAddedEvent(string PluginName);
 public record ProfilePluginRemovedEvent(string PluginName);
 
@@ -29,24 +27,24 @@ public class ReleaseProfileContext {
         _events.Add(new ProfileNameChangeEvent(name));
     }
 
-    public void AddEmailTemplate(EmailTemplate email) {
-        _profile.AddEmailTemplate(email);
-        _events.Add(new ProfileEmailAddedEvent(email));
+    public void AddEmailTemplate(int emailId) {
+        _profile.AddEmailTemplate(emailId);
+        _events.Add(new ProfileEmailAddedEvent(emailId));
     }
 
-    public void RemoveEmailTemplate(EmailTemplate email) {
-        _profile.RemoveEmailTemplate(email);
-        _events.Add(new ProfileEmailRemovedEvent(email));
+    public void RemoveEmailTemplate(int emailId) {
+        _profile.RemoveEmailTemplate(emailId);
+        _events.Add(new ProfileEmailRemovedEvent(emailId));
     }
 
-    public void AddLabelFieldMap(LabelFieldMap label) {
-        _profile.AddLabelFieldMap(label);
-        _events.Add(new ProfileLabelAddedEvent(label));
+    public void AddLabelFieldMap(int labelId) {
+        _profile.AddLabelFieldMap(labelId);
+        _events.Add(new ProfileLabelAddedEvent(labelId));
     }
 
-    public void RemoveLabelFieldMap(LabelFieldMap label) {
-        _profile.RemoveLabelFieldMap(label);
-        _events.Add(new ProfileLabelRemovedEvent(label));
+    public void RemoveLabelFieldMap(int labelId) {
+        _profile.RemoveLabelFieldMap(labelId);
+        _events.Add(new ProfileLabelRemovedEvent(labelId));
     }
 
     public void AddPlugin(string pluginName) {

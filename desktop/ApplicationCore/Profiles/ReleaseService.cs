@@ -15,18 +15,22 @@ public class ReleaseService {
         _labelService = labelService;
     }
 
-    public async Task Release(Order order, ReleaseProfile profile) {
+    public Task Release(Order order, ReleaseProfile profile) {
 
-        foreach (var label in profile.Labels) {
-            await _labelService.PrintLabels(order, label);
-        }
+        throw new NotImplementedException();
 
-        foreach (var email in profile.Emails) {
-            await _emailService.SendEmail(order, email, "");
-        }
+        // TODO: query label data and print labels
+        /*foreach (var labelId in profile.Labels) {
+            ...
+        }*/
+
+        // TODO: query email data and send emails
+        /*foreach (var emailId in profile.Emails) {
+            ...
+        }*/
 
         // TODO: execute release profile plugins
-        /*foreach (var plugin in profile.Plugins) {
+        /*foreach (var pluginName in profile.Plugins) {
             ...
         }*/
 
