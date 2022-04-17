@@ -1,7 +1,4 @@
-﻿using OrderManager.Domain.Emails;
-using OrderManager.Domain.Labels;
-
-namespace OrderManager.Domain.Profiles;
+﻿namespace OrderManager.Domain.Profiles;
 
 public class ReleaseProfile {
 

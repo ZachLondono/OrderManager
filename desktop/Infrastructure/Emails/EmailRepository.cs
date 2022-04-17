@@ -15,7 +15,7 @@ public class EmailTemplateRepository : IEmailTemplateRepository {
     public async Task<EmailTemplateContext> Add(string name) {
         const string sql = @"INSERT INTO [EmailTemplates] ([Name])
                             VALUES (@Name)
-                            returning id";
+                            returning Id";
         int newId = await _connection.QuerySingleAsync<int>(sql, new { 
             Name = name }
         );
