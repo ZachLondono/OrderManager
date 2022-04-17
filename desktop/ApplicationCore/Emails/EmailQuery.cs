@@ -4,6 +4,6 @@ namespace OrderManager.ApplicationCore.Emails;
 
 public class EmailQuery {
 
-    public delegate Task<EmailTemplate?> GetEmailById(int Id);
+    public delegate Task<EmailTemplate?> GetEmailById(int id);
 
 }

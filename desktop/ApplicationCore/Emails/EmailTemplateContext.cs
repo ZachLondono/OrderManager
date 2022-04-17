@@ -17,9 +17,10 @@ public class EmailTemplateContext {
     private readonly EmailTemplate _template;
     private readonly List<object> _events;
 
+    public int Id => _template.Id;
     public IEnumerable<object> Events => _events;
 
-    internal EmailTemplateContext(EmailTemplate template) {
+    public EmailTemplateContext(EmailTemplate template) {
         _template = template;
         _events = new();
     }

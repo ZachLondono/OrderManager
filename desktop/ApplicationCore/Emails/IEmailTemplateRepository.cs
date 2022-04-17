@@ -2,12 +2,12 @@
 
 public interface IEmailTemplateRepository {
 
-    public Task<EmailTemplateContext> Add(string name) => throw new NotImplementedException();
+    public Task<EmailTemplateContext> Add(string name);
 
-    public Task Remove(int id) => throw new NotImplementedException();
+    public Task Remove(int id);
 
-    public Task<EmailTemplateContext> GetById(int id) => throw new NotImplementedException();
+    public Task<EmailTemplateContext> GetById(int id);
 
-    public Task Save(EmailTemplateContext context) => throw new NotImplementedException();
+    public Task Save(EmailTemplateContext context);
 
 }
