@@ -68,7 +68,7 @@ public class EmailTemplateRepository : IEmailTemplateRepository {
         }
 
         trx.Commit();
-
+        _connection.Close();
     }
 
     private async Task ApplyNameChangedEvent(IDbTransaction trx, int emailId, EmailNameChangedEvent ev) {
