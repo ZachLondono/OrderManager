@@ -6,6 +6,10 @@ public class EmailTemplate {
 
     public string Name { get; private set; }
 
+    public string Sender { get; private set; }
+
+    public string Password { get; private set; }
+
     public string Subject { get; private set; }
 
     public string Body { get; private set; }
@@ -22,6 +26,8 @@ public class EmailTemplate {
     public EmailTemplate(int id, string name) {
         Id = id;
         Name = name;
+        Sender = "";
+        Password = "";
         Subject = "";
         Body = "";
         _to = new();
@@ -29,9 +35,11 @@ public class EmailTemplate {
         _bcc = new();
     }
 
-    public EmailTemplate(int id, string name, string subject, string body, IEnumerable<string> to, IEnumerable<string> cc, IEnumerable<string> bcc) {
+    public EmailTemplate(int id, string name, string sender, string password, string subject, string body, IEnumerable<string> to, IEnumerable<string> cc, IEnumerable<string> bcc) {
         Id = id;
         Name = name;
+        Sender = sender;
+        Password = password;
         Subject = subject;
         Body = body;
         _to = new(to);

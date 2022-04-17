@@ -18,7 +18,7 @@ public class EmailService {
         return _repo.Add(templateName);
     }
 
-    public async Task SendEmail(Order order, EmailTemplate template, string sender) {
+    public async Task SendEmail(Order order, EmailTemplate template) {
 
         IEnumerable<string> filledTo = await EvaluateCollectionOfFormulas(order, template.To);
         IEnumerable<string> filledCc = await EvaluateCollectionOfFormulas(order, template.Cc);
@@ -29,7 +29,7 @@ public class EmailService {
         // TODO: use an html templating engine to create better html emails
         string filledBody = await FormulaService.ExecuteFormula(template.Body, order, "order");
 
-        await _sender.SendEmail(sender, new IEmailSender.Email(filledSubject, filledBody, filledTo, filledCc, filledBcc));
+        await _sender.SendEmail(new IEmailSender.Email(template.Sender, template.Password, filledSubject, filledBody, filledTo, filledCc, filledBcc));
 
     }
 

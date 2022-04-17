@@ -2,8 +2,8 @@
 
 public interface IEmailSender {
 
-    public record Email(string Subject, string Body, IEnumerable<string> To, IEnumerable<string> Cc, IEnumerable<string> Bcc);
+    public record Email(string Sender, string Password, string Subject, string Body, IEnumerable<string> To, IEnumerable<string> Cc, IEnumerable<string> Bcc);
 
-    public Task SendEmail(string sender, Email email);
+    public Task SendEmail(Email email);
 
 }

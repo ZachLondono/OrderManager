@@ -37,8 +37,7 @@ public class ReleaseService {
         foreach (var emailId in profile.Emails) {
             EmailTemplate? email = await _emailQuery(emailId);
             if (email is null) continue;
-            // TODO: figure out something for sender
-            await _emailService.SendEmail(order, email, "");
+            await _emailService.SendEmail(order, email);
         }
 
         var releasePlugins = _pluginManager.GetPluginTypes()
