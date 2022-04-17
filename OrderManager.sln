@@ -74,21 +74,24 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationCore", "desktop\ApplicationCore\ApplicationCore.csproj", "{495572C3-4E1D-4E6A-851B-B23867DB19D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "desktop\Domain\Domain.csproj", "{9D4C6879-8393-4E32-B4C7-E5A84CB4F0C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "desktop\Domain\Domain.csproj", "{9D4C6879-8393-4E32-B4C7-E5A84CB4F0C5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{AA500805-B718-4C04-8731-6C69899D09EE}"
+	ProjectSection(SolutionItems) = preProject
+		desktop\Schema.sql = desktop\Schema.sql
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{E2FB36D7-E14A-4964-9F31-6E08124F2A8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "desktop\Infrastructure\Infrastructure.csproj", "{9DBC334F-5453-4CA6-BEE1-A2115484679F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "desktop\Infrastructure\Infrastructure.csproj", "{9DBC334F-5453-4CA6-BEE1-A2115484679F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesktopUI", "desktop\DesktopUI\DesktopUI.csproj", "{5C431F6D-8929-441E-8357-D3A94D96C94E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DesktopUI", "desktop\DesktopUI\DesktopUI.csproj", "{5C431F6D-8929-441E-8357-D3A94D96C94E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.UnitTests", "tests\Domain.UnitTests\Domain.UnitTests.csproj", "{49F1ADB7-B8AB-4181-A3C3-CC5D18A026F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.UnitTests", "tests\Domain.UnitTests\Domain.UnitTests.csproj", "{49F1ADB7-B8AB-4181-A3C3-CC5D18A026F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.UnitTests", "tests\Infrastructure.UnitTests\Infrastructure.UnitTests.csproj", "{404A2047-A55C-44CD-8C71-856C98E37219}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.UnitTests", "tests\Infrastructure.UnitTests\Infrastructure.UnitTests.csproj", "{404A2047-A55C-44CD-8C71-856C98E37219}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplicationCore.UnitTests", "tests\ApplicationCore.UnitTests\ApplicationCore.UnitTests.csproj", "{25EF8340-71EC-41E9-9449-B1E5323682BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationCore.UnitTests", "tests\ApplicationCore.UnitTests\ApplicationCore.UnitTests.csproj", "{25EF8340-71EC-41E9-9449-B1E5323682BE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DesktopUI.UnitTests", "tests\DesktopUI.UnitTests\DesktopUI.UnitTests.csproj", "{0D93C17D-8D62-40D6-876D-4D6521DF56A5}"
 EndProject
