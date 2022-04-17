@@ -15,9 +15,10 @@ public class ReleaseProfileContext {
     private readonly ReleaseProfile _profile;
     private readonly List<object> _events;
 
+    public int Id => _profile.Id;
     public IReadOnlyCollection<object> Events => _events;
 
-    internal ReleaseProfileContext(ReleaseProfile profile) {
+    public ReleaseProfileContext(ReleaseProfile profile) {
         _profile = profile;
         _events = new List<object>();
     }
