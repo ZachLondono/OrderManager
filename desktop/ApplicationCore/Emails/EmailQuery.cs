@@ -9,21 +9,21 @@ public class EmailQuery {
     /// <summary>
     /// Returns a summary of all available email templates
     /// </summary>
-    public delegate Task<IEnumerable<EmailTemplateSummary>> GetLabelSummaries();
+    public delegate Task<IEnumerable<EmailTemplateSummary>> GetEmailSummaries();
 
     /// <summary>
     /// Returns a summary of all email templates in a given profile
     /// </summary>
-    public delegate Task<IEnumerable<EmailTemplateSummary>> GetLabelSummariesByProfileId(int id);
+    public delegate Task<IEnumerable<EmailTemplateSummary>> GetEmailSummariesByProfileId(int id);
 
     /// <summary>
     /// Returns a detailed email templates with a given id
     /// </summary>
-    public delegate Task<EmailTemplateDetails> GetLabelDetailsById(int id);
+    public delegate Task<EmailTemplateDetails> GetEmailDetailsById(int id);
 
     /// <summary>
     /// Returns a detailed email templates for all labels in a given profile
     /// </summary>
-    public delegate Task<IEnumerable<EmailTemplateDetails>> GetLabelDetailsByProfileId(int id);
+    public delegate Task<IEnumerable<EmailTemplateDetails>> GetEmailDetailsByProfileId(int id);
 
 }

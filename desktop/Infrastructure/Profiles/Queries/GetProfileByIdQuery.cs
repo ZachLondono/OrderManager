@@ -2,17 +2,17 @@
 using OrderManager.Domain.Profiles;
 using System.Data;
 
-namespace Infrastructure.Profiles;
+namespace Infrastructure.Profiles.Queries;
 
-public class ProfileQuery {
+public class GetProfileByIdQuery {
 
     private readonly IDbConnection _connection;
 
-    public ProfileQuery(IDbConnection connection) {
+    public GetProfileByIdQuery(IDbConnection connection) {
         _connection = connection;
     }
 
-    public async Task<ReleaseProfile?> GetById(int id) {
+    public async Task<ReleaseProfile?> GetProfileById(int id) {
 
         const string query = @"SELECT ([Id], [Name]) FROM [ReleaseProfiles] WHERE [Id] = @Id;";
         const string pluginQuery = @"SELECT ([PluginName]) FROM [Profiles_Plugins] WHERE [ProfileId] = @Id;";

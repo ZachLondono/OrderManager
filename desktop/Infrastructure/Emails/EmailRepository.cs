@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Infrastructure.Emails.Queries;
 using OrderManager.ApplicationCore.Emails;
 using System.Data;
 
@@ -24,7 +25,7 @@ public class EmailTemplateRepository : IEmailTemplateRepository {
     }
 
     public async Task<EmailTemplateContext> GetById(int id) {
-        var query = new EmailQuery(_connection);
+        var query = new GetEmailByIdQuery(_connection);
         var template = await query.GetEmailById(id);
 
         if (template is null) throw new InvalidDataException($"Email template with Id '{id}' could not be found");

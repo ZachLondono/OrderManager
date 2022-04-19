@@ -3,13 +3,13 @@ using OrderManager.Domain.Labels;
 using System.Data;
 using System.Text.Json;
 
-namespace Infrastructure.Labels;
+namespace Infrastructure.Labels.Queries;
 
-public class LabelQuery {
+public class GetLabelByIdQuery {
 
     private readonly IDbConnection _connection;
 
-    public LabelQuery(IDbConnection connection) {
+    public GetLabelByIdQuery(IDbConnection connection) {
         _connection = connection;
     }
 

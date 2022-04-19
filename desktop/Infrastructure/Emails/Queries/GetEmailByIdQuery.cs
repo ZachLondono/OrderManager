@@ -2,13 +2,13 @@
 using OrderManager.Domain.Emails;
 using System.Data;
 
-namespace Infrastructure.Emails;
+namespace Infrastructure.Emails.Queries;
 
-public class EmailQuery {
+public class GetEmailByIdQuery {
 
     private readonly IDbConnection _connection;
 
-    public EmailQuery(IDbConnection connection) {
+    public GetEmailByIdQuery(IDbConnection connection) {
         _connection = connection;
     }
 

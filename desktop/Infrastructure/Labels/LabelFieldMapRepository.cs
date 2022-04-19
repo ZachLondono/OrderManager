@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Infrastructure.Labels.Queries;
 using OrderManager.ApplicationCore.Labels;
 using OrderManager.Domain.Labels;
 using System.Data;
@@ -33,7 +34,7 @@ public class LabelFieldMapRepository : ILabelFieldMapRepository {
     }
 
     public async Task<LabelFieldMapContext> GetById(int id) {
-        var query = new LabelQuery(_connection);
+        var query = new GetLabelByIdQuery(_connection);
         var labelmap = await query.GetLabelById(id);
         if (labelmap is null) throw new InvalidDataException($"Could not find label field map with id '{id}'");
         return new(labelmap);
