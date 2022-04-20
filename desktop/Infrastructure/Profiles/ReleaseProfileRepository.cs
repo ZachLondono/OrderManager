@@ -7,9 +7,10 @@ namespace Infrastructure.Profiles;
 public class ReleaseProfileRepository : IReleaseProfileRepository {
 
     private readonly IDbConnection _connection;
-
-    public ReleaseProfileRepository(IDbConnection connection) {
+    private readonly ProfileQuery.GetProfileById _query;
+    public ReleaseProfileRepository(IDbConnection connection, ProfileQuery.GetProfileById query) {
         _connection = connection;
+        _query = query;
     }
 
     public async Task<ReleaseProfileContext> Add(string name) {
@@ -21,8 +22,7 @@ public class ReleaseProfileRepository : IReleaseProfileRepository {
     }
 
     public async Task<ReleaseProfileContext> GetById(int id) {
-        var query = new ProfileQuery(_connection);
-        var profile = await query.GetById(id);
+        var profile = await _query(id);
         if (profile is null) throw new InvalidDataException($"Could not find profile with id '{id}'");
         return new(profile);
     }
