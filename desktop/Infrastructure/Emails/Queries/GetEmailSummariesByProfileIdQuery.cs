@@ -1,5 +1,6 @@
 ﻿using OrderManager.Domain.Emails;
 using System.Data;
+using Dapper;
 
 namespace Infrastructure.Emails.Queries;
 
@@ -11,6 +12,17 @@ public class GetEmailSummariesByProfileIdQuery {
         _connection = connection;
     }
 
-    public Task<IEnumerable<EmailTemplateSummary>> GetEmailSummariesByProfileId(int id) => throw new NotImplementedException();
+    public async Task<IEnumerable<EmailTemplateSummary>> GetEmailSummariesByProfileId(int profileId) {
+
+        const string query = @"SELECT ([Id], [Name], [ProfileId])
+                                FROM [EmailTemplates]
+                                RIGHT JOIN [Profiles_Emails] ON EmailTemplates.Id = Profiles_Emails.EmailId
+                                WHERE [ProfileId] = @Id";
+
+        return await _connection.QueryAsync<EmailTemplateSummary>(query, new {
+            Id = profileId
+        });
+
+    }
 
 }

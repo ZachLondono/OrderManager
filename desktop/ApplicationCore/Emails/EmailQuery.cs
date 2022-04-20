@@ -14,7 +14,7 @@ public class EmailQuery {
     /// <summary>
     /// Returns a summary of all email templates in a given profile
     /// </summary>
-    public delegate Task<IEnumerable<EmailTemplateSummary>> GetEmailSummariesByProfileId(int id);
+    public delegate Task<IEnumerable<EmailTemplateSummary>> GetEmailSummariesByProfileId(int profileId);
 
     /// <summary>
     /// Returns a detailed email templates with a given id
@@ -24,6 +24,6 @@ public class EmailQuery {
     /// <summary>
     /// Returns a detailed email templates for all labels in a given profile
     /// </summary>
-    public delegate Task<IEnumerable<EmailTemplateDetails>> GetEmailDetailsByProfileId(int id);
+    public delegate Task<IEnumerable<EmailTemplateDetails>> GetEmailDetailsByProfileId(int profileId);
 
 }

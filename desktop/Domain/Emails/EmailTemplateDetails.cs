@@ -13,11 +13,11 @@ public class EmailTemplateDetails {
 
     public string Password { get; set; } = string.Empty;
 
-    public IEnumerable<string> To { get; set; } = Enumerable.Empty<string>();
+    public List<string> To { get; set; } = new();
 
-    public IEnumerable<string> Cc { get; set; } = Enumerable.Empty<string>();
+    public List<string> Cc { get; set; } = new();
 
-    public IEnumerable<string> Bcc { get; set; } = Enumerable.Empty<string>();
+    public List<string> Bcc { get; set; } = new();
 
     public string Subject { get; set; } = string.Empty;
 
