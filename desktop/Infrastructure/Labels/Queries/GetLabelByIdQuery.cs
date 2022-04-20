@@ -15,10 +15,12 @@ public class GetLabelByIdQuery {
 
     public async Task<LabelFieldMap?> GetLabelById(int id) {
 
-        const string query = "SELECT ([Id], [Name], [TemplatePath], [PrintQty], [Type], [Fields]) FROM [LabelFieldMaps] WHERE [Id] = @Id;";
+        const string query = "SELECT [Id], [Name], [TemplatePath], [PrintQty], [Type], [Fields] FROM [LabelFieldMaps] WHERE [Id] = @Id;";
         var data = await _connection.QuerySingleAsync<LabelDto>(query, new {
             Id = id
         });
+
+        data.Id = id;
 
         LabelType type = (LabelType) Enum.Parse(typeof(LabelType), data.Type);
         var fields = JsonSerializer.Deserialize<Dictionary<string, string>>(data.Fields);

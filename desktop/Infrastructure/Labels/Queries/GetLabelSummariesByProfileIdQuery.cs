@@ -1,5 +1,6 @@
 ﻿using OrderManager.Domain.Labels;
 using System.Data;
+using Dapper;
 
 namespace Infrastructure.Labels.Queries;
 
@@ -11,6 +12,17 @@ public class GetLabelSummariesByProfileIdQuery {
         _connection = connection;
     }
 
-    public Task<IEnumerable<LabelFieldMapSummary>> GetLabelSummariesByProfileId(int id) => throw new NotImplementedException();
+    public async Task<IEnumerable<LabelFieldMapSummary>> GetLabelSummariesByProfileId(int profileId) {
+
+        const string query = @"SELECT (LabelFieldMaps.[Id], [Name], [ProfileId])
+                                FROM [LabelFieldMaps]
+                                RIGHT JOIN [Profiles_Labels] On LabelFieldMaps.Id = Profiles_Labels.LabelId
+                                WHERE Profiles_Labels.ProfileId = @ProfileId;";
+
+        return await _connection.QueryAsync<LabelFieldMapSummary>(query, new {
+            ProfileId = profileId
+        });
+
+    }
 
 }

@@ -17,8 +17,8 @@ public class LabelFieldMapRepository : ILabelFieldMapRepository {
 
     public async Task<LabelFieldMapContext> Add(string name, string templatePath, LabelType labelType, Dictionary<string, string> fields) {
         const string query = @"INSERT INTO [LabelFieldMaps] ([Name], [TemplatePath], [PrintQty], [Type], [Fields])
-                                VALUES (@Name, @TemplatePath, @PrintQty, @LabelType, @Fields);
-                                returning Id;";
+                                VALUES (@Name, @TemplatePath, @PrintQty, @LabelType, @Fields)
+                                returning [Id];";
 
         var json = JsonSerializer.Serialize(fields);
         int printQty = 1;
