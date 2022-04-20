@@ -24,10 +24,10 @@ public class GetLabelDetailsByIdQuery {
         });
 
         return new LabelFieldMapDetails {
-            Id = result.Id,
-            Name = result.Name ?? string.Empty,
-            TemplatePath = result.TemplatePath ?? string.Empty,
-            PrintQty = result.PrintQty ?? 0,
+            Id = (int) result.Id,
+            Name = (string) result.Name ?? string.Empty,
+            TemplatePath = (string) result.TemplatePath ?? string.Empty,
+            PrintQty = (int) result.PrintQty,
             Type = (LabelType) Enum.Parse(typeof(LabelType), (string) result.Type),
             Fields = JsonSerializer.Deserialize<Dictionary<string,string>>(result.Fields) ?? new Dictionary<string,string>()
         };

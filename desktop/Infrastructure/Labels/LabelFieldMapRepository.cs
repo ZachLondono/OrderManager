@@ -46,8 +46,11 @@ public class LabelFieldMapRepository : ILabelFieldMapRepository {
     }
 
     public async Task Save(LabelFieldMapContext context) {
+        
+        bool openCloseConnection = true;
+        if (_connection.State == ConnectionState.Open) openCloseConnection = false;
 
-        _connection.Open();
+        if (openCloseConnection) _connection.Open();
         var trx = _connection.BeginTransaction();
 
         var events = context.Events;
@@ -68,7 +71,7 @@ public class LabelFieldMapRepository : ILabelFieldMapRepository {
         }
 
         trx.Commit();
-        _connection.Close();
+        if (openCloseConnection) _connection.Close();
 
     }
 
