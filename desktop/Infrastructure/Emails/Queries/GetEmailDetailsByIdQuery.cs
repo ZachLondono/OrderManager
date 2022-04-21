@@ -14,20 +14,19 @@ public class GetEmailDetailsByIdQuery {
 
     public async Task<EmailTemplateDetails> GetEmailDetailsById(int id) {
 
-        const string query = @"SELECT ([Id], [Name], [Sender], [Password], [Subject], [Body], [To], [Cc], [Bcc], [ProfileId])
+        const string query = @"SELECT [Id], [Name], [Sender], [Password], [Subject], [Body], [To], [Cc], [Bcc]
                                 FROM [EmailTemplates]
-                                RIGHT JOIN [Profiles_Emails] ON EmailTemplates.Id = Profiles_Emails.EmailId
-                                WHERE [ProfileId] = @Id";
+                                WHERE [Id] = @Id";
 
         var result = await _connection.QuerySingleAsync(query, new { Id = id });
 
         return new EmailTemplateDetails {
-            Id = result.Id,
-            Name = result.Name ?? "",
-            Sender = result.Sender ?? "",
-            Password = result.Password ?? "",
-            Subject = result.Subject ?? "",
-            Body = result.Body ?? "",
+            Id = (int)result.Id,
+            Name = (string)result.Name ?? "",
+            Sender = (string)result.Sender ?? "",
+            Password = (string)result.Password ?? "",
+            Subject = (string)result.Subject ?? "",
+            Body = (string)result.Body ?? "",
             To = ((string)result.To)?.Split(',').ToList() ?? new(),
             Cc = ((string)result.Cc)?.Split(',').ToList() ?? new(),
             Bcc = ((string)result.Bcc)?.Split(',').ToList() ?? new()

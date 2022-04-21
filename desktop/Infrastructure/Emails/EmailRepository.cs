@@ -41,7 +41,9 @@ public class EmailTemplateRepository : IEmailTemplateRepository {
 
     public async Task Save(EmailTemplateContext context) {
 
-        _connection.Open();
+        bool openCloseConnection = true;
+        if (_connection.State == ConnectionState.Open) openCloseConnection = false;
+        if (openCloseConnection) _connection.Open();
         var trx = _connection.BeginTransaction();
         var events = context.Events;
 
@@ -68,15 +70,18 @@ public class EmailTemplateRepository : IEmailTemplateRepository {
             }
         }
 
+        context.ClearEvents();
+
         trx.Commit();
-        _connection.Close();
+        if (openCloseConnection) _connection.Close();
+
     }
 
     private async Task ApplyNameChangedEvent(IDbTransaction trx, int emailId, EmailNameChangedEvent ev) {
         string sql = $"UPDATE [EmailTemplates] SET [Name] = @Name WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(sql, new {
             Id = emailId,
-            Subject = ev.Name
+            Name = ev.Name
         }, trx);
     }
 
@@ -84,7 +89,7 @@ public class EmailTemplateRepository : IEmailTemplateRepository {
         string sql = $"UPDATE [EmailTemplates] SET [Body] = @Body WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(sql, new {
             Id = emailId,
-            Subject = ev.Body
+            Body = ev.Body
         }, trx);
     }
 
@@ -133,13 +138,13 @@ public class EmailTemplateRepository : IEmailTemplateRepository {
         string sql = $"UPDATE [EmailTemplates] SET [{column}] = @NewVal WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(sql, new {
             Id = emailId,
-            NewValue = data
+            NewVal = data
         }, trx);
     }
 
     private async Task QueryAndRemove(IDbTransaction trx, int emailId, string column, string value) {
         string query = $"SELECT ([{column}]) FROM [EmailTemplates] WHERE [Id] = @Id;";
-        string data = await _connection.QuerySingleAsync<string>(query, new {
+        string? data = await _connection.QuerySingleAsync<string>(query, new {
             Id = emailId
         }, trx);
 
@@ -147,15 +152,18 @@ public class EmailTemplateRepository : IEmailTemplateRepository {
             return;
 
         var updatedData = data.Split(',')
-                        .ToList()
-                        .Remove(value);
+                        .ToList();
 
-        data = string.Join(',', updatedData);
+        updatedData.Remove(value);
+
+        if (updatedData.Count > 0) 
+            data = string.Join(',', updatedData);
+        else data = null;
 
         string sql = $"UPDATE [EmailTemplates] SET [{column}] = @NewVal WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(sql, new {
             Id = emailId,
-            NewValue = data
+            NewVal = data
         }, trx);
     }
 

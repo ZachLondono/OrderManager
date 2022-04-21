@@ -25,6 +25,10 @@ public class EmailTemplateContext {
         _events = new();
     }
 
+    public void ClearEvents() {
+        _events.Clear();
+    }
+
     public void SetName(string name) {
         _template.SetName(name);
         _events.Add(new EmailNameChangedEvent(name));

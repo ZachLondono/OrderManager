@@ -14,7 +14,7 @@ public class GetEmailSummariesQuery {
 
     public async Task<IEnumerable<EmailTemplateSummary>> GetEmailSummaries() {
 
-        const string query = "SELECT ([Id], [Name]) FROM [EmailTemplates]";
+        const string query = "SELECT [Id], [Name] FROM [EmailTemplates]";
 
         return await _connection.QueryAsync<EmailTemplateSummary>(query);
 
