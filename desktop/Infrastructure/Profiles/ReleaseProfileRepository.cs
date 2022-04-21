@@ -66,6 +66,8 @@ public class ReleaseProfileRepository : IReleaseProfileRepository {
 
         }
 
+        context.ClearEvents();
+
         trx.Commit();
         _connection.Close();
 

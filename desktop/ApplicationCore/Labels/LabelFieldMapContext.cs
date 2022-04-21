@@ -19,6 +19,10 @@ public class LabelFieldMapContext {
         _map = map;
     }
 
+    public void ClearEvents() {
+        _events.Clear();
+    }
+
     public void SetName(string name) {
         _map.SetName(name);
         _events.Add(new LabelNameChangeEvent(name));

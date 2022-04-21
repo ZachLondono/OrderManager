@@ -23,6 +23,10 @@ public class ReleaseProfileContext {
         _events = new List<object>();
     }
 
+    public void ClearEvents() {
+        _events.Clear();
+    }
+
     public void SetName(string name) {
         _profile.SetName(name);
         _events.Add(new ProfileNameChangeEvent(name));

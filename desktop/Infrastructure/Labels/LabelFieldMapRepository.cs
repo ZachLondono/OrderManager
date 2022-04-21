@@ -70,6 +70,8 @@ public class LabelFieldMapRepository : ILabelFieldMapRepository {
 
         }
 
+        context.ClearEvents();
+
         trx.Commit();
         if (openCloseConnection) _connection.Close();
 
