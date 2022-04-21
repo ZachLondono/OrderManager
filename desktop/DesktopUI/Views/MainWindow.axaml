@@ -12,6 +12,9 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
+  <StackPanel>
+    <Button Command="{Binding EditLabelsCommand}">Edit Labels</Button>
+    <Button Command="{Binding EditEmailsCommand}">Edit Emails</Button>
+    <Button Command="{Binding EditProfilesCommand}">Edit Profiles</Button>
+  </StackPanel>
 </Window>

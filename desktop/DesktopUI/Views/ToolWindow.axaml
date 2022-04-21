@@ -1,0 +1,52 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="500"
+        x:Class="DesktopUI.Views.ToolWindow"
+        Title="ToolWindow"
+        HasSystemDecorations="False"
+        WindowStartupLocation="CenterOwner">
+
+  <Window.Styles>
+    <Style Selector="#CaptionButtons > Button">
+      <Setter Property="Width" Value="45" />
+      <Setter Property="Height" Value="35" />
+      <Setter Property="Background" Value="#00FFFFFF" />
+      <Setter Property="BorderThickness" Value="0" />
+    </Style>
+    <Style Selector="#CaptionButtons > Button:pointerover">
+      <Setter Property="Width" Value="45" />
+      <Setter Property="Height" Value="35" />
+      <Setter Property="Background" Value="#14FFFFFF" />
+    </Style>
+    <Style Selector="Button#PART_CloseButton:pointerover">
+      <Setter Property="Background" Value="#EEFF0000" />
+    </Style>
+  </Window.Styles>
+
+  <Grid>
+    <Border Classes="OuterBorder" BorderBrush="#106EBE" BorderThickness="1">
+      <Grid x:Name="WindowGrid">
+
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Panel x:Name="PART_TitleBar" Grid.Row="0" Height="36" Background="#106EBE" VerticalAlignment="Top">
+        </Panel>
+
+        <Grid ColumnDefinitions="*,*,*" Width="135" Height="34" Name="CaptionButtons" Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right">
+          <Button Grid.Column="2" x:Name="PART_CloseButton">
+            <Path Data="M 0 0 L 10 10 M 10 0 L 0 10" HorizontalAlignment="Center" VerticalAlignment="Center" StrokeThickness="1" Stroke="White" />
+          </Button>
+        </Grid>
+        
+        <ContentControl Content="{Binding WindowContent}" Grid.Row="2" />
+        
+      </Grid>      
+    </Border>
+    
+  </Grid>
+</Window>
