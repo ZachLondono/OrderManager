@@ -2,7 +2,9 @@
 using Infrastructure.Labels;
 using Infrastructure.Labels.Queries;
 using Microsoft.Data.Sqlite;
+using OrderManager.ApplicationCore.Labels;
 using OrderManager.Domain.Labels;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -133,20 +135,85 @@ public class LabelQueryTests {
     }
 
     [Fact]
-    public void Should_Create_Edit_Read_Label() {
+    public void Should_Create_EditName_Read_Label() {
+        
+        // Arrange
+        string newName = "New Name";
 
+        var details = Should_Create_Edit_Read_Label(context => context.SetName(newName));
+
+        // Assert
+        Assert.NotNull(details);
+        Assert.Equal(newName, details?.Name);
+    }
+
+    [Fact]
+    public void Should_Create_EditPrintQty_Read_Label() {
+
+        // Arrange
+        int newQty = 123;
+
+        var details = Should_Create_Edit_Read_Label(context => context.SetPrintQty(newQty));
+
+        // Assert
+        Assert.NotNull(details);
+        Assert.Equal(newQty, details?.PrintQty);
+    }
+
+    [Fact]
+    public void Should_Create_EditTypeLine_Read_Label() {
+
+        // Arrange
+        LabelType newType = LabelType.LineItem;
+
+        var details = Should_Create_Edit_Read_Label(context => context.SetType(newType));
+
+        // Assert
+        Assert.NotNull(details);
+        Assert.Equal(newType, details?.Type);
+    }
+
+    [Fact]
+    public void Should_Create_EditTypeOrder_Read_Label() {
+
+        // Arrange
+        LabelType newType = LabelType.Order;
+
+        var details = Should_Create_Edit_Read_Label(context => context.SetType(newType));
+
+        // Assert
+        Assert.NotNull(details);
+        Assert.Equal(newType, details?.Type);
+    }
+
+    [Fact]
+    public void Should_Create_EditField_Read_Label() {
+
+        // Arrange
+        string newFieldValue = "New Field Value";
+        string fieldName = "FieldA";
+
+        var details = Should_Create_Edit_Read_Label(context => context.SetFieldFormula(fieldName, newFieldValue));
+
+        // Assert
+        Assert.NotNull(details);
+        Assert.Equal(newFieldValue, details?.Fields[fieldName]);
+    }
+
+    private LabelFieldMapDetails Should_Create_Edit_Read_Label(Action<LabelFieldMapContext> action) { 
         // Arrange
         var repo = new LabelFieldMapRepository(_connection);
         var query = new GetLabelDetailsByIdQuery(_connection);
-        string newName = "New Name";
-
+        
         // Act
         _connection.Open();
         SetupSchema();
 
-        var context = repo.Add("name", "path", LabelType.Order, new Dictionary<string, string>()).Result;
+        var context = repo.Add("name", "path", LabelType.Order, new Dictionary<string, string>() {
+            {"FieldA", "ValueA" } 
+        }).Result;
 
-        context.SetName(newName);
+        action(context);
 
         repo.Save(context).Wait();
 
@@ -154,9 +221,7 @@ public class LabelQueryTests {
 
         _connection.Close();
 
-        // Assert
-        Assert.NotNull(updated);
-        Assert.Equal(newName, updated?.Name);
+        return updated;
 
     }
 

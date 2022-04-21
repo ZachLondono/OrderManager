@@ -102,7 +102,7 @@ public class LabelFieldMapRepository : ILabelFieldMapRepository {
     }
 
     private async Task ApplyFieldFormulaSetEvent(IDbTransaction trx, int labelId, LabelFieldFormulaSetEvent ev) {
-        const string query = @"SELECT ([Fields]) FROM [LabelFieldMaps] WHERE [Id] = @Id;";
+        const string query = @"SELECT [Fields] FROM [LabelFieldMaps] WHERE [Id] = @Id;";
         var json = await _connection.QuerySingleAsync<string>(query, new {
             Id = labelId
         });
@@ -119,7 +119,7 @@ public class LabelFieldMapRepository : ILabelFieldMapRepository {
 
         json = JsonSerializer.Serialize(fields);
 
-        const string update = @"SELECT [LabelFieldMaps] SET [Fields] = @Fields WHERE [Id] = @Id;";
+        const string update = @"UPDATE [LabelFieldMaps] SET [Fields] = @Fields WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(update, new {
             Id = labelId,
             Fields = json
