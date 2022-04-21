@@ -10,7 +10,7 @@ public class ViewLocator : IDataTemplate {
         var type = Type.GetType(name);
 
         if (type != null) {
-            return (Control)Activator.CreateInstance(type)!;
+            return (Control)App.GetRequiredService(type)!;
         } else {
             return new TextBlock { Text = "Not Found: " + name };
         }

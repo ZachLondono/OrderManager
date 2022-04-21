@@ -19,4 +19,5 @@ internal class Program {
             .UsePlatformDetect()
             .LogToTrace()
             .UseReactiveUI();
+
 }
