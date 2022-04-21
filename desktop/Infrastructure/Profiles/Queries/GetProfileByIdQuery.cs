@@ -14,10 +14,10 @@ public class GetProfileByIdQuery {
 
     public async Task<ReleaseProfile?> GetProfileById(int id) {
 
-        const string query = @"SELECT ([Id], [Name]) FROM [ReleaseProfiles] WHERE [Id] = @Id;";
-        const string pluginQuery = @"SELECT ([PluginName]) FROM [Profiles_Plugins] WHERE [ProfileId] = @Id;";
-        const string labelQuery = @"SELECT ([LabelId]) FROM [Profiles_Labels] WHERE [ProfileId] = @Id;";
-        const string emailQuery = @"SELECT ([EmailId]) FROM [Profiles_Emails] WHERE [ProfileId] = @Id;";
+        const string query = @"SELECT [Id], [Name] FROM [ReleaseProfiles] WHERE [Id] = @Id;";
+        const string pluginQuery = @"SELECT [PluginName] FROM [Profiles_Plugins] WHERE [ProfileId] = @Id;";
+        const string labelQuery = @"SELECT [LabelId] FROM [Profiles_Labels] WHERE [ProfileId] = @Id;";
+        const string emailQuery = @"SELECT [EmailId] FROM [Profiles_Emails] WHERE [ProfileId] = @Id;";
 
         var dto = await _connection.QuerySingleAsync<ProfileDto>(query, new {
             Id = id

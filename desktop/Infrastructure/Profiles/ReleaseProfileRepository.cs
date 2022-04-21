@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Infrastructure.Profiles.Queries;
 using OrderManager.ApplicationCore.Profiles;
 using System.Data;
 
@@ -7,10 +8,9 @@ namespace Infrastructure.Profiles;
 public class ReleaseProfileRepository : IReleaseProfileRepository {
 
     private readonly IDbConnection _connection;
-    private readonly ProfileQuery.GetProfileById _query;
-    public ReleaseProfileRepository(IDbConnection connection, ProfileQuery.GetProfileById query) {
+
+    public ReleaseProfileRepository(IDbConnection connection) {
         _connection = connection;
-        _query = query;
     }
 
     public async Task<ReleaseProfileContext> Add(string name) {
@@ -22,7 +22,8 @@ public class ReleaseProfileRepository : IReleaseProfileRepository {
     }
 
     public async Task<ReleaseProfileContext> GetById(int id) {
-        var profile = await _query(id);
+        var query = new GetProfileByIdQuery(_connection);
+        var profile = await query.GetProfileById(id);
         if (profile is null) throw new InvalidDataException($"Could not find profile with id '{id}'");
         return new(profile);
     }
@@ -40,7 +41,10 @@ public class ReleaseProfileRepository : IReleaseProfileRepository {
 
     public async Task Save(ReleaseProfileContext context) {
 
-        _connection.Open();
+        bool openCloseConnection = true;
+        if (_connection.State == ConnectionState.Open) openCloseConnection = false;
+        
+        if (openCloseConnection) _connection.Open();
         var trx = _connection.BeginTransaction();
 
         var events = context.Events;
@@ -69,7 +73,7 @@ public class ReleaseProfileRepository : IReleaseProfileRepository {
         context.ClearEvents();
 
         trx.Commit();
-        _connection.Close();
+        if (openCloseConnection) _connection.Close();
 
     }
 

@@ -9,7 +9,7 @@ public static class ProfileQuery {
     /// <summary>
     /// Returns a summary of all available release profiles
     /// </summary>
-    public delegate Task<ReleaseProfileSummary> GetProfileSummaries();
+    public delegate Task<IEnumerable<ReleaseProfileSummary>> GetProfileSummaries();
 
     /// <summary>
     /// Returns a detailed release profiles with a given id

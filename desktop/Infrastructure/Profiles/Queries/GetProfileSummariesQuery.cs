@@ -1,5 +1,6 @@
 ﻿using OrderManager.Domain.Profiles;
 using System.Data;
+using Dapper;
 
 namespace Infrastructure.Profiles.Queries;
 
@@ -11,6 +12,12 @@ public class GetProfileSummariesQuery {
         _connection = connection;
     }
 
-    public Task<ReleaseProfileSummary> GetProfileSummaries() => throw new NotImplementedException();
+    public async Task<IEnumerable<ReleaseProfileSummary>> GetProfileSummaries() {
+
+        const string query = "SELECT [Id], [Name] FROM [ReleaseProfiles];";
+
+        return await _connection.QueryAsync<ReleaseProfileSummary>(query);
+
+    }
 
 }
