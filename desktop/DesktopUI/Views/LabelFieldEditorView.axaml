@@ -2,11 +2,92 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="600"
              x:Class="DesktopUI.Views.LabelFieldEditorView">
+
+  <UserControl.Styles>
+    <Style Selector="Label">
+      <Setter Property="FontStyle" Value="12" />
+      <Setter Property="Margin" Value="0,15,0,0" />
+    </Style>
+    <Style Selector="TextBox">
+      <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <Style Selector="NumericUpDown">
+      <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <Style Selector="ComboBox">
+      <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+  </UserControl.Styles>
   
-  <StackPanel>
-    <TextBlock>Label Field Editor</TextBlock>
+  <StackPanel Margin="35,0,35,0">
+
+    <TextBlock FontSize="15"
+               FontWeight="Medium"
+               Margin="0,15,0,10"
+               Text="Edit Label Fields" />
+    
+    <Label>Name</Label>
+    <TextBox Watermark="Label Template Name" Text="{Binding LabelName}"/>
+    
+    <StackPanel Orientation="Horizontal">
+      <TextBlock FontSize="10" Padding="0,10,10,0">Template:</TextBlock>
+      <TextBlock FontSize="10" Padding="0,10,0,0" FontWeight="Heavy" Text="{Binding LabelPath}"/>
+    </StackPanel>
+
+    <Label>Type</Label>
+    <ComboBox SelectedItem="{Binding LabelType}"
+              HorizontalAlignment="Stretch"
+              Items="{ Binding LabelTypes }">
+      <ComboBox.ItemTemplate>
+        <DataTemplate>
+          <TextBlock Text="{ Binding }"/>
+        </DataTemplate>
+      </ComboBox.ItemTemplate>
+    </ComboBox>
+
+    <Label>Print Quantity</Label>
+    <NumericUpDown Value="{Binding LabelPrintQty}"/>
+
+    <Label>Fields</Label>
+    <Border BorderBrush="LightGray" BorderThickness="1">
+      <ScrollViewer MaxHeight="200" MinHeight="200">
+        <ItemsControl Items="{Binding Fields}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Grid ColumnDefinitions="Auto,15,*" RowDefinitions="35" Margin="10,2,10,2">
+                <TextBlock Text="{Binding Key}"
+                            MinWidth="40"
+                            TextAlignment="Center"
+                            Grid.Column="0"
+                            Grid.Row="0"/>
+                <TextBox Text="{Binding Value.Formula}"
+                         TextAlignment="Left"
+                         Watermark="Default"
+                         BorderThickness="0,0,0,1"
+                         KeyUp="Formula_KeyUp"
+                         Grid.Column="2"
+                         Grid.Row="0"/>
+              </Grid>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+    </Border>
+
+    <Button HorizontalAlignment="Left"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            CornerRadius="0"
+            Background="White"
+            BorderBrush="LightGray"
+            Width="90"
+            Height="35"
+            Margin="0,30,0,0"
+            Command="{Binding SaveChangesCommand}"
+            Content="Save"/>
+    
   </StackPanel>
   
 </UserControl>

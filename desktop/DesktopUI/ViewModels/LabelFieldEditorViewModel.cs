@@ -1,71 +1,134 @@
 ﻿using OrderManager.ApplicationCore.Labels;
 using OrderManager.Domain.Labels;
 using ReactiveUI;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using static OrderManager.ApplicationCore.Labels.LabelQuery;
 
 namespace DesktopUI.ViewModels;
 
 public class LabelFieldEditorViewModel : ViewModelBase {
 
-    private LabelFieldMapDetails _label;
-    public LabelFieldMapDetails Label {
+    public static IEnumerable<LabelType> LabelTypes => Enum.GetValues(typeof(LabelType)).Cast<LabelType>();
+
+    private LabelFieldMapDetails? _label;
+    public LabelFieldMapDetails? Label {
         get => _label;
         private set => this.RaiseAndSetIfChanged(ref _label, value);
     }
 
-    private LabelFieldMapContext? _context;
+    public string LabelPath => _label?.TemplatePath ?? "";
 
-    private readonly GetLabelDetailsById _queryById;
+    public string LabelName {
+        get => _label?.Name ?? "";
+        set {
+            if (_label is null) return;
+            CanSave = true;
+            _nameChanged = true;
+            _label.Name = value;
+        }
+    }
+
+    public LabelType LabelType {
+        get => _label?.Type ?? LabelType.Order;
+        set {
+            if (_label is null) return;
+            CanSave = true;
+            _typeChanged = true;
+            _label.Type = value;
+        }
+    }
+
+    public int LabelPrintQty {
+        get => _label?.PrintQty ?? 0;
+        set {
+            if (_label is null) return;
+            CanSave = true;
+            _qtyChanged = true;
+            _label.PrintQty = value;
+        }
+    }
+
+    private Dictionary<string, LabelFieldFormula> _fields = new();
+    public Dictionary<string, LabelFieldFormula> Fields {
+        get => _fields;
+        set => this.RaiseAndSetIfChanged(ref _fields, value);
+    }
+
     private readonly ILabelFieldMapRepository _repo;
 
-    public LabelFieldEditorViewModel(ILabelFieldMapRepository repo, GetLabelDetailsById queryById) {
+    // TODO: when a field is changed save it in a list of changes in the view model, then when the save button is pressed load the context apply the changes and then save
+    private bool _canSave = false;
+    public bool CanSave {
+        get => _canSave;
+        set => this.RaiseAndSetIfChanged(ref _canSave, value);
+    }
+
+    private bool _nameChanged = false;
+    private bool _typeChanged = false;
+    private bool _qtyChanged = false;
+
+    public LabelFieldEditorViewModel(ILabelFieldMapRepository repo) {
         _repo = repo;
-        _queryById = queryById;
 
-        _label = new LabelFieldMapDetails {
-            Id = 0,
-            Name = string.Empty,
-            PrintQty = 0,
-            TemplatePath = string.Empty,
-            Type = LabelType.Order,
-            Fields = new()
-        };
+        var canSave = this.WhenAny(x => x.CanSave, x => x.Value);
+        this.WhenAny(x => x._fields, x => x.Value.Select(a => a.Value.HasChanged));
+        
+        SaveChangesCommand = ReactiveCommand.CreateFromTask(Save, canExecute: canSave);
 
-        SaveChangesCommand = ReactiveCommand.CreateFromTask(Save);
+        TextChanged = ReactiveCommand.Create(() => Debug.WriteLine("Text Changed"));
+
+    }
+
+    public void SetData(LabelFieldMapDetails label) {
+        _label = label;
+        Fields = new();
+        foreach (var kv in _label.Fields) {
+            Fields.Add(kv.Key, new(kv.Value));
+        }
     }
 
     public ICommand SaveChangesCommand { get; }
 
-    public async Task LoadLabel(int labelId) {
-        Label = await _queryById(labelId);
-        _context = await _repo.GetById(_label.Id);
-    }
+    public ICommand TextChanged { get; }
 
     public async Task Save() {
-        if (_context is null) return;
-        await _repo.Save(_context);
+
+        if (_label is null) return;
+
+        LabelFieldMapContext context = await _repo.GetById(_label.Id);
+
+        if (_nameChanged) context.SetName(_label.Name);
+        if (_qtyChanged) context.SetPrintQty(_label.PrintQty);
+        if (_typeChanged) context.SetType(_label.Type);
+        
+        foreach (var field in _fields) {
+            if (field.Value.HasChanged)
+                context.SetFieldFormula(field.Key, field.Value.Formula);
+        }
+
+        await _repo.Save(context);
     }
 
-    public void SetName(string name) {
-        if (_context is null) return;
-        _context.SetName(name);
-    }
+    public class LabelFieldFormula {
 
-    public void SetPrintQty(int qty) {
-        if (_context is null) return;
-        _context.SetPrintQty(qty);
-    }
+        private bool _hasChanged = false;
+        public bool HasChanged => _hasChanged;
 
-    public void SetLabelType(LabelType type) {
-        if (_context is null) return;
-        _context.SetType(type);
-    }
+        private string _formula;
+        public string Formula {
+            get => _formula;
+            set {
+                _hasChanged = true;
+                _formula = value;
+            }
+        }
 
-    public void SetFieldFormula(string field, string formula) {
-        if (_context is null) return;
-        _context.SetFieldFormula(field, formula);
+        public LabelFieldFormula(string initialValue) => _formula = initialValue;
+
     }
 
 }
