@@ -1,3 +1,4 @@
+using Avalonia.Controls;
 using Avalonia.ReactiveUI;
 using DesktopUI.ViewModels;
 using ReactiveUI;
@@ -6,12 +7,14 @@ using System.Threading.Tasks;
 using static DesktopUI.ViewModels.MainWindowViewModel;
 
 namespace DesktopUI.Views;
+
 public partial class MainWindow : ReactiveWindow<MainWindowViewModel> {
 
     public MainWindow() {
         InitializeComponent();
 
         this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
+        this.WhenActivated(d => d(ViewModel!.ShowFileDialogAndReturnPath.RegisterHandler(DoShowFileDialogAndReturnPathAsync)));
 
     }
 
@@ -24,6 +27,18 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel> {
 
         var result = await dialog.ShowDialog<Unit>(this);
         interaction.SetOutput(result);
+
+    }
+
+    private async Task DoShowFileDialogAndReturnPathAsync(InteractionContext<Unit, string?> interaction) {
+
+        OpenFileDialog dialog = new OpenFileDialog();
+        dialog.Filters.Add(new FileDialogFilter() { Name = "Label", Extensions = { "label" } });
+
+        string[]? result = await dialog.ShowAsync(this);
+        if (result is null || result.Length == 0) {
+            interaction.SetOutput(null);
+        } else interaction.SetOutput(result[0]);
 
     }
 

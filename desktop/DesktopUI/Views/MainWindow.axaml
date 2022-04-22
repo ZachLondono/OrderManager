@@ -13,8 +13,7 @@
     </Design.DataContext>
 
   <StackPanel>
-    <Button Command="{Binding EditLabelsCommand}">Edit Labels</Button>
-    <Button Command="{Binding EditEmailsCommand}">Edit Emails</Button>
-    <Button Command="{Binding EditProfilesCommand}">Edit Profiles</Button>
+    <Button Command="{Binding CreateLabelsCommand}">Create Label</Button>
+    <Button Command="{Binding ListLabelsCommand}">List Labels</Button>
   </StackPanel>
 </Window>
