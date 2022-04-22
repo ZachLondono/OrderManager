@@ -21,16 +21,9 @@ public partial class App : Application {
         ConfigureServiceProvider();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
-
-            //desktop.MainWindow = _services!.GetRequiredService<MainWindow>();
-
             desktop.MainWindow = new MainWindow {
                 DataContext = _services!.GetRequiredService<MainWindowViewModel>()
             };
-
-            /*desktop.MainWindow = new ToolWindow() {
-                DataContext = new ToolWindowViewModel(new LabelFieldEditorView())
-            };*/
         }
 
         base.OnFrameworkInitializationCompleted();
