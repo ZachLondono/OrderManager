@@ -106,23 +106,32 @@ public class LabelFieldEditorViewModel : ViewModelBase {
         if (_typeChanged) context.SetType(_label.Type);
         
         foreach (var field in _fields) {
-            if (field.Value.HasChanged)
+            if (field.Value.HasChanged) { 
                 context.SetFieldFormula(field.Key, field.Value.Formula);
+            }
         }
 
         await _repo.Save(context);
+
+        _nameChanged = false;
+        _typeChanged = false;
+        _qtyChanged = false;
+        foreach (var field in _fields) {
+            field.Value.HasChanged = false;
+        }
+        CanSave = false;
+
     }
 
     public class LabelFieldFormula {
 
-        private bool _hasChanged = false;
-        public bool HasChanged => _hasChanged;
+        public bool HasChanged { get; set; }
 
         private string _formula;
         public string Formula {
             get => _formula;
             set {
-                _hasChanged = true;
+                HasChanged = true;
                 _formula = value;
             }
         }
