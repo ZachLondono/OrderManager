@@ -14,7 +14,7 @@ public class GetEmailDetailsByProfileIdQuery {
 
     public async Task<IEnumerable<EmailTemplateDetails>> GetEmailDetailsByProfileId(int profileId) {
 
-        const string query = @"SELECT ([Id], [Name], [Sender], [Password], [Subject], [Body], [To], [Cc], [Bcc], [ProfileId])
+        const string query = @"SELECT [Id], [Name], [Sender], [Password], [Subject], [Body], [To], [Cc], [Bcc], [ProfileId]
                                 FROM [EmailTemplates]
                                 RIGHT JOIN [Profiles_Emails] ON EmailTemplates.Id = Profiles_Emails.EmailId
                                 WHERE [ProfileId] = @Id";
