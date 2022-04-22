@@ -13,9 +13,6 @@ public partial class ToolWindow : Window {
         this.AttachDevTools();
 #endif
 
-        Width = width;
-        Height = height;
-
         this.FindControl<Button>("PART_CloseButton").Click += delegate {
             Close();
         };
@@ -24,6 +21,9 @@ public partial class ToolWindow : Window {
         titleBar.PointerPressed += (object? sender, PointerPressedEventArgs ep) => {
             PlatformImpl?.BeginMoveDrag(ep);
         };
+
+        Width = width;
+        Height = height + titleBar.Height;
 
     }
 
