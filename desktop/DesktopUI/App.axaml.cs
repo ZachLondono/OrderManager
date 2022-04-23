@@ -47,6 +47,7 @@ public partial class App : Application {
 
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<LabelFieldEditorViewModel>();
+        services.AddTransient<LabelListViewModel>();
         services.AddTransient<EmailTemplateEditorViewModel>();
         services.AddTransient<ReleaseProfileEditorViewModel>();
         services.AddInfrastructure();
