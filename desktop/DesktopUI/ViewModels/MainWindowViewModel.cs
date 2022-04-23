@@ -1,11 +1,7 @@
-using Avalonia.Controls;
+using DesktopUI.Common;
 using DesktopUI.Views;
-using Infrastructure.Labels;
 using OrderManager.ApplicationCore.Labels;
-using OrderManager.Domain.Labels;
 using ReactiveUI;
-using System;
-using System.Diagnostics;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -13,7 +9,7 @@ using System.Windows.Input;
 
 namespace DesktopUI.ViewModels;
 
-public class MainWindowViewModel : ViewModelBase {
+public partial class MainWindowViewModel : ViewModelBase {
 
     public MainWindowViewModel() {
 
@@ -46,15 +42,24 @@ public class MainWindowViewModel : ViewModelBase {
         var editorvm = App.GetRequiredService<LabelFieldEditorViewModel>();
         editorvm.SetData(details);
 
-        await ShowDialog.Handle(new(450, 600, new LabelFieldEditorView {
+        await ShowDialog.Handle(new("Label Editor", 450, 600, new LabelFieldEditorView {
             DataContext = editorvm
         }));
 
     }
-    private async Task OpenLabelListDialog() {
-        await Task.Delay(1);
-    }
 
-    public record DialogWindowContent(int Width, int Height, IControl Content);
+    private async Task OpenLabelListDialog() {
+
+        var query = App.GetRequiredService<LabelQuery.GetLabelSummaries>();
+        var labels = await query();
+
+        var listvm = App.GetRequiredService<LabelListViewModel>();
+        listvm.Labels = new(labels);
+
+        await ShowDialog.Handle(new("Label Templates", 450, 375, new LabelListView {
+            DataContext = listvm
+        }));
+
+    }
 
 }

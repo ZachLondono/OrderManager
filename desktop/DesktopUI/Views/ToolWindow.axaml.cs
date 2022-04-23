@@ -6,7 +6,7 @@ using Avalonia.Markup.Xaml;
 namespace DesktopUI.Views;
 public partial class ToolWindow : Window {
 
-    public ToolWindow(int width, int height) {
+    public ToolWindow(string title, int width, int height) {
 
         InitializeComponent();
 #if DEBUG
@@ -25,9 +25,12 @@ public partial class ToolWindow : Window {
         Width = width;
         Height = height + titleBar.Height;
 
+        var titleText = this.FindControl<TextBlock>("Title");
+        titleText.Text = title;
+
     }
 
-    public ToolWindow() : this(500, 500) {
+    public ToolWindow() : this("", 500, 500) {
     }
 
     private void InitializeComponent() {
