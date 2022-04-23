@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using DesktopUI.ViewModels;
 
 namespace DesktopUI.Views;
+
 public partial class LabelFieldEditorView : UserControl {
 
     public LabelFieldEditorView() {

@@ -20,7 +20,13 @@ public class LabelFieldEditorViewModel : ViewModelBase {
         private set => this.RaiseAndSetIfChanged(ref _label, value);
     }
 
-    public string LabelPath => _label?.TemplatePath ?? "";
+    public string LabelPath {
+        get {
+            var str = _label?.TemplatePath ?? "";
+            if (str.Length > 80) str = string.Concat(str.AsSpan(0, 80), "...");
+            return str;
+        }
+    }
 
     public string LabelName {
         get => _label?.Name ?? "";
@@ -78,9 +84,7 @@ public class LabelFieldEditorViewModel : ViewModelBase {
         this.WhenAny(x => x._fields, x => x.Value.Select(a => a.Value.HasChanged));
         
         SaveChangesCommand = ReactiveCommand.CreateFromTask(Save, canExecute: canSave);
-
-        TextChanged = ReactiveCommand.Create(() => Debug.WriteLine("Text Changed"));
-
+        LinkClicked = ReactiveCommand.Create(OpenFileLink);
     }
 
     public void SetData(LabelFieldMapDetails label) {
@@ -92,8 +96,7 @@ public class LabelFieldEditorViewModel : ViewModelBase {
     }
 
     public ICommand SaveChangesCommand { get; }
-
-    public ICommand TextChanged { get; }
+    public ICommand LinkClicked { get; }
 
     public async Task Save() {
 
@@ -121,6 +124,19 @@ public class LabelFieldEditorViewModel : ViewModelBase {
         }
         CanSave = false;
 
+    }
+
+    public void OpenFileLink() {
+        if (_label is null) return;
+        try { 
+            var p = new Process();
+            p.StartInfo = new ProcessStartInfo(_label.TemplatePath) {
+                UseShellExecute = true
+            };
+            p.Start();
+        } catch (Exception e) {
+            Debug.WriteLine(e);
+        }
     }
 
     public class LabelFieldFormula {

@@ -7,33 +7,59 @@
 
   <UserControl.Styles>
     <Style Selector="Label">
-      <Setter Property="FontStyle" Value="12" />
-      <Setter Property="Margin" Value="0,15,0,0" />
+      <Setter Property="Margin" Value="0,10,0,0" />
+      <Setter Property="FontSize" Value="12"/>
     </Style>
     <Style Selector="TextBox">
       <Setter Property="CornerRadius" Value="0"/>
+      <Setter Property="Background" Value="White" />
+      <Setter Property="FontSize" Value="12"/>
     </Style>
     <Style Selector="NumericUpDown">
       <Setter Property="CornerRadius" Value="0"/>
+      <Setter Property="Background" Value="White" />
+      <Setter Property="FontSize" Value="12"/>
     </Style>
     <Style Selector="ComboBox">
       <Setter Property="CornerRadius" Value="0"/>
+      <Setter Property="Background" Value="White" />
+      <Setter Property="FontSize" Value="12"/>
+    </Style>
+    <Style Selector="Button.link">
+      <Setter Property="Foreground" Value="Blue" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <ContentPresenter Content="{TemplateBinding Content}">
+            <ContentPresenter.Styles>
+              <Style Selector="TextBlock">
+                <Setter Property="Foreground" Value="{TemplateBinding Foreground}"/>
+                <Setter Property="FontSize" Value="{TemplateBinding FontSize}"/>
+                <Setter Property="TextDecorations" Value="Underline"/>
+              </Style>
+            </ContentPresenter.Styles>
+          </ContentPresenter>
+        </ControlTemplate>
+      </Setter>
     </Style>
   </UserControl.Styles>
   
-  <StackPanel Margin="35,0,35,0">
+  <StackPanel Margin="25,0,25,0">
 
-    <TextBlock FontSize="15"
-               FontWeight="Medium"
-               Margin="0,15,0,10"
-               Text="Edit Label Fields" />
-    
     <Label>Name</Label>
     <TextBox Watermark="Label Template Name" Text="{Binding LabelName}"/>
     
     <StackPanel Orientation="Horizontal">
-      <TextBlock FontSize="10" Padding="0,10,10,0">Template:</TextBlock>
-      <TextBlock FontSize="10" Padding="0,10,0,0" FontWeight="Heavy" Text="{Binding LabelPath}"/>
+      <TextBlock FontSize="8" Padding="0,10,10,0">Template:</TextBlock>
+      <Button FontSize="8"
+                 FontWeight="Heavy"
+                 Margin="0,10,0,0"
+                 Classes="link"
+                 Content="{Binding LabelPath}"
+                 Command="{Binding LinkClicked}"/>
     </StackPanel>
 
     <Label>Type</Label>
@@ -50,9 +76,8 @@
     <Label>Print Quantity</Label>
     <NumericUpDown Value="{Binding LabelPrintQty}"/>
 
-    <Label>Fields</Label>
-    <Border BorderBrush="LightGray" BorderThickness="1">
-      <ScrollViewer MaxHeight="200" MinHeight="200">
+    <Border BorderBrush="LightGray" BorderThickness="1" Background="White" Margin="0,10,0,0">
+      <ScrollViewer MaxHeight="300" MinHeight="300">
         <ItemsControl Items="{Binding Fields}">
           <ItemsControl.ItemTemplate>
             <DataTemplate>
@@ -60,6 +85,7 @@
                 <TextBlock Text="{Binding Key}"
                             MinWidth="40"
                             TextAlignment="Center"
+                            VerticalAlignment="Center"
                             Grid.Column="0"
                             Grid.Row="0"/>
                 <TextBox Text="{Binding Value.Formula}"
@@ -84,7 +110,7 @@
             BorderBrush="LightGray"
             Width="90"
             Height="35"
-            Margin="0,30,0,0"
+            Margin="0,20,0,0"
             Command="{Binding SaveChangesCommand}"
             Content="Save"/>
     
