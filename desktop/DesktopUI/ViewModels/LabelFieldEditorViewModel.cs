@@ -83,7 +83,6 @@ public class LabelFieldEditorViewModel : ViewModelBase {
         _repo = repo;
 
         var canSave = this.WhenAny(x => x.CanSave, x => x.Value);
-        this.WhenAny(x => x._fields, x => x.Value.Select(a => a.Value.HasChanged));
         
         SaveChangesCommand = ReactiveCommand.CreateFromTask(Save, canExecute: canSave);
         LinkClicked = ReactiveCommand.Create(OpenFileLink);
