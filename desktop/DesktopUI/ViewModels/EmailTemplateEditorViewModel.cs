@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -69,6 +70,10 @@ public class EmailTemplateEditorViewModel : ViewModelBase {
         }
     }
 
+    private List<string> _removedTo = new();
+    private List<string> _removedCc = new();
+    private List<string> _removedBcc = new();
+
     public ObservableCollection<EmailAddress> EmailTo { get; init; } = new();
     public ObservableCollection<EmailAddress> EmailCc { get; } = new();
     public ObservableCollection<EmailAddress> EmailBcc { get; } = new();
@@ -107,6 +112,10 @@ public class EmailTemplateEditorViewModel : ViewModelBase {
         AddCc = ReactiveCommand.Create(AddCcEmail);
         AddBcc = ReactiveCommand.Create(AddBccEmail);
 
+        RemoveToCommand = ReactiveCommand.Create<EmailAddress, Unit>(RemoveToEmail);
+        RemoveCcCommand = ReactiveCommand.Create<EmailAddress, Unit>(RemoveCcEmail);
+        RemoveBccCommand = ReactiveCommand.Create<EmailAddress, Unit>(RemoveBccEmail);
+
     }
 
     public void SetData(EmailTemplateDetails email) {
@@ -121,6 +130,9 @@ public class EmailTemplateEditorViewModel : ViewModelBase {
     public ICommand AddTo { get; }
     public ICommand AddCc { get; }
     public ICommand AddBcc { get; }
+    public ReactiveCommand<EmailAddress, Unit> RemoveToCommand { get; }
+    public ReactiveCommand<EmailAddress, Unit> RemoveCcCommand { get; }
+    public ReactiveCommand<EmailAddress, Unit> RemoveBccCommand { get; }
 
     public async Task Save() {
 
@@ -163,6 +175,21 @@ public class EmailTemplateEditorViewModel : ViewModelBase {
                 }
             }
 
+            foreach(var to in _removedTo) {
+                context.RemoveTo(to);
+            }
+            _removedTo.Clear();
+
+            foreach (var cc in _removedCc) {
+                context.RemoveCc(cc);
+            }
+            _removedTo.Clear();
+
+            foreach (var bcc in _removedBcc) {
+                context.RemoveBcc(bcc);
+            }
+            _removedTo.Clear();
+
             await _repo.Save(context);
 
             _nameChanged = false;
@@ -184,13 +211,37 @@ public class EmailTemplateEditorViewModel : ViewModelBase {
     public void AddToEmail() {
         EmailTo.Add(new(""));
     }
-    
+
+    public Unit RemoveToEmail(EmailAddress email) {
+        EmailTo.Remove(email);
+        if (email.HasChanged)
+            _removedTo.Add(email.PreviousValue);
+        else _removedTo.Add(email.Value);
+        return Unit.Default;
+    }
+
     public void AddCcEmail() {
         EmailCc.Add(new(""));
     }
-    
+
+    public Unit RemoveCcEmail(EmailAddress email) {
+        EmailCc.Remove(email);
+        if (email.HasChanged)
+            _removedCc.Add(email.PreviousValue);
+        else _removedCc.Add(email.Value);
+        return Unit.Default;
+    }
+
     public void AddBccEmail() {
         EmailBcc.Add(new(""));
+    }
+
+    public Unit RemoveBccEmail(EmailAddress email) {
+        EmailBcc.Remove(email);
+        if (email.HasChanged)
+            _removedBcc.Add(email.PreviousValue);
+        else _removedBcc.Add(email.Value);
+        return Unit.Default;
     }
 
     public class EmailAddress {

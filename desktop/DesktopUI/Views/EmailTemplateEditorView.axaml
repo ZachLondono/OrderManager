@@ -47,7 +47,10 @@
               <ItemsControl Items="{Binding EmailTo}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
-                    <TextBox Text="{ Binding Value }" Margin="0,5,0,0" KeyUp="Formula_KeyUp"/>
+                    <Grid ColumnDefinitions="*,Auto">
+                      <TextBox Grid.Column="0" Text="{ Binding Value }" Margin="0,5,0,0" KeyUp="Formula_KeyUp"/>
+                      <Button Grid.Column="1" Content="X" Command="{ Binding $parent[ItemsControl].DataContext.RemoveToCommand }" CommandParameter="{ Binding }"/>
+                    </Grid>
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
@@ -59,7 +62,10 @@
               <ItemsControl Items="{Binding EmailCc}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
-                    <TextBox Text="{ Binding Value }" Margin="0,5,0,0" KeyUp="Formula_KeyUp" />
+                    <Grid ColumnDefinitions="*,Auto">
+                      <TextBox Grid.Column="0" Text="{ Binding Value }" Margin="0,5,0,0" KeyUp="Formula_KeyUp"/>
+                      <Button Grid.Column="1" Content="X" Command="{ Binding $parent[ItemsControl].DataContext.RemoveCcCommand }" CommandParameter="{ Binding }"/>
+                    </Grid>
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
@@ -71,7 +77,10 @@
               <ItemsControl Items="{Binding EmailBcc}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
-                    <TextBox Text="{ Binding Value }" Margin="0,5,0,0" KeyUp="Formula_KeyUp"/>
+                    <Grid ColumnDefinitions="*,Auto">
+                      <TextBox Grid.Column="0" Text="{ Binding Value }" Margin="0,5,0,0" KeyUp="Formula_KeyUp"/>
+                      <Button Grid.Column="1" Content="X" Command="{ Binding $parent[ItemsControl].DataContext.RemoveBccCommand }" CommandParameter="{ Binding }"/>
+                    </Grid>
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
