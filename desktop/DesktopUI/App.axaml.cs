@@ -51,6 +51,7 @@ public partial class App : Application {
         services.AddTransient<EmailTemplateEditorViewModel>();
         services.AddTransient<ReleaseProfileEditorViewModel>();
         services.AddTransient<EmailListViewModel>();
+        services.AddTransient<PluginListViewModel>();
         services.AddInfrastructure();
 
         return services;

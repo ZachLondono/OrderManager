@@ -1,14 +1,18 @@
-﻿using Infrastructure.Emails;
+﻿using Infrastructure.Common;
+using Infrastructure.Emails;
 using Infrastructure.Emails.Queries;
 using Infrastructure.Labels;
 using Infrastructure.Labels.Queries;
+using Infrastructure.Plugins;
 using Infrastructure.Profiles;
 using Infrastructure.Profiles.Queries;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OrderManager.ApplicationCore.Common;
 using OrderManager.ApplicationCore.Emails;
 using OrderManager.ApplicationCore.Labels;
+using OrderManager.ApplicationCore.Plugins;
 using OrderManager.ApplicationCore.Profiles;
 using System.Data;
 
@@ -17,11 +21,14 @@ namespace Infrastructure;
 public static class DependencyInjection {
 
     public static IServiceCollection AddInfrastructure(this IServiceCollection services/*, IConfiguration config */) {
-        string connString = "";//config.GetConnectionString("SettingsFile");
+        //TODO: get connection string from Configuration
+        string connString = @"Data Source=C:\Users\Zachary Londono\Desktop\Order Manager\settings.db;";//config.GetConnectionString("SettingsFile");
         return services.AddTransient<IDbConnection>(s => new SqliteConnection(connString))
+                    .AddTransient<IFileIO, FileIO>()
                     .AddProfiles()
                     .AddEmail()
-                    .AddLabels();
+                    .AddLabels()
+                    .AddPlugins();
     }
 
     private static IServiceCollection AddProfiles(this IServiceCollection services)
@@ -50,5 +57,8 @@ public static class DependencyInjection {
                     .AddTransient<EmailQuery.GetEmailSummariesByProfileId>(s => new GetEmailSummariesByProfileIdQuery(s.GetRequiredService<IDbConnection>()).GetEmailSummariesByProfileId)
                     .AddTransient<EmailQuery.GetEmailDetailsById>(s => new GetEmailDetailsByIdQuery(s.GetRequiredService<IDbConnection>()).GetEmailDetailsById)
                     .AddTransient<EmailQuery.GetEmailDetailsByProfileId>(s => new GetEmailDetailsByProfileIdQuery(s.GetRequiredService<IDbConnection>()).GetEmailDetailsByProfileId);
+
+    private static IServiceCollection AddPlugins(this IServiceCollection services)
+        => services.AddTransient<IPluginManager, PluginManager>();
 
 }
