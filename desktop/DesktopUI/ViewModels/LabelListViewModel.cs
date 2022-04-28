@@ -15,9 +15,11 @@ public class LabelListViewModel : ViewModelBase {
     public ObservableCollection<LabelFieldMapSummary> Labels { get; set; } = new();
 
     private readonly ILabelFieldMapRepository _repo;
+    private readonly LabelQuery.GetLabelSummaries _query;
 
-    public LabelListViewModel(ILabelFieldMapRepository repo) {
+    public LabelListViewModel(ILabelFieldMapRepository repo, LabelQuery.GetLabelSummaries query) {
         _repo = repo;
+        _query = query;
 
         DeleteLabelCommand = ReactiveCommand.CreateFromTask<LabelFieldMapSummary, Unit>(OnDeleteLabel);
         EditLabelCommand = ReactiveCommand.CreateFromTask<LabelFieldMapSummary, Unit>(OnEditLabel);
@@ -33,6 +35,14 @@ public class LabelListViewModel : ViewModelBase {
     public ReactiveCommand<LabelFieldMapSummary, Unit> DeleteLabelCommand { get; set; }
     public ReactiveCommand<LabelFieldMapSummary, Unit> EditLabelCommand { get; set; }
     public ReactiveCommand<Unit, Unit> CreateLabelCommand { get; set; }
+
+    public async Task LoadData() {
+        Labels.Clear();
+        var labels = await _query();
+        foreach (var label in labels) {
+            Labels.Add(label);
+        }
+    }
 
     private async Task<Unit> OnDeleteLabel(LabelFieldMapSummary label) {
         await _repo.Remove(label.Id);
