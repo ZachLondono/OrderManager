@@ -183,12 +183,12 @@ public class EmailTemplateEditorViewModel : ViewModelBase {
             foreach (var cc in _removedCc) {
                 context.RemoveCc(cc);
             }
-            _removedTo.Clear();
+            _removedCc.Clear();
 
             foreach (var bcc in _removedBcc) {
                 context.RemoveBcc(bcc);
             }
-            _removedTo.Clear();
+            _removedBcc.Clear();
 
             await _repo.Save(context);
 
