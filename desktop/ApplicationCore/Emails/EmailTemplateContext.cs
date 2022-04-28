@@ -5,6 +5,8 @@ namespace OrderManager.ApplicationCore.Emails;
 public record EmailNameChangedEvent(string Name);
 public record EmailBodyChangedEvent(string Body);
 public record EmailSubjectChangedEvent(string Subject);
+public record EmailSenderChangedEvent(string Sender);
+public record EmailPasswordChangedEvent(string Password);
 public record EmailToAddedEvent(string To);
 public record EmailToRemovedEvent(string To);
 public record EmailCcAddedEvent(string Cc);
@@ -42,6 +44,16 @@ public class EmailTemplateContext {
     public void SetSubject(string subject) {
         _template.SetSubject(subject);
         _events.Add(new EmailSubjectChangedEvent(subject));
+    }
+
+    public void SetSender(string sender) {
+        _template.SetSender(sender);
+        _events.Add(new EmailSenderChangedEvent(sender));
+    }
+
+    public void SetPassword(string password) {
+        _template.SetPassword(password);
+        _events.Add(new EmailPasswordChangedEvent(password));
     }
 
     public void AddTo(string to) {

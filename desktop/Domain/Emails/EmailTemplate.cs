@@ -59,6 +59,14 @@ public class EmailTemplate {
         Subject = subject;
     }
 
+    public void SetSender(string sender) {
+        Sender = sender;
+    }
+
+    public void SetPassword(string password) {
+        Password = password;
+    }
+
     public void AddTo(string to) {
         _to.Add(to);
     }

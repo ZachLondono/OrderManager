@@ -53,20 +53,24 @@ public class EmailTemplateRepository : IEmailTemplateRepository {
                 await ApplyNameChangedEvent(trx, context.Id, nameChange);
             } else if (ev is EmailBodyChangedEvent bodyChange) {
                 await ApplyBodyChangedEvent(trx, context.Id, bodyChange);
-            }else if (ev is EmailSubjectChangedEvent subjectChange) {
+            } else if (ev is EmailSubjectChangedEvent subjectChange) {
                 await ApplySubjectChangedEvent(trx, context.Id, subjectChange);
-            }else if (ev is EmailToAddedEvent toAdded) {
+            } else if (ev is EmailToAddedEvent toAdded) {
                 await ApplyToAddedEvent(trx, context.Id, toAdded);
-            }else if (ev is EmailToRemovedEvent toRemoved) {
+            } else if (ev is EmailToRemovedEvent toRemoved) {
                 await ApplyToRemovedEvent(trx, context.Id, toRemoved);
-            }else if (ev is EmailCcAddedEvent ccAdded) {
+            } else if (ev is EmailCcAddedEvent ccAdded) {
                 await ApplyCcAddedEvent(trx, context.Id, ccAdded);
-            }else if (ev is EmailCcRemovedEvent ccRemoved) {
+            } else if (ev is EmailCcRemovedEvent ccRemoved) {
                 await ApplyCcRemovedEvent(trx, context.Id, ccRemoved);
-            }else if (ev is EmailBccAddedEvent bccAdded) {
+            } else if (ev is EmailBccAddedEvent bccAdded) {
                 await ApplyBccAddedEvent(trx, context.Id, bccAdded);
-            }else if (ev is EmailBccRemovedEvent bccRemoved) {
+            } else if (ev is EmailBccRemovedEvent bccRemoved) {
                 await ApplyBccRemovedEvent(trx, context.Id, bccRemoved);
+            } else if (ev is EmailPasswordChangedEvent pwdChange) {
+
+            } else if (ev is EmailSenderChangedEvent senderChange) {
+
             }
         }
 
@@ -98,6 +102,22 @@ public class EmailTemplateRepository : IEmailTemplateRepository {
         await _connection.ExecuteAsync(sql, new {
             Id = emailId,
             Subject = ev.Subject
+        }, trx);
+    }
+
+    private async Task ApplySubjectChangedEvent(IDbTransaction trx, int emailId, EmailSenderChangedEvent ev) {
+        string sql = $"UPDATE [EmailTemplates] SET [Sender] = @Sender WHERE [Id] = @Id;";
+        await _connection.ExecuteAsync(sql, new {
+            Id = emailId,
+            Sender = ev.Sender
+        }, trx);
+    }
+
+    private async Task ApplySubjectChangedEvent(IDbTransaction trx, int emailId, EmailPasswordChangedEvent ev) {
+        string sql = $"UPDATE [EmailTemplates] SET [Password] = @Password WHERE [Id] = @Id;";
+        await _connection.ExecuteAsync(sql, new {
+            Id = emailId,
+            Password = ev.Password
         }, trx);
     }
 
