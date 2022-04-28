@@ -1,4 +1,5 @@
-﻿using OrderManager.ApplicationCore.Labels;
+﻿using Avalonia.Data;
+using OrderManager.ApplicationCore.Labels;
 using OrderManager.Domain.Labels;
 using ReactiveUI;
 using System;
@@ -52,6 +53,7 @@ public class LabelFieldEditorViewModel : ViewModelBase {
         get => _label?.PrintQty ?? 0;
         set {
             if (_label is null) return;
+            if (value < 0) throw new DataValidationException("Value must be positive");
             CanSave = true;
             _qtyChanged = true;
             _label.PrintQty = value;
@@ -128,12 +130,12 @@ public class LabelFieldEditorViewModel : ViewModelBase {
 
     public void OpenFileLink() {
         if (_label is null) return;
-        try { 
-            var p = new Process();
-            p.StartInfo = new ProcessStartInfo(_label.TemplatePath) {
-                UseShellExecute = true
-            };
-            p.Start();
+        try {
+            new Process {
+                StartInfo = new(_label.TemplatePath) {
+                    UseShellExecute = true
+                }
+            }.Start();
         } catch (Exception e) {
             Debug.WriteLine(e);
         }
