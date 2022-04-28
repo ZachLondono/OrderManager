@@ -68,9 +68,9 @@ public class EmailTemplateRepository : IEmailTemplateRepository {
             } else if (ev is EmailBccRemovedEvent bccRemoved) {
                 await ApplyBccRemovedEvent(trx, context.Id, bccRemoved);
             } else if (ev is EmailPasswordChangedEvent pwdChange) {
-
+                await ApplyPasswordChangedEvent(trx, context.Id, pwdChange);
             } else if (ev is EmailSenderChangedEvent senderChange) {
-
+                await ApplySenderChangedEvent(trx, context.Id, senderChange);
             }
         }
 
@@ -105,7 +105,7 @@ public class EmailTemplateRepository : IEmailTemplateRepository {
         }, trx);
     }
 
-    private async Task ApplySubjectChangedEvent(IDbTransaction trx, int emailId, EmailSenderChangedEvent ev) {
+    private async Task ApplySenderChangedEvent(IDbTransaction trx, int emailId, EmailSenderChangedEvent ev) {
         string sql = $"UPDATE [EmailTemplates] SET [Sender] = @Sender WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(sql, new {
             Id = emailId,
@@ -113,7 +113,7 @@ public class EmailTemplateRepository : IEmailTemplateRepository {
         }, trx);
     }
 
-    private async Task ApplySubjectChangedEvent(IDbTransaction trx, int emailId, EmailPasswordChangedEvent ev) {
+    private async Task ApplyPasswordChangedEvent(IDbTransaction trx, int emailId, EmailPasswordChangedEvent ev) {
         string sql = $"UPDATE [EmailTemplates] SET [Password] = @Password WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(sql, new {
             Id = emailId,
