@@ -4,9 +4,78 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DesktopUI.Views.EmailTemplateEditorView">
+  <UserControl.Styles>
+    <Style Selector="Label">
+      <Setter Property="Margin" Value="0,10,0,0" />
+      <Setter Property="FontSize" Value="12"/>
+    </Style>
+    <Style Selector="TextBox">
+      <Setter Property="CornerRadius" Value="0"/>
+      <Setter Property="Background" Value="White" />
+      <Setter Property="FontSize" Value="12"/>
+    </Style>
+    <Style Selector="NumericUpDown">
+      <Setter Property="CornerRadius" Value="0"/>
+      <Setter Property="Background" Value="White" />
+      <Setter Property="FontSize" Value="12"/>
+    </Style>
+    <Style Selector="ComboBox">
+      <Setter Property="CornerRadius" Value="0"/>
+      <Setter Property="Background" Value="White" />
+      <Setter Property="FontSize" Value="12"/>
+    </Style>
+  </UserControl.Styles>
 
-  <StackPanel>
-    <TextBlock>Email Template Editor</TextBlock>
+  <StackPanel Margin="25,0,25,0" Orientation="Horizontal">
+
+    <StackPanel Width="362" Margin="0,0,25,0">
+      <Label>Name</Label>
+      <TextBox Watermark="Template Name" Text="{Binding EmailName}"/>
+
+      <Label>From</Label>
+      <TextBox Watermark="Email Sender" Text="{Binding EmailSender}"/>
+
+      <Label>Password</Label>
+      <TextBox PasswordChar="*" Watermark="Sender Password" Text="{Binding SenderPassword}"/>
+
+      <Label>To</Label>
+      <TextBox Watermark="Recipient Emails" Text="{Binding EmailTo}"/>
+    
+      <Label>Cc</Label>
+      <TextBox Watermark="Carbon Copy Emails" Text="{Binding EmailCc}"/>
+    
+      <Label>Bcc</Label>
+      <TextBox Watermark="Blind Carbon Copy Emails" Text="{Binding EmailBcc}"/>
+
+      <StackPanel Orientation="Horizontal" Height="35">
+        <Button HorizontalAlignment="Left"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                CornerRadius="0"
+                Background="White"
+                BorderBrush="LightGray"
+                Width="90"
+                Height="35"
+                Margin="0,20,0,0"
+                Command="{Binding SaveChangesCommand}"
+                Content="Save"/>
+        <TextBlock FontSize="10" Margin="10,30,0,0" VerticalAlignment="Center" Text="{ Binding MessageText }" />
+      </StackPanel>
+      
+    </StackPanel>
+
+    <StackPanel Width="362">
+      <Label>Subject</Label>
+      <TextBox Watermark="Email Subject" Text="{Binding EmailSubject}"/>
+
+      <Label>Body</Label>
+      <Border BorderBrush="LightGray" BorderThickness="1" Background="White" Margin="0,10,0,0">
+        <!--<ScrollViewer MaxHeight="300" MinHeight="300">
+        </ScrollViewer>-->
+        <TextBox AcceptsReturn="True" AcceptsTab="True" TextWrapping="NoWrap" Height="325" Text="{Binding EmailBody}"/>
+      </Border>
+
+    </StackPanel>
   </StackPanel>
 
 </UserControl>
