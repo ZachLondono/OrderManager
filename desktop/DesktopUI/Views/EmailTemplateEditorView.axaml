@@ -28,25 +28,59 @@
 
   <StackPanel Margin="25,0,25,0" Orientation="Horizontal">
 
-    <StackPanel Width="362" Margin="0,0,25,0">
-      <Label>Name</Label>
-      <TextBox Watermark="Template Name" Text="{Binding EmailName}"/>
+    <StackPanel Width="362" Margin="0,5,20,0">
+      <Border BorderBrush="LightGray" BorderThickness="1" Padding="5,0,5,0" Background="White">
+        <ScrollViewer MaxHeight="360">
+          <StackPanel>
+      
+            <Label>Name</Label>
+            <TextBox Watermark="Template Name" Text="{Binding EmailName}"/>
 
-      <Label>From</Label>
-      <TextBox Watermark="Email Sender" Text="{Binding EmailSender}"/>
+            <Label>From</Label>
+            <TextBox Watermark="Email Sender" Text="{Binding EmailSender}"/>
 
-      <Label>Password</Label>
-      <TextBox PasswordChar="*" Watermark="Sender Password" Text="{Binding SenderPassword}"/>
+            <Label>Password</Label>
+            <TextBox PasswordChar="*" Watermark="Sender Password" Text="{Binding SenderPassword}"/>
 
-      <Label>To</Label>
-      <TextBox Watermark="Recipient Emails" Text="{Binding EmailTo}"/>
+            <StackPanel>
+              <Label>To</Label>
+              <ItemsControl Items="{Binding EmailTo}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <TextBox Text="{ Binding Value }" Margin="0,5,0,0" KeyUp="Formula_KeyUp"/>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+              <Button Content="Add To" FontSize="10" Command="{ Binding AddTo }"/>
+            </StackPanel>
     
-      <Label>Cc</Label>
-      <TextBox Watermark="Carbon Copy Emails" Text="{Binding EmailCc}"/>
+            <StackPanel>
+              <Label>Cc</Label>
+              <ItemsControl Items="{Binding EmailCc}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <TextBox Text="{ Binding Value }" Margin="0,5,0,0" KeyUp="Formula_KeyUp" />
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+              <Button Content="Add Cc" FontSize="10" Command="{ Binding AddCc }"/>
+            </StackPanel>
     
-      <Label>Bcc</Label>
-      <TextBox Watermark="Blind Carbon Copy Emails" Text="{Binding EmailBcc}"/>
-
+            <StackPanel>
+              <Label>Bcc</Label>
+              <ItemsControl Items="{Binding EmailBcc}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <TextBox Text="{ Binding Value }" Margin="0,5,0,0" KeyUp="Formula_KeyUp"/>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+              <Button Content="Add Bcc" FontSize="10" Command="{ Binding AddBcc }"/>
+            </StackPanel>
+      
+          </StackPanel>
+        </ScrollViewer>
+      </Border>
       <StackPanel Orientation="Horizontal" Height="35">
         <Button HorizontalAlignment="Left"
                 HorizontalContentAlignment="Center"
@@ -61,7 +95,6 @@
                 Content="Save"/>
         <TextBlock FontSize="10" Margin="10,30,0,0" VerticalAlignment="Center" Text="{ Binding MessageText }" />
       </StackPanel>
-      
     </StackPanel>
 
     <StackPanel Width="362">

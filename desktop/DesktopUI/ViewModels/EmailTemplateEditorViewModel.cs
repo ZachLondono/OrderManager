@@ -2,7 +2,10 @@
 using OrderManager.Domain.Emails;
 using ReactiveUI;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -66,22 +69,9 @@ public class EmailTemplateEditorViewModel : ViewModelBase {
         }
     }
 
-    private string _emailTo = "";
-    public string EmailTo {
-        get {
-            if (_email is not null)
-                _emailTo = string.Join(',', _email?.To ?? new());
-            return _emailTo;
-        }
-        set {
-            if (_email is null) return;
-            _email.To = new(_emailTo.Split(','));
-        }
-    }
-    
-    public string EmailCc => _email?.Cc?.ToString() ?? "";
-    
-    public string EmailBcc => _email?.Bcc?.ToString() ?? "";
+    public ObservableCollection<EmailAddress> EmailTo { get; init; } = new();
+    public ObservableCollection<EmailAddress> EmailCc { get; } = new();
+    public ObservableCollection<EmailAddress> EmailBcc { get; } = new();
 
     private string _messageText = string.Empty;
     public string MessageText {
@@ -103,10 +93,7 @@ public class EmailTemplateEditorViewModel : ViewModelBase {
     private bool _passwordChanged = false;
     private bool _bodyChanged = false;
     private bool _subjectChanged = false;
-    private bool _toChanged = false;
-    private bool _ccChanged = false;
-    private bool _bccChanged = false;
-
+    
     private readonly IEmailTemplateRepository _repo;
 
     public EmailTemplateEditorViewModel(IEmailTemplateRepository repo) {
@@ -115,13 +102,25 @@ public class EmailTemplateEditorViewModel : ViewModelBase {
         var canSave = this.WhenAny(x => x.CanSave, x => x.Value);
 
         SaveChangesCommand = ReactiveCommand.CreateFromTask(Save, canExecute: canSave);
+        
+        AddTo = ReactiveCommand.Create(AddToEmail);
+        AddCc = ReactiveCommand.Create(AddCcEmail);
+        AddBcc = ReactiveCommand.Create(AddBccEmail);
+
     }
 
     public void SetData(EmailTemplateDetails email) {
         _email = email;
+        EmailTo.Clear();
+        foreach (var to in _email.To) EmailTo.Add(new(to));
+        foreach (var cc in _email.Cc) EmailCc.Add(new(cc));
+        foreach (var bcc in _email.Bcc) EmailBcc.Add(new(bcc));
     }
 
     public ICommand SaveChangesCommand { get; }
+    public ICommand AddTo { get; }
+    public ICommand AddCc { get; }
+    public ICommand AddBcc { get; }
 
     public async Task Save() {
 
@@ -133,6 +132,36 @@ public class EmailTemplateEditorViewModel : ViewModelBase {
             if (_nameChanged) context.SetName(_email.Name);
             if (_subjectChanged) context.SetSubject(_email.Subject);
             if (_bodyChanged) context.SetBody(_email.Body);
+            if (_senderChanged) context.SetSender(_email.Sender);
+            if (_passwordChanged) context.SetPassword(_email.Password);
+
+
+            foreach (var address in EmailTo) { 
+                if (address.HasChanged) {
+                    if (!string.IsNullOrEmpty(address.PreviousValue))
+                        context.RemoveTo(address.PreviousValue);
+                    context.AddTo(address.Value);
+                    address.Reset();
+                }
+            }
+
+            foreach (var address in EmailCc) {
+                if (address.HasChanged) {
+                    if (!string.IsNullOrEmpty(address.PreviousValue))
+                        context.RemoveCc(address.PreviousValue);
+                    context.AddCc(address.Value);
+                    address.Reset();
+                }
+            }
+
+            foreach (var address in EmailBcc) {
+                if (address.HasChanged) {
+                    if (!string.IsNullOrEmpty(address.PreviousValue))
+                        context.RemoveBcc(address.PreviousValue);
+                    context.AddBcc(address.Value);
+                    address.Reset();
+                }
+            }
 
             await _repo.Save(context);
 
@@ -141,9 +170,6 @@ public class EmailTemplateEditorViewModel : ViewModelBase {
             _passwordChanged = false;
             _bodyChanged = false;
             _subjectChanged = false;
-            _toChanged = false;
-            _ccChanged = false;
-            _bccChanged = false;
             CanSave = false;
 
             MessageText = "Saved";
@@ -154,4 +180,47 @@ public class EmailTemplateEditorViewModel : ViewModelBase {
         }
 
     }
+
+    public void AddToEmail() {
+        EmailTo.Add(new(""));
+    }
+    
+    public void AddCcEmail() {
+        EmailCc.Add(new(""));
+    }
+    
+    public void AddBccEmail() {
+        EmailBcc.Add(new(""));
+    }
+
+    public class EmailAddress {
+
+        public bool HasChanged { get; private set; }
+
+        public string? PreviousValue {
+            get;
+            private set;
+        } = string.Empty;
+
+        private string _value;
+        public string Value {
+            get => _value;
+            set {
+                _value = value;
+                HasChanged = true;
+            }
+        }
+
+        public EmailAddress(string initialValue) {
+            _value = initialValue;
+            PreviousValue = initialValue;
+        }
+
+        public void Reset() {
+            HasChanged = false;
+            PreviousValue = Value;
+        }
+
+    }
+
 }
