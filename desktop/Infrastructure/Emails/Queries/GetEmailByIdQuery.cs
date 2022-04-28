@@ -17,7 +17,7 @@ public class GetEmailByIdQuery {
                                 FROM [EmailTemplates]
                                 WHERE [Id] = @Id;";
 
-        EmailDto dto = await _connection.QuerySingleAsync(query, new {
+        EmailDto dto = await _connection.QuerySingleAsync<EmailDto>(query, new {
             Id = id
         });
 
