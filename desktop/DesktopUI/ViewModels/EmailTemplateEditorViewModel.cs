@@ -214,7 +214,7 @@ public class EmailTemplateEditorViewModel : ViewModelBase {
 
     public Unit RemoveToEmail(EmailAddress email) {
         EmailTo.Remove(email);
-        if (email.HasChanged)
+        if (email.HasChanged && email.PreviousValue is not null)
             _removedTo.Add(email.PreviousValue);
         else _removedTo.Add(email.Value);
         return Unit.Default;
@@ -226,7 +226,7 @@ public class EmailTemplateEditorViewModel : ViewModelBase {
 
     public Unit RemoveCcEmail(EmailAddress email) {
         EmailCc.Remove(email);
-        if (email.HasChanged)
+        if (email.HasChanged && email.PreviousValue is not null)
             _removedCc.Add(email.PreviousValue);
         else _removedCc.Add(email.Value);
         return Unit.Default;
@@ -238,12 +238,15 @@ public class EmailTemplateEditorViewModel : ViewModelBase {
 
     public Unit RemoveBccEmail(EmailAddress email) {
         EmailBcc.Remove(email);
-        if (email.HasChanged)
+        if (email.HasChanged && email.PreviousValue is not null)
             _removedBcc.Add(email.PreviousValue);
         else _removedBcc.Add(email.Value);
         return Unit.Default;
     }
 
+    /// <summary>
+    /// Keeps track of changes to an email field and keeps the previous value so that it can be overwritten when the new value is saved
+    /// </summary>
     public class EmailAddress {
 
         public bool HasChanged { get; private set; }
