@@ -13,7 +13,7 @@ public class GetEmailByIdQuery {
     }
 
     public async Task<EmailTemplate?> GetEmailById(int id) {
-        const string query = @"SELECT [Id], [Name], [Sender], [Password], [Subject], [Body]
+        const string query = @"SELECT [Id], [Name], [Sender], [Password], [Subject], [Body], [To], [Cc], [Bcc]
                                 FROM [EmailTemplates]
                                 WHERE [Id] = @Id;";
 
