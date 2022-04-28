@@ -50,6 +50,7 @@ public partial class App : Application {
         services.AddTransient<LabelListViewModel>();
         services.AddTransient<EmailTemplateEditorViewModel>();
         services.AddTransient<ReleaseProfileEditorViewModel>();
+        services.AddTransient<EmailListViewModel>();
         services.AddInfrastructure();
 
         return services;
