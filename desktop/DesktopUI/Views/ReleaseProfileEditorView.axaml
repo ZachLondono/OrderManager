@@ -6,7 +6,9 @@
              x:Class="DesktopUI.Views.ReleaseProfileEditorView">
 
   <StackPanel>
-    <TextBlock>Release Profile Editor</TextBlock>
+    <TextBox Text="{ Binding Name }"/>
+    
+    <Button Command="{ Binding SaveChangesCommand }"/>
   </StackPanel>
 
 </UserControl>

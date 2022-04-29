@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using DesktopUI.ViewModels;
@@ -12,6 +13,8 @@ public partial class App : Application {
 
     private static IServiceProvider? _services;
 
+    public static Window? MainWindow { get; private set; }
+
     public override void Initialize() {
         AvaloniaXamlLoader.Load(this);
     }
@@ -21,9 +24,13 @@ public partial class App : Application {
         ConfigureServiceProvider();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
-            desktop.MainWindow = new MainWindow {
+            
+            MainWindow = new MainWindow {
                 DataContext = _services!.GetRequiredService<MainWindowViewModel>()
             };
+
+            desktop.MainWindow = MainWindow;
+
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -52,6 +59,8 @@ public partial class App : Application {
         services.AddTransient<ReleaseProfileEditorViewModel>();
         services.AddTransient<EmailListViewModel>();
         services.AddTransient<PluginListViewModel>();
+        services.AddTransient<ProfileListViewModel>();
+
         services.AddInfrastructure();
 
         return services;
