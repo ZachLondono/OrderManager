@@ -33,7 +33,8 @@ public class EmailTemplateRepository : IEmailTemplateRepository {
     }
 
     public async Task Remove(int id) {
-        const string sql = @"DELETE FROM [EmailTemplates] WHERE [Id] = @Id;";
+        const string sql = @"DELETE FROM [Profiles_Emails] WHERE [EmailId] = @Id;
+                            DELETE FROM [EmailTemplates] WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(sql, new {
             Id = id
         });

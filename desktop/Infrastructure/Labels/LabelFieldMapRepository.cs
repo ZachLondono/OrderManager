@@ -41,8 +41,11 @@ public class LabelFieldMapRepository : ILabelFieldMapRepository {
     }
 
     public async Task Remove(int id) {
-        const string sql = "DELETE FROM [LabelFieldMaps] WHERE [Id] = @Id;";
-        await _connection.ExecuteAsync(sql, new { Id = id });
+        const string sql = @"DELETE FROM [Profiles_Labels] WHERE [LabelId] = @Id;
+                            DELETE FROM [LabelFieldMaps] WHERE [Id] = @Id;";
+        await _connection.ExecuteAsync(sql, new {
+            Id = id
+        });
     }
 
     public async Task Save(LabelFieldMapContext context) {
@@ -105,7 +108,7 @@ public class LabelFieldMapRepository : ILabelFieldMapRepository {
         const string query = @"SELECT [Fields] FROM [LabelFieldMaps] WHERE [Id] = @Id;";
         var json = await _connection.QuerySingleAsync<string>(query, new {
             Id = labelId
-        });
+        }, trx);
 
         Dictionary<string, string>? fields;
         if (string.IsNullOrEmpty(json)) {
@@ -123,7 +126,7 @@ public class LabelFieldMapRepository : ILabelFieldMapRepository {
         await _connection.ExecuteAsync(update, new {
             Id = labelId,
             Fields = json
-        });
+        }, trx);
     }
 
 }
