@@ -46,9 +46,9 @@ public class ProfileListViewModel : ViewModelBase {
         var details = await _detailsQuery(context.Id);
 
         var editorvm = App.GetRequiredService<ReleaseProfileEditorViewModel>();
-        editorvm.SetData(details);
+        _ = editorvm.SetData(details);
 
-        await ShowDialog.Handle(new("Profile Editor", 450, 600, new ReleaseProfileEditorView {
+        await ShowDialog.Handle(new("Profile Editor", 450, 650, new ReleaseProfileEditorView {
             DataContext = editorvm
         }));
 
@@ -64,9 +64,9 @@ public class ProfileListViewModel : ViewModelBase {
         var details = await _detailsQuery(profile.Id);
 
         var editorvm = App.GetRequiredService<ReleaseProfileEditorViewModel>();
-        editorvm.SetData(details);
+        _ = editorvm.SetData(details);
 
-        await ShowDialog.Handle(new("Profile Editor", 450, 600, new ReleaseProfileEditorView {
+        await ShowDialog.Handle(new("Profile Editor", 450, 650, new ReleaseProfileEditorView {
             DataContext = editorvm
         }));
 

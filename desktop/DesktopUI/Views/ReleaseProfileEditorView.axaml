@@ -2,13 +2,160 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="650"
              x:Class="DesktopUI.Views.ReleaseProfileEditorView">
 
+  <UserControl.Styles>
+    <Style Selector="Label">
+      <Setter Property="Margin" Value="0,10,0,0"/>
+    </Style>
+    <Style Selector="Button.SwapBtn">
+      <Setter Property="Margin" Value="5,2,5,2"/>
+    </Style>
+    <Style Selector="ScrollViewer.ItemScrollViewer">
+      <Setter Property="MinHeight" Value="150"/>
+      <Setter Property="MaxHeight" Value="150"/>
+      <Setter Property="Background" Value="LightGray"/>
+    </Style>
+  </UserControl.Styles>
+  
   <StackPanel>
-    <TextBox Text="{ Binding Name }"/>
+    <Label>Name</Label>
+    <TextBox Text="{ Binding Name }" Watermark="Profile Name"/>
+
+    <Label>Emails</Label>
+    <Grid ColumnDefinitions="*,Auto,*" Height="150">
+      <ScrollViewer Classes="ItemScrollViewer" Grid.Column="0">
+        <ItemsControl Items="{Binding UnselectedEmails}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Classes="ListItem" BorderBrush="LightGray" BorderThickness="0,0,0,1" Padding="3">
+                <RadioButton GroupName="UnselectedEmails"
+                              Command="{Binding $parent[ItemsControl].DataContext.LeftEmailClicked}"
+                              CommandParameter="{Binding}">
+                  <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="{Binding Name}" Grid.Column="0" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Id}" Grid.Column="1" VerticalAlignment="Center" />
+                  </Grid>
+                </RadioButton>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+      <StackPanel Grid.Column="1" VerticalAlignment="Center">
+        <Button Content=">" Classes="SwapBtn" Command="{Binding SelectEmail}"/>
+        <Button Content=">" Classes="SwapBtn" Command="{Binding DeselectEmail}"/>
+      </StackPanel>
+      <ScrollViewer Classes="ItemScrollViewer" Grid.Column="2">
+        <ItemsControl Items="{Binding SelectedEmails}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Classes="ListItem" BorderBrush="LightGray" BorderThickness="0,0,0,1" Padding="3">
+                <RadioButton GroupName="SelectedEmails"
+                              Command="{Binding $parent[ItemsControl].DataContext.RightEmailClicked}"
+                              CommandParameter="{Binding}">
+                  <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="{Binding Name}" Grid.Column="0" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Id}" Grid.Column="1" VerticalAlignment="Center" />
+                  </Grid>
+                </RadioButton>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+    </Grid>
+
+    <Label>Labels</Label>
+    <Grid ColumnDefinitions="*,Auto,*" Height="150">
+      <ScrollViewer Classes="ItemScrollViewer" Grid.Column="0">
+        <ItemsControl Items="{Binding UnselectedLabels}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Classes="ListItem" BorderBrush="LightGray" BorderThickness="0,0,0,1" Padding="3">
+                <RadioButton GroupName="UnselectedLabels"
+                              Command="{Binding $parent[ItemsControl].DataContext.LeftLabelClicked}"
+                              CommandParameter="{Binding}">
+                  <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="{Binding Name}" Grid.Column="0" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Id}" Grid.Column="1" VerticalAlignment="Center" />
+                  </Grid>
+                </RadioButton>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+      <StackPanel Grid.Column="1" VerticalAlignment="Center">
+        <Button Content=">" Classes="SwapBtn" Command="{Binding SelectLabel}"/>
+        <Button Content=">" Classes="SwapBtn" Command="{Binding DeselectLabel}"/>
+      </StackPanel>
+      <ScrollViewer Classes="ItemScrollViewer" Grid.Column="2">
+        <ItemsControl Items="{Binding SelectedLabels}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Classes="ListItem" BorderBrush="LightGray" BorderThickness="0,0,0,1" Padding="3">
+                <RadioButton GroupName="SelectedLabels"
+                              Command="{Binding $parent[ItemsControl].DataContext.RightLabelClicked}"
+                              CommandParameter="{Binding}">
+                  <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="{Binding Name}" Grid.Column="0" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Id}" Grid.Column="1" VerticalAlignment="Center" />
+                  </Grid>
+                </RadioButton>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+    </Grid>
+
+    <Label>Plugins</Label>
+    <Grid ColumnDefinitions="*,Auto,*" Height="150">
+      <ScrollViewer Classes="ItemScrollViewer" Grid.Column="0">
+        <ItemsControl Items="{Binding UnselectedPlugins}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Classes="ListItem" BorderBrush="LightGray" BorderThickness="0,0,0,1" Padding="3">
+                <RadioButton GroupName="UnselectedPlugins"
+                              Command="{Binding $parent[ItemsControl].DataContext.LeftPluginClicked}"
+                              CommandParameter="{Binding}">
+                  <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="{Binding Name}" Grid.Column="0" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Version}" Grid.Column="1" VerticalAlignment="Center" />
+                  </Grid>
+                </RadioButton>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+      <StackPanel Grid.Column="1" VerticalAlignment="Center">
+        <Button Content=">" Classes="SwapBtn" Command="{Binding SelectPlugin}"/>
+        <Button Content=">" Classes="SwapBtn" Command="{Binding DeselectPlugin}"/>
+      </StackPanel>
+      <ScrollViewer Classes="ItemScrollViewer" Grid.Column="2">
+        <ItemsControl Items="{Binding SelectedPlugins}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Classes="ListItem" BorderBrush="LightGray" BorderThickness="0,0,0,1" Padding="3">
+                <RadioButton GroupName="SelectedPlugins"
+                              Command="{Binding $parent[ItemsControl].DataContext.RightPluginClicked}"
+                              CommandParameter="{Binding}">
+                  <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="{Binding Name}" Grid.Column="0" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Version}" Grid.Column="1" VerticalAlignment="Center" />
+                  </Grid>
+                </RadioButton>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+    </Grid>
     
-    <Button Command="{ Binding SaveChangesCommand }"/>
+    <Button Command="{ Binding SaveChangesCommand }" Content="Save"/>
   </StackPanel>
 
 </UserControl>
