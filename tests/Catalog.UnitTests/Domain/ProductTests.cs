@@ -15,7 +15,7 @@ public class ProductTests {
     [InlineData("   ")]
     [InlineData("       ")]
     public void ShouldNotCreateProduct_WithInvalidName(string name) {
-        var createProduct = () => new Product(name, Guid.NewGuid());
+        var createProduct = () => new Product(0, name);
         createProduct.Should().Throw<ArgumentException>();
     }
 
@@ -27,18 +27,27 @@ public class ProductTests {
     [InlineData("   ")]
     [InlineData("       ")]
     public void ShouldNotAddAttribute_WithInvalidName(string name) {
-        var addAttribute = () => new Product("Product", Guid.NewGuid()).AddAttribute(name);
+        var addAttribute = () => new Product(0, "Product").AddAttribute(new ProductAttribute() {
+            Name = name,
+            Default = "default"
+        });
         addAttribute.Should().Throw<ArgumentException>();
     }
 
     [Fact]
     public void ShouldNotAddDuplicateAttribute() {
-        var p = new Product("Product", Guid.NewGuid());
+        var p = new Product(0, "Product");
         
         string attributeName = "Attr";
-        p.AddAttribute(attributeName);
+        p.AddAttribute(new ProductAttribute() {
+            Name = attributeName,
+            Default = "default"
+        });
 
-        var addAttribute = () => p.AddAttribute(attributeName);
+        var addAttribute = () => p.AddAttribute(new ProductAttribute() {
+            Name = attributeName,
+            Default = "default"
+        });
         addAttribute.Should().Throw<ArgumentException>();
     }
 }

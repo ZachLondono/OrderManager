@@ -9,7 +9,7 @@ public class CompanyTests {
 
     [Fact]
     public void ShouldAddMultipleRole() {
-        var company = new Company(Guid.NewGuid(), "Name");
+        var company = new Company(0, "Name");
         company.AddRole(CompanyRole.Customer);
         company.Roles.Should().HaveCount(1);
         company.Roles.Should().Contain(CompanyRole.Customer);
@@ -25,7 +25,7 @@ public class CompanyTests {
 
     [Fact]
     public void ShouldNotAddDuplicateRole() {
-        var company = new Company(Guid.NewGuid(), "Name");
+        var company = new Company(0, "Name");
         var addRole = () => company.AddRole(CompanyRole.Customer);
         addRole();
         addRole.Should().Throw<InvalidOperationException>();

@@ -11,7 +11,7 @@ public class OrderedItemTests {
     [InlineData(1)]
     [InlineData(10)]
     public void ShouldSetValidQty(int qty) {
-        var item = new OrderedItem(Guid.NewGuid(), Guid.NewGuid());
+        var item = new OrderedItem(0, 0, 0);
         var setQty = () => item.SetQuantity(qty);
         setQty.Should().NotThrow();
         item.Quantity.Should().Be(qty);
@@ -21,27 +21,9 @@ public class OrderedItemTests {
     [InlineData(-1)]
     [InlineData(0)]
     public void ShouldNotSetInvalidQty(int qty) {
-        var item = new OrderedItem(Guid.NewGuid(), Guid.NewGuid());
+        var item = new OrderedItem(0, 0, 0);
         var setQty = () => item.SetQuantity(qty);
         setQty.Should().Throw<ArgumentOutOfRangeException>();
-    }
-
-    [Theory]
-    [InlineData(1)]
-    [InlineData(10)]
-    public void ShouldSetValidLineNum(int line) {
-        var item = new OrderedItem(Guid.NewGuid(), Guid.NewGuid());
-        var setLine = () => item.SetLineNumber(line);
-        setLine.Should().NotThrow();
-        item.LineNumber.Should().Be(line);
-    }
-
-    [Theory]
-    [InlineData(-1)]
-    [InlineData(0)]
-    public void ShouldNotSetInvalidLineNum(int line) {
-        var setLine = () => new OrderedItem(Guid.NewGuid(), Guid.NewGuid()).SetLineNumber(line);
-        setLine.Should().Throw<ArgumentOutOfRangeException>();
     }
 
     [Theory]
@@ -50,13 +32,13 @@ public class OrderedItemTests {
     [InlineData("   ", "")]
     [InlineData("A", null)]
     public void ShouldNotSetOptionValue(string option, string value) {
-        var setOption = () => new OrderedItem(Guid.NewGuid(), Guid.NewGuid()).SetOption(option, value);
+        var setOption = () => new OrderedItem(0, 0, 0).SetOption(option, value);
         setOption.Should().Throw<ArgumentException>();
     }
 
     [Fact]
     public void ShouldSetOptionValue() {
-        var item = new OrderedItem(Guid.NewGuid(), Guid.NewGuid());
+        var item = new OrderedItem(0, 0, 0);
         var setOption = () => item.SetOption("option", "value");
         setOption.Should().NotThrow();
         item.Options.Keys.Should().Contain("option");
