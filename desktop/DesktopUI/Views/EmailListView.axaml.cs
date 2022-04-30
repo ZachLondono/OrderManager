@@ -14,34 +14,18 @@ public partial class EmailListView : ReactiveUserControl<EmailListViewModel> {
     public EmailListView() {
         InitializeComponent();
 
-        this.WhenActivated(d => 
-            d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync))
-        );
-
-        this.WhenActivated(d =>
-            d(ViewModel!.ShowFileDialogAndReturnPath.RegisterHandler(DoShowFileDialogAndReturnPathAsync))
-        );
+        this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
+        this.WhenActivated(d => d(ViewModel!.ShowFileDialogAndReturnPath.RegisterHandler(DoShowFileDialogAndReturnPathAsync)));
 
     }
 
     private void InitializeComponent() {
         AvaloniaXamlLoader.Load(this);
     }
-
-    private async Task DoShowDialogAsync(InteractionContext<DialogWindowContent, Unit> interaction) {
-
-        Window? window = GetParentWindow();
-        if (window is null) return;
-
-        var windowContent = interaction.Input;
-
-        var dialog = new ToolWindow(windowContent.Title, windowContent.Width, windowContent.Height) {
-            DataContext = new ToolWindowViewModel(windowContent.Content)
-        };
-
-        var result = await dialog.ShowDialog<Unit>(window);
-        interaction.SetOutput(result);
-
+    
+    private async Task DoShowDialogAsync(InteractionContext<ToolWindowContent, Unit> interaction) {
+        await ToolWindowOpener.OpenDialog(interaction.Input, this);
+        interaction.SetOutput(Unit.Default);
     }
 
     private async Task DoShowFileDialogAndReturnPathAsync(InteractionContext<Unit, string?> interaction) {

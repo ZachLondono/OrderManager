@@ -29,11 +29,11 @@ public class ProfileListViewModel : ViewModelBase {
         EditProfileCommand = ReactiveCommand.CreateFromTask<ReleaseProfileSummary, Unit>(OnEditProfile);
         DeleteProfileCommand = ReactiveCommand.CreateFromTask<ReleaseProfileSummary, Unit>(OnDeleteProfile);
 
-        ShowDialog = new Interaction<DialogWindowContent, Unit>();
+        ShowDialog = new Interaction<ToolWindowContent, Unit>();
 
     }
 
-    public Interaction<DialogWindowContent, Unit> ShowDialog { get; }
+    public Interaction<ToolWindowContent, Unit> ShowDialog { get; }
 
     public ICommand CreateProfileCommand { get; }
     public ICommand EditProfileCommand { get; }

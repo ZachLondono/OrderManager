@@ -3,7 +3,6 @@ using DesktopUI.Views;
 using OrderManager.ApplicationCore.Emails;
 using OrderManager.Domain.Emails;
 using ReactiveUI;
-using System;
 using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -25,12 +24,12 @@ public class EmailListViewModel : ViewModelBase {
         DeleteEmailCommand = ReactiveCommand.CreateFromTask<EmailTemplateSummary, Unit>(OnDeleteEmail);
         EditEmailCommand = ReactiveCommand.CreateFromTask<EmailTemplateSummary, Unit>(OnEditEmail);
         CreateEmailCommand = ReactiveCommand.CreateFromTask(OnCreateEmail);
-        
-        ShowDialog = new Interaction<DialogWindowContent, Unit>();
+
+        ShowDialog = new Interaction<ToolWindowContent, Unit>();
         ShowFileDialogAndReturnPath = new Interaction<Unit, string?>();
     }
 
-    public Interaction<DialogWindowContent, Unit> ShowDialog { get; }
+    public Interaction<ToolWindowContent, Unit> ShowDialog { get; }
     public Interaction<Unit, string?> ShowFileDialogAndReturnPath { get; }
 
     public ReactiveCommand<EmailTemplateSummary, Unit> DeleteEmailCommand { get; set; }

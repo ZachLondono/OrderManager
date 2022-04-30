@@ -25,11 +25,11 @@ public class LabelListViewModel : ViewModelBase {
         EditLabelCommand = ReactiveCommand.CreateFromTask<LabelFieldMapSummary, Unit>(OnEditLabel);
         CreateLabelCommand = ReactiveCommand.CreateFromTask(OnCreateLabel);
         
-        ShowDialog = new Interaction<DialogWindowContent, Unit>();
+        ShowDialog = new Interaction<ToolWindowContent, Unit>();
         ShowFileDialogAndReturnPath = new Interaction<Unit, string?>();
     }
 
-    public Interaction<DialogWindowContent, Unit> ShowDialog { get; }
+    public Interaction<ToolWindowContent, Unit> ShowDialog { get; }
     public Interaction<Unit, string?> ShowFileDialogAndReturnPath { get; }
 
     public ReactiveCommand<LabelFieldMapSummary, Unit> DeleteLabelCommand { get; set; }
@@ -93,8 +93,6 @@ public class LabelListViewModel : ViewModelBase {
             Id = details.Id,
             Name = details.Name
         });
-
-        return;
 
     }
 
