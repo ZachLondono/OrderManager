@@ -31,7 +31,7 @@ public class EmailSender : IEmailSender {
             message.Bcc.Add(new(bcc));
         }
 
-        //message.IsBodyHtml = true;
+        message.IsBodyHtml = true;
         message.Subject = email.Subject;
         message.Body = email.Body;
 

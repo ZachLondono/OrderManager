@@ -1,6 +1,7 @@
 ﻿using OrderManager.ApplicationCore.Common;
 using OrderManager.Domain.Emails;
 using OrderManager.Domain.Orders;
+using RazorEngineCore;
 
 namespace OrderManager.ApplicationCore.Emails;
 
@@ -26,8 +27,7 @@ public class EmailService {
 
         string filledSubject = await FormulaService.ExecuteFormula(template.Subject, order, "order");
 
-        // TODO: use an html templating engine to create better html emails
-        string filledBody = await FormulaService.ExecuteFormula(template.Body, order, "order");
+        string filledBody = await FillTemplate(template.Body, order);
 
         await _sender.SendEmail(new IEmailSender.Email(template.Sender, template.Password, filledSubject, filledBody, filledTo, filledCc, filledBcc));
 
@@ -39,6 +39,13 @@ public class EmailService {
             filledValues.Add(await FormulaService.ExecuteFormula(formula, order, "order"));
 
         return filledValues;
+    }
+
+    public static async Task<string> FillTemplate(string templateText, Order order) {
+        IRazorEngine razor = new RazorEngine();
+        var template = await razor.CompileAsync(templateText);
+
+        return await template.RunAsync(order);
     }
 
 }
