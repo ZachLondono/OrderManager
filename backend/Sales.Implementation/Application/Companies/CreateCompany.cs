@@ -1,12 +1,26 @@
 ﻿using MediatR;
 using System.Data;
 using Dapper;
+using FluentValidation;
 
 namespace Sales.Implementation.Application.Companies;
 
 public class CreateCompany {
 
     public record Command(string Name) : IRequest<int>;
+
+    public class Validation : AbstractValidator<Command> {
+
+        public Validation() {
+
+            RuleFor(x => x.Name)
+                .NotNull()
+                .NotEmpty()
+                .WithMessage("Invalid company name");
+
+        }
+
+    }
 
     public class Handler : IRequestHandler<Command, int> {
 

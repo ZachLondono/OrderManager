@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Sales.Implementation.Infrastructure;
 
 namespace Sales.Implementation.Application.Companies;
@@ -6,6 +7,22 @@ namespace Sales.Implementation.Application.Companies;
 public class RemoveContact {
 
     public record Command(int CompanyId, int ContactId) : IRequest;
+
+    public class Validation : AbstractValidator<Command> {
+
+        public Validation() {
+
+            RuleFor(x => x.CompanyId)
+                .NotEqual(0)
+                .WithMessage("Invalid company id");
+
+            RuleFor(x => x.ContactId)
+                .NotEqual(0)
+                .WithMessage("Invalid contact id");
+
+        }
+
+    }
 
     public class Handler : AsyncRequestHandler<Command> {
 

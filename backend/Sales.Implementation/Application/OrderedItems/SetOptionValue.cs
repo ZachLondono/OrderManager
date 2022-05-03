@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Sales.Implementation.Infrastructure;
 
 namespace Sales.Implementation.Application.OrderedItems;
@@ -6,6 +7,23 @@ namespace Sales.Implementation.Application.OrderedItems;
 public class SetOptionValue {
 
     public record Command(int ItemId, string Option, string Value) : IRequest;
+
+    public class Validation : AbstractValidator<Command> {
+
+        public Validation() {
+
+            RuleFor(x => x.ItemId)
+                .NotEqual(0)
+                .WithMessage("Invalid item id");
+
+            RuleFor(x => x.Option)
+                .NotNull()
+                .NotEmpty()
+                .WithMessage("Invalid product option name");
+
+        }
+
+    }
 
     public class Handler : AsyncRequestHandler<Command> {
 

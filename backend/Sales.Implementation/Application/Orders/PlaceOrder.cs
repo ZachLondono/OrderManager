@@ -2,12 +2,44 @@
 using System.Data;
 using Dapper;
 using Sales.Implementation.Domain;
+using FluentValidation;
 
 namespace Sales.Implementation.Application.Orders;
 
 public class PlaceOrder {
 
     public record Command(string Name, string Number, int CustomerId, int VendorId, int SupplierId, string Fields) : IRequest<int>;
+
+    public class Validation : AbstractValidator<Command> {
+
+        public Validation() {
+
+            RuleFor(x => x.Name)
+                .NotNull()
+                .NotEmpty()
+                .WithMessage("Invalid order name");
+
+            RuleFor(x => x.Number)
+                .NotNull()
+                .NotEmpty()
+                .WithMessage("Invalid order number");
+
+            RuleFor(x => x.CustomerId)
+                .NotEqual(0)
+                .WithMessage("Invalid customer id");
+
+            RuleFor(x => x.VendorId)
+                .NotEqual(0)
+                .WithMessage("Invalid vendor id");
+
+            RuleFor(x => x.SupplierId)
+                .NotEqual(0)
+                .WithMessage("Invalid suppler id");
+
+
+        }
+
+    }
 
     public class Handler : IRequestHandler<Command, int> {
 

@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Sales.Implementation.Infrastructure;
 
 namespace Sales.Implementation.Application.Companies;
@@ -6,6 +7,18 @@ namespace Sales.Implementation.Application.Companies;
 public class SetAddress {
 
     public record Command(int CompanyId, string Line1, string Line2, string Line3, string City, string State, string Zip) : IRequest;
+
+    public class Validation : AbstractValidator<Command> {
+
+        public Validation() {
+
+            RuleFor(x => x.CompanyId)
+                .NotEqual(0)
+                .WithMessage("Invalid company id");
+
+        }
+
+    }
 
     public class Handler : AsyncRequestHandler<Command> {
 

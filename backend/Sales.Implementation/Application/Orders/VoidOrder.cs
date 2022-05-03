@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Sales.Implementation.Infrastructure;
 
 namespace Sales.Implementation.Application.Orders;
@@ -6,6 +7,18 @@ namespace Sales.Implementation.Application.Orders;
 public class VoidOrder {
 
     public record Command(int OrderId) : IRequest;
+
+    public class Validation : AbstractValidator<Command> {
+
+        public Validation() {
+
+            RuleFor(x => x.OrderId)
+                .NotEqual(0)
+                .WithMessage("Invalid order id");
+
+        }
+
+    }
 
     public class Handler : AsyncRequestHandler<Command> {
 
