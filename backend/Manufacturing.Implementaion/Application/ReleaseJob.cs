@@ -1,4 +1,5 @@
-﻿using Manufacturing.Implementation.Infrastructure;
+﻿using FluentValidation;
+using Manufacturing.Implementation.Infrastructure;
 using MediatR;
 
 namespace Manufacturing.Implementation.Application;
@@ -6,6 +7,18 @@ namespace Manufacturing.Implementation.Application;
 public class ReleaseJob {
 
     public record Command(int Id) : IRequest;
+
+    public class Validation : AbstractValidator<Command> {
+
+        public Validation() {
+
+            RuleFor(x => x.Id)
+                .NotEqual(0)
+                .WithMessage("Invalid job id");
+
+        }
+
+    }
 
     public class Handler : AsyncRequestHandler<Command> {
         private readonly JobRepository _repo;
