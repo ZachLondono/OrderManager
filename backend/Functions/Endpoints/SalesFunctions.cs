@@ -95,4 +95,34 @@ public class SalesFunctions {
         return new NoContentResult();
     }
 
+    [FunctionName(nameof(GetOrders))]
+    public async Task<IActionResult> GetOrders([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"Sales/{nameof(GetOrders)}")] GetOrders.Query query) {
+        var orders = await _sender.Send(query);
+        return new OkObjectResult(orders);
+    }
+
+    [FunctionName(nameof(GetOrderDetails))]
+    public async Task<IActionResult> GetOrderDetails([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"Sales/{nameof(GetOrderDetails)}")] GetOrderDetails.Query query) {
+        var order = await _sender.Send(query);
+        return new OkObjectResult(order);
+    }
+
+    [FunctionName(nameof(GetCompanies))]
+    public async Task<IActionResult> GetCompanies([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"Sales/{nameof(GetCompanies)}")] GetCompanies.Query query) {
+        var companies = await _sender.Send(query);
+        return new OkObjectResult(companies);
+    }
+
+    [FunctionName(nameof(GetCompanyDetails))]
+    public async Task<IActionResult> GetCompanyDetails([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"Sales/{nameof(GetCompanyDetails)}")] GetCompanyDetails.Query query) {
+        var company = await _sender.Send(query);
+        return new OkObjectResult(company);
+    }
+
+    [FunctionName(nameof(GetOrderedItemsDetails))]
+    public async Task<IActionResult> GetOrderedItemsDetails([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"Sales/{nameof(GetOrderedItemsDetails)}")] GetOrderedItemsDetails.Query query) {
+        var items = await _sender.Send(query);
+        return new OkObjectResult(items);
+    }
+
 }
