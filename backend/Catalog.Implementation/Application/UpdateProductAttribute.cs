@@ -16,14 +16,14 @@ public class UpdateProductAttribute {
                 .NotEqual(0)
                 .WithMessage("Invalid product id");
 
-            RuleFor(x => x.Name)
+            RuleFor(x => x.OldAttribute)
                 .NotNull()
                 .NotEmpty()
                 .WithMessage("Invalid product attribute name");
 
-            RuleFor(x => x.Default)
+            RuleFor(x => x.NewAttribute)
                 .NotNull()
-                .WithMessage("Invalid default attribute value");
+                .WithMessage("Invalid new product attribute name");
 
         }
 
