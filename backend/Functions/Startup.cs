@@ -7,6 +7,8 @@ using MediatR;
 using System;
 using System.Data;
 using System.Data.SqlClient;
+using Microsoft.Azure.WebJobs.Host;
+using Functions.Endpoints;
 
 [assembly: FunctionsStartup(typeof(Functions.Startup))]
 namespace Functions;
@@ -22,7 +24,8 @@ public class Startup : FunctionsStartup {
                 .AddCatalog()
                 .AddSales()
                 .AddManufacturing()
-                .AddTransient<IDbConnection>(s => new SqlConnection(connString));
+                .AddTransient<IDbConnection>(s => new SqlConnection(connString))
+                .AddSingleton<IFunctionFilter, ValidationFilter>();
     }
 
 }
