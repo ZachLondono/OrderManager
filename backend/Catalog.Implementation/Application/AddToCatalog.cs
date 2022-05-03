@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using FluentValidation;
 using MediatR;
 using System.Data;
 
@@ -7,6 +8,19 @@ namespace Catalog.Implementation.Application;
 public class AddToCatalog {
 
     public record Command(string Name) : IRequest<int>;
+
+    public class Validation : AbstractValidator<Command> {
+
+        public Validation() {
+
+            RuleFor(x => x.Name)
+                .NotNull()
+                .NotEmpty()
+                .WithMessage("Invalid product name");
+
+        }
+
+    }
 
     public class Handler : IRequestHandler<Command, int> {
 

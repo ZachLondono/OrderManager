@@ -1,4 +1,5 @@
 ﻿using Catalog.Implementation.Infrastructure;
+using FluentValidation;
 using MediatR;
 
 namespace Catalog.Implementation.Application;
@@ -6,6 +7,27 @@ namespace Catalog.Implementation.Application;
 public class UpdateProductAttribute {
 
     public record Command(int ProductId, string OldAttribute, string NewAttribute) : IRequest;
+
+    public class Validation : AbstractValidator<Command> {
+
+        public Validation() {
+
+            RuleFor(x => x.ProductId)
+                .NotEqual(0)
+                .WithMessage("Invalid product id");
+
+            RuleFor(x => x.Name)
+                .NotNull()
+                .NotEmpty()
+                .WithMessage("Invalid product attribute name");
+
+            RuleFor(x => x.Default)
+                .NotNull()
+                .WithMessage("Invalid default attribute value");
+
+        }
+
+    }
 
     public class Handler : AsyncRequestHandler<Command> {
 
