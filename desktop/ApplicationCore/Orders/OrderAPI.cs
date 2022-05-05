@@ -5,37 +5,44 @@ namespace OrderManager.ApplicationCore.Orders;
 
 public interface IOrderAPI {
 
-    [Get($"/{nameof(GetOrders)}")]
+    [Get($"/Orders")]
     Task<IEnumerable<OrderSummary>> GetOrders();
 
     [Get("/Orders/{OrderId}")]
     Task<OrderDetails> GetOrderDetails([AliasAs("OrderId")] int orderId);
 
-    [Put("/Orders/{OrderId}/items/{ItemId}/AddItemToOrder")]
-    Task AddItemToOrder([AliasAs("OrderId")] int orderId, [AliasAs("ItemId")] int itemId, [Body] AddItemOrderCommand command);
+    [Get("/Orders/{OrderId}/Items")]
+    Task GetOrderedItemsDetails([AliasAs("OrderId")] int orderId);
+
+    [Post("/Orders/Items")]
+    Task AddItemToOrder([Body] AddItemOrderCommand command);
 
     public class AddItemOrderCommand {
+        public int OrderId { get; set; }
+        public int ProductId { get; set; }
         public string ProductName { get; set; } = string.Empty;
         public int Qty { get; set; }
         public string Options { get; set; } = string.Empty;
     }
 
-    [Put("/Orders/items/{ItemId}/SetOptionValue")]
-    Task SetOptionValue([AliasAs("ItemId")] int itemId,[Body] SetOptionValueCommand command);
+    [Put("/Orders/Items/SetOptionValue")]
+    Task SetOptionValue([Body] SetOptionValueCommand command);
 
     public class SetOptionValueCommand {
+        public int ItemId { get; set; }
         public string Option { get; set; } = string.Empty;
         public string Value { get; set; } = string.Empty;
     }
 
-    [Put("/Orders/items/{ItemId}/SetQty}")]
-    Task SetQty([AliasAs("ItemId")] int itemId, [Body] SetQtyCommand command);
+    [Put("/Orders/Items/SetQty}")]
+    Task SetQty([Body] SetQtyCommand command);
 
     public class SetQtyCommand {
+        public int ItemId { get; set; }
         public int Qty {get; set;}
     }
 
-    [Put("/Orders/PlaceOrder)")]
+    [Post("/Orders/)")]
     Task<int> PlaceOrder();
 
     public class PlaceOrderCommand {
