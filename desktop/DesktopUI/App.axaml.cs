@@ -60,6 +60,7 @@ public partial class App : Application {
         services.AddTransient<EmailListViewModel>();
         services.AddTransient<PluginListViewModel>();
         services.AddTransient<ProfileListViewModel>();
+        services.AddTransient<CompanyListViewModel>();
 
         services.AddInfrastructure();
 

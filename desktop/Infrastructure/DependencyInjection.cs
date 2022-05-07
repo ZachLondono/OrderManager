@@ -10,10 +10,13 @@ using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OrderManager.ApplicationCore.Common;
+using OrderManager.ApplicationCore.Companies;
 using OrderManager.ApplicationCore.Emails;
 using OrderManager.ApplicationCore.Labels;
+using OrderManager.ApplicationCore.Orders;
 using OrderManager.ApplicationCore.Plugins;
 using OrderManager.ApplicationCore.Profiles;
+using Refit;
 using System.Data;
 
 namespace Infrastructure;
@@ -25,6 +28,7 @@ public static class DependencyInjection {
         string connString = @"Data Source=C:\Users\Zachary Londono\Desktop\Order Manager\settings.db;";//config.GetConnectionString("SettingsFile");
         return services.AddTransient<IDbConnection>(s => new SqliteConnection(connString))
                     .AddTransient<IFileIO, FileIO>()
+                    .AddApis()
                     .AddProfiles()
                     .AddEmail()
                     .AddLabels()
@@ -60,5 +64,16 @@ public static class DependencyInjection {
 
     private static IServiceCollection AddPlugins(this IServiceCollection services)
         => services.AddTransient<IPluginManager, PluginManager>();
+
+    private static IServiceCollection AddApis(this IServiceCollection services) {
+        var refitOptions = new RefitSettings {
+            ContentSerializer = new SystemTextJsonContentSerializer(new() {
+                PropertyNameCaseInsensitive = true
+            })
+        };
+
+        return services.AddTransient(s => RestService.For<IOrderAPI>("http://localhost:7071/api/Sales", refitOptions))
+                .AddTransient(s => RestService.For<ICompanyAPI>("http://localhost:7071/api/Sales", refitOptions));
+    }
 
 }
