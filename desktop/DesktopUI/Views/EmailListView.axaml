@@ -34,6 +34,6 @@
       </ScrollViewer>
     </Border>
     
-    <Button Command="{Binding CreateEmailCommand}">Add New Label</Button>
+    <Button Command="{Binding CreateEmailCommand}">Add New Email</Button>
   </StackPanel>
 </UserControl>
