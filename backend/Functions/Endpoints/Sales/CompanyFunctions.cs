@@ -17,9 +17,9 @@ public class CompanyFunctions {
     }
 
     [FunctionName(nameof(CreateCompany))]
-    public async Task<IActionResult> CreateCompany([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = $"Sales/Companies/{nameof(CreateCompany)}")] CreateCompany.Command command)  {
-        await _sender.Send(command);
-        return new NoContentResult();
+    public async Task<IActionResult> CreateCompany([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "Sales/Companies/")] CreateCompany.Command command)  {
+        int newId = await _sender.Send(command);
+        return new OkObjectResult(newId);
     }
 
     [FunctionName(nameof(SetAddress))]
@@ -34,19 +34,22 @@ public class CompanyFunctions {
         return new NoContentResult();
     }
 
+    [FunctionName(nameof(RemoveCompany))]
+    public async Task<IActionResult> RemoveCompany([HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "Sales/Companies/{id}")] HttpRequest req, int id) {
+        await _sender.Send(new RemoveCompany.Command(id));
+        return new NoContentResult();
+    }
+
     [FunctionName(nameof(GetCompanies))]
-    public async Task<IActionResult> GetCompanies([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"Sales/Companies/{nameof(GetCompanies)}")] HttpRequest req) {
+    public async Task<IActionResult> GetCompanies([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"Sales/Companies/")] HttpRequest req) {
         var companies = await _sender.Send(new GetCompanies.Query());
         return new OkObjectResult(companies);
     }
 
     [FunctionName(nameof(GetCompanyDetails))]
-    public async Task<IActionResult> GetCompanyDetails([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"Sales/Companies/{nameof(GetCompanyDetails)}")] HttpRequest req) {
+    public async Task<IActionResult> GetCompanyDetails([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Sales/Companies/{id}")] HttpRequest req, int id) {
 
-        string id = req.Query["id"];
-
-        int companyId = int.Parse(id);
-        if (companyId <= 0) {
+        if (id <= 0) {
             return new BadRequestObjectResult(new ProblemDetails {
                 Title = "Invalid Id",
                 Detail = "Id is not a valid integer",
@@ -54,7 +57,7 @@ public class CompanyFunctions {
             });
         }
 
-        var company = await _sender.Send(new GetCompanyDetails.Query(companyId));
+        var company = await _sender.Send(new GetCompanyDetails.Query(id));
         return new OkObjectResult(company);
     }
 
