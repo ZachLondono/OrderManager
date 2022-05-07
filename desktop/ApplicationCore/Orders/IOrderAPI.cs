@@ -15,7 +15,7 @@ public interface IOrderAPI {
     Task GetOrderedItemsDetails([AliasAs("OrderId")] int orderId);
 
     [Post("/Orders/Items")]
-    Task AddItemToOrder([Body] AddItemOrderCommand command);
+    Task AddItemToOrder([Body(buffered: true)] AddItemOrderCommand command);
 
     public class AddItemOrderCommand {
         public int OrderId { get; set; }
@@ -26,7 +26,7 @@ public interface IOrderAPI {
     }
 
     [Put("/Orders/Items/SetOptionValue")]
-    Task SetOptionValue([Body] SetOptionValueCommand command);
+    Task SetOptionValue([Body(buffered: true)] SetOptionValueCommand command);
 
     public class SetOptionValueCommand {
         public int ItemId { get; set; }
@@ -35,7 +35,7 @@ public interface IOrderAPI {
     }
 
     [Put("/Orders/Items/SetQty}")]
-    Task SetQty([Body] SetQtyCommand command);
+    Task SetQty([Body(buffered: true)] SetQtyCommand command);
 
     public class SetQtyCommand {
         public int ItemId { get; set; }
@@ -43,7 +43,7 @@ public interface IOrderAPI {
     }
 
     [Post("/Orders/)")]
-    Task<int> PlaceOrder();
+    Task<int> PlaceOrder([Body(buffered: true)] PlaceOrderCommand command);
 
     public class PlaceOrderCommand {
         public string Name { get; set; } = string.Empty;

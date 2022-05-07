@@ -14,7 +14,7 @@ public interface ICompanyAPI {
     }
 
     [Put("/Companies/SetAddress")]
-    public Task SetAddress([Body] SetAddressCommand command);
+    public Task SetAddress([Body(buffered: true)] SetAddressCommand command);
 
     public class SetAddressCommand {
         [AliasAs("CompanyId")]
@@ -28,7 +28,7 @@ public interface ICompanyAPI {
     }
 
     [Put("/Companies/SetName")]
-    public Task SetName([Body] SetNameCommand command);
+    public Task SetName([Body(buffered: true)] SetNameCommand command);
 
     public class SetNameCommand {
         public int CompanyId { get; set; }
