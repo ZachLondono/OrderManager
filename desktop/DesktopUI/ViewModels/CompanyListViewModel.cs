@@ -1,9 +1,13 @@
-﻿using OrderManager.ApplicationCore.Companies;
+﻿using DesktopUI.Common;
+using DesktopUI.Views;
+using OrderManager.ApplicationCore.Companies;
 using OrderManager.Domain.Companies;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -18,18 +22,35 @@ public class CompanyListViewModel : ViewModelBase {
     public CompanyListViewModel(ICompanyAPI api) {
         _api = api;
 
+        ShowDialog = new Interaction<ToolWindowContent, Unit>();
+
         EditCompanyCommand = ReactiveCommand.CreateFromTask<CompanySummary>(OnEditCompany);
         DeleteCompanyCommand = ReactiveCommand.CreateFromTask<CompanySummary>(OnDeleteCompany);
         CreateCompanyCommand = ReactiveCommand.CreateFromTask(OnCreateCompany);
-
     }
+
+    public Interaction<ToolWindowContent, Unit> ShowDialog { get; }
 
     public ICommand EditCompanyCommand { get; }
     public ICommand DeleteCompanyCommand { get; }
     public ICommand CreateCompanyCommand { get; }
 
-    private Task<object> OnEditCompany(CompanySummary company) {
-        throw new NotImplementedException();
+    private async Task OnEditCompany(CompanySummary company) {
+
+        var details = await _api.GetCompany(company.Id);
+
+        var editorvm = App.GetRequiredService<CompanyEditorViewModel>();
+        editorvm.SetData(details);
+
+        await ShowDialog.Handle(new("Company Editor", 450, 600, new CompanyEditorView {
+            DataContext = editorvm
+        }));
+
+        var index = Companies.IndexOf(company);
+        Companies.RemoveAt(index);
+        company.Name = details.Name;
+        Companies.Insert(index, company);
+
     }
 
     private async Task OnCreateCompany() {

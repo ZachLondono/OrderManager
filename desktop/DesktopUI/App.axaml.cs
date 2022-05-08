@@ -61,6 +61,7 @@ public partial class App : Application {
         services.AddTransient<PluginListViewModel>();
         services.AddTransient<ProfileListViewModel>();
         services.AddTransient<CompanyListViewModel>();
+        services.AddTransient<CompanyEditorViewModel>();
 
         services.AddInfrastructure();
 
