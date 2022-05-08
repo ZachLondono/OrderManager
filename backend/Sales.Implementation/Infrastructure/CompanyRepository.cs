@@ -44,7 +44,7 @@ public class CompanyRepository {
                                     FROM [Sales].[Contacts]
                                     WHERE [Id] = @Id;";
         var contactDtos = await _connection.QueryAsync<Persistance.Contact>(contactQuery, new {
-            CompanyId = id
+            Id = id
         });
 
         List<Contact> contacts = new();
