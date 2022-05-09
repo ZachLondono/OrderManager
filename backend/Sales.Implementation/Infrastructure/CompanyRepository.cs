@@ -42,7 +42,7 @@ public class CompanyRepository {
 
         const string contactQuery = @"SELECT [Id], [Name], [Email], [Phone]
                                     FROM [Sales].[Contacts]
-                                    WHERE [Id] = @Id;";
+                                    WHERE [CompanyId] = @Id;";
         var contactDtos = await _connection.QueryAsync<Persistance.Contact>(contactQuery, new {
             Id = id
         });
@@ -75,6 +75,8 @@ public class CompanyRepository {
                 await ApplyContactAdd(company, contactAdd, trx);
             } else if (e is ContactRemovedEvent contactRemove) {
                 await ApplyContactRemove(contactRemove, trx);
+            } else if (e is ContactUpdatedEvent contactUpdated) {
+                await ApplyContactUpdated(contactUpdated, trx);
             } else if (e is AddressSetEvent addressSet) {
                 await ApplyAddressSet(company, addressSet, trx);
             } else if (e is NameSetEvent nameSet) {
@@ -109,6 +111,18 @@ public class CompanyRepository {
                                 WHERE [Id] = @ContactId;";
         await _connection.ExecuteAsync(command, new {
             e.ContactId
+        }, trx);
+    }
+
+    private async Task ApplyContactUpdated(ContactUpdatedEvent e, IDbTransaction trx) {
+        const string command = @"UPDATE [Sales].[Contacts]
+                                SET [Name] = @Name, [Email] = @Email, [Phone] = @Phone
+                                WHERE [Id] = @ContactId;";
+        await _connection.ExecuteAsync(command, new {
+            ContactId = e.Contact.Id,
+            e.Contact.Name,
+            e.Contact.Email,
+            e.Contact.Phone,
         }, trx);
     }
 
@@ -163,6 +177,7 @@ public class CompanyRepository {
             company.Id
         }, trx);
 
+        //TODO remove empty strings from list
         var rolesArr = roles.Split(',')
                             .Where(r => r != e.Role.ToString());
 

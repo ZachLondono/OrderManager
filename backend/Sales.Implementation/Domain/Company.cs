@@ -62,4 +62,16 @@ public class Company {
         if (contact is not null) _contacts.Remove(contact);
     }
 
+    public void UpdateContact(Contact contact) {
+
+        var savedContact = _contacts.Where(c => c.Id == contact.Id).FirstOrDefault();
+        if (savedContact is null)
+            throw new InvalidOperationException($"Company does not contain contact with id '{contact.Id}'");
+
+        savedContact.Name = contact.Name;
+        savedContact.Email = contact.Email;
+        savedContact.Phone = contact.Phone;
+
+    }
+
 }

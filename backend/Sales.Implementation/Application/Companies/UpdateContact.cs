@@ -1,26 +1,25 @@
 ﻿using FluentValidation;
 using MediatR;
-using Sales.Implementation.Domain;
 using Sales.Implementation.Infrastructure;
 
 namespace Sales.Implementation.Application.Companies;
 
-public class AddRole {
+public class UpdateContact {
 
-    public record Command(int CompanyId, CompanyRole Role) : IRequest;
+    public record Command(int CompanyId, int ContactId, string Name, string? Email, string? Phone) : IRequest;
 
     public class Validation : AbstractValidator<Command> {
 
         public Validation() {
 
-            RuleFor(x => x.CompanyId)
+            RuleFor(x => x.ContactId)
                 .NotEqual(0)
                 .WithMessage("Invalid company id");
 
-            RuleFor(x => x.Role)
+            RuleFor(x => x.Name)
                 .NotNull()
                 .NotEmpty()
-                .WithMessage("Invalid company role");
+                .WithMessage("Invalid company name");
 
         }
 
@@ -36,7 +35,7 @@ public class AddRole {
 
         protected override async Task Handle(Command request, CancellationToken cancellationToken) {
             var company = await _repo.GetCompanyById(request.CompanyId);
-            company.AddRole(request.Role);
+            company.UpdateContact(new(request.ContactId, request.Name, request.Email, request.Phone));
             await _repo.Save(company);
         }
     }

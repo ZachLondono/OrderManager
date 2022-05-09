@@ -4,6 +4,7 @@ namespace Sales.Implementation.Infrastructure;
 
 internal record ContactAddedEvent(Contact Contact);
 internal record ContactRemovedEvent(int ContactId);
+internal record ContactUpdatedEvent(Contact Contact);
 internal record AddressSetEvent(Address Address);
 internal record NameSetEvent(string Name);
 internal record RoleAddedEvent(CompanyRole Role);
@@ -30,6 +31,11 @@ public class CompanyContext {
     public void RemoveContact(int contactId) {
         _company.RemoveContact(contactId);
         _events.Add(new ContactRemovedEvent(contactId));
+    }
+
+    public void UpdateContact(Contact contact) {
+        _company.UpdateContact(contact);
+        _events.Add(new ContactUpdatedEvent(contact));
     }
 
     public void SetAddress(string Line1, string Line2, string Line3, string City, string State, string Zip) {

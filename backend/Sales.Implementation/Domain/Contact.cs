@@ -14,4 +14,11 @@ public class Contact {
         Name = name;
     }
 
+    public Contact(int id, string name, string? email, string? phone) {
+        Id = id;
+        Name = name;
+        Email = email;
+        Phone = phone;
+    }
+
 }

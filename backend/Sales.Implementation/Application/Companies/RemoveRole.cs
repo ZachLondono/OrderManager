@@ -7,7 +7,7 @@ namespace Sales.Implementation.Application.Companies;
 
 public class RemoveRole {
 
-    public record Command(int CompanyId, string Role) : IRequest;
+    public record Command(int CompanyId, CompanyRole Role) : IRequest;
 
     public class Validation : AbstractValidator<Command> {
 
@@ -36,8 +36,7 @@ public class RemoveRole {
 
         protected override async Task Handle(Command request, CancellationToken cancellationToken) {
             var company = await _repo.GetCompanyById(request.CompanyId);
-            CompanyRole role = (CompanyRole)Enum.Parse(typeof(CompanyRole), request.Role);
-            company.RemoveRole(role);
+            company.RemoveRole(request.Role);
             await _repo.Save(company);
         }
     }

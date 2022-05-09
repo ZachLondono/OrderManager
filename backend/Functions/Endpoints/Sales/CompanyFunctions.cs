@@ -33,6 +33,18 @@ public class CompanyFunctions {
         await _sender.Send(command);
         return new NoContentResult();
     }
+    
+    [FunctionName(nameof(AddRole))]
+    public async Task<IActionResult> AddRole([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = $"Sales/Companies/{nameof(AddRole)}")] AddRole.Command command) {
+        await _sender.Send(command);
+        return new NoContentResult();
+    }
+
+    [FunctionName(nameof(RemoveRole))]
+    public async Task<IActionResult> RemoveRole([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = $"Sales/Companies/{nameof(RemoveRole)}")] RemoveRole.Command command) {
+        await _sender.Send(command);
+        return new NoContentResult();
+    }
 
     [FunctionName(nameof(RemoveCompany))]
     public async Task<IActionResult> RemoveCompany([HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "Sales/Companies/{id}")] HttpRequest req, int id) {
@@ -59,6 +71,25 @@ public class CompanyFunctions {
 
         var company = await _sender.Send(new GetCompanyDetails.Query(id));
         return new OkObjectResult(company);
+    }
+
+
+    [FunctionName(nameof(AddContact))]
+    public async Task<IActionResult> AddContact([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = $"Sales/Companies/{nameof(AddContact)}")] AddContact.Command command) {
+        int newId = await _sender.Send(command);
+        return new OkObjectResult(newId);
+    }
+
+    [FunctionName(nameof(RemoveContact))]
+    public async Task<IActionResult> RemoveContact([HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = $"Sales/Companies/{nameof(RemoveContact)}")] RemoveContact.Command command) {
+        await _sender.Send(command);
+        return new NoContentResult();
+    }
+
+    [FunctionName(nameof(UpdateContact))]
+    public async Task<IActionResult> UpdateContact([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = $"Sales/Companies/{nameof(UpdateContact)}")] UpdateContact.Command command) {
+        await _sender.Send(command);
+        return new NoContentResult();
     }
 
 }
