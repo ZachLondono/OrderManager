@@ -1,13 +1,16 @@
-﻿using OrderManager.ApplicationCore.Companies;
+﻿using DesktopUI.Models;
+using OrderManager.ApplicationCore.Companies;
 using OrderManager.Domain.Companies;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using static OrderManager.ApplicationCore.Companies.ICompanyAPI;
 
 namespace DesktopUI.ViewModels;
 
@@ -25,14 +28,42 @@ public class CompanyEditorViewModel : ViewModelBase {
         }
     }
 
-    // TODO: split into a collection of strings
-    public string Roles {
-        get => _company?.Roles ?? string.Empty;
+    private bool _initialCustomerRole;
+    private bool _isCustomer;
+    public bool IsCustomer {
+        get => _isCustomer;
         set {
-            if (_company is null) return;
-            _company.Roles = value;
-            //_rolesChanged = true;
-            //CanSave = true;
+            _isCustomer = value;
+            if (value != _initialCustomerRole) {
+                _customerRoleChanged = true;
+                CanSave = true;
+            }
+        }
+    }
+
+    private bool _initialVendorRole;
+    private bool _isVendor;
+    public bool IsVendor {
+        get => _isVendor;
+        set {
+            _isVendor = value;
+            if (value != _initialVendorRole) {
+                _vendorRoleChanged = true;
+                CanSave = true;
+            }
+        }
+    }
+
+    private bool _initialSupplierRole;
+    private bool _isSupplier;
+    public bool IsSupplier {
+        get => _isSupplier;
+        set {
+            _isSupplier = value;
+            if (value != _initialSupplierRole) {
+                _supplierRoleChanged = true;
+                CanSave = true;
+            }
         }
     }
 
@@ -96,6 +127,8 @@ public class CompanyEditorViewModel : ViewModelBase {
         }
     }
 
+    public ObservableCollection<ContactModel> Contacts { get; set; } = new();
+
     private readonly ICompanyAPI _api;
 
     private bool _canSave = false;
@@ -105,24 +138,45 @@ public class CompanyEditorViewModel : ViewModelBase {
     }
     private bool _nameChanged = false;
     private bool _addressChanged = false;
-    //private bool _rolesChanged = false;
+    private bool _customerRoleChanged = false;
+    private bool _vendorRoleChanged = false;
+    private bool _supplierRoleChanged = false;
     //private bool _addContact = false;
 
     public CompanyEditorViewModel(ICompanyAPI api) {
         _api = api;
+        
         var canSave = this.WhenAny(x => x.CanSave, x => x.Value);
         SaveChangesCommand = ReactiveCommand.CreateFromTask(OnSaveChanges, canExecute: canSave);
+        AddContactCommand = ReactiveCommand.CreateFromTask(OnAddContact);
     }
 
     public ICommand SaveChangesCommand { get; }
+    public ICommand AddContactCommand { get; }
 
     public void SetData(Company company) {
         _company = company;
+
+        Contacts.Clear();
+        foreach (var contact in company.Contacts) {
+            Contacts.Add(new(contact));
+        }
+
+        var roles = _company.Roles.Split(',');
+        
+        _isCustomer = roles.Contains("Customer");
+        _initialCustomerRole = _isCustomer;
+        
+        _isVendor = roles.Contains("Vendor");
+        _initialVendorRole = _isVendor;
+
+        _isSupplier = roles.Contains("Supplier");
+        _initialSupplierRole = _isSupplier;
     }
 
     private async Task OnSaveChanges() {
         if (_company is null) return;
-        CanSave = false;
+
         try {
 
             if (_nameChanged) {
@@ -146,10 +200,93 @@ public class CompanyEditorViewModel : ViewModelBase {
                 _addressChanged = false;
             }
 
+            if (_customerRoleChanged && _initialCustomerRole != _isCustomer) {
+                RoleChangeCommand roleChange = new() {
+                    CompanyId = _company.Id,
+                    Role = "Customer"
+                };
+
+                if (_isCustomer) { 
+                    await _api.AddRole(roleChange);
+                } else {
+                    await _api.RemoveRole(roleChange);
+                }
+
+                _initialCustomerRole = _isCustomer;
+            }
+
+            if (_vendorRoleChanged && _initialVendorRole != _isVendor) {
+                RoleChangeCommand roleChange = new() {
+                    CompanyId = _company.Id,
+                    Role = "Vendor"
+                };
+
+                if (_isVendor) {
+                    await _api.AddRole(roleChange);
+                } else {
+                    await _api.RemoveRole(roleChange);
+                }
+                
+                _initialVendorRole = _isVendor;
+            }
+
+            if (_supplierRoleChanged && _initialSupplierRole != _isSupplier) {
+                RoleChangeCommand roleChange = new() {
+                    CompanyId = _company.Id,
+                    Role = "Supplier"
+                };
+
+                if (_isSupplier) {
+                    await _api.AddRole(roleChange);
+                } else {
+                    await _api.RemoveRole(roleChange);
+                }
+
+                _initialSupplierRole = _isSupplier;
+            }
+
+            foreach (var contact in Contacts) {
+
+                if (contact.HasChanged) {
+                    await _api.UpdateContact(new() {
+                        CompanyId = _company.Id,
+                        ContactId = contact.Id,
+                        Name = contact.Name,
+                        Email = contact.Email,
+                        Phone = contact.Phone
+                    });
+                    contact.HasChanged = false;
+                }
+
+            }
+
+            CanSave = false;
         } catch (Exception ex) {
             CanSave = true;
             Debug.WriteLine(ex);
         }
+    }
+
+    private async Task OnAddContact() {
+
+        if (_company is null) return;
+
+        string newName = "New Contact";
+        try {
+            
+            int newId = await _api.AddContact(new() {
+                CompanyId = _company.Id,
+                Name = newName,
+                Email = string.Empty,
+                Phone = string.Empty
+            });
+
+            Contacts.Add(new(newId, newName, null, null));
+
+        } catch (Exception ex) {
+            Debug.WriteLine(ex);
+        }
+
     }
 
 }

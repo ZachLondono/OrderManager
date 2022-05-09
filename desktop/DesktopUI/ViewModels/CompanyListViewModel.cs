@@ -37,19 +37,23 @@ public class CompanyListViewModel : ViewModelBase {
 
     private async Task OnEditCompany(CompanySummary company) {
 
-        var details = await _api.GetCompany(company.Id);
+        try { 
+            var details = await _api.GetCompany(company.Id);
 
-        var editorvm = App.GetRequiredService<CompanyEditorViewModel>();
-        editorvm.SetData(details);
+            var editorvm = App.GetRequiredService<CompanyEditorViewModel>();
+            editorvm.SetData(details);
 
-        await ShowDialog.Handle(new("Company Editor", 450, 600, new CompanyEditorView {
-            DataContext = editorvm
-        }));
+            await ShowDialog.Handle(new("Company Editor", 800, 450, new CompanyEditorView {
+                DataContext = editorvm
+            }));
 
-        var index = Companies.IndexOf(company);
-        Companies.RemoveAt(index);
-        company.Name = details.Name;
-        Companies.Insert(index, company);
+            var index = Companies.IndexOf(company);
+            Companies.RemoveAt(index);
+            company.Name = details.Name;
+            Companies.Insert(index, company);
+        } catch (Exception ex) {
+            Debug.WriteLine(ex);
+        }
 
     }
 

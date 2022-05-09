@@ -35,6 +35,17 @@ public interface ICompanyAPI {
         public string Name { get; set; } = string.Empty;
     }
 
+    [Put("/Companies/AddRole")]
+    public Task AddRole([Body(buffered: true)] RoleChangeCommand command);
+
+    [Put("/Companies/RemoveRole")]
+    public Task RemoveRole([Body(buffered:true)] RoleChangeCommand command);
+
+    public class RoleChangeCommand {
+        public int CompanyId { get; set; }
+        public string Role { get; set; } = string.Empty;
+    }
+
     [Get("/Companies/")]
     public Task<IEnumerable<CompanySummary>> GetCompanies();
 
@@ -43,5 +54,48 @@ public interface ICompanyAPI {
 
     [Delete("/Companies/{id}")]
     public Task RemoveCompany(int id);
+
+    [Post("/Companies/AddContact")]
+    public Task<int> AddContact([Body(buffered:true)] AddContactCommand command);
+
+    public class AddContactCommand {
+
+        public int CompanyId { get; set; }
+
+        public string Name { get; set; } = string.Empty;
+
+        public string? Email { get; set; }
+
+        public string? Phone { get; set; }
+
+    }
+
+    [Put("/Companies/UpdateContact")]
+    public Task UpdateContact([Body(buffered: true)] UpdateContactCommand command);
+
+    public class UpdateContactCommand {
+
+        public int CompanyId { get; set; }
+
+        public int ContactId { get; set; }
+
+        public string Name { get; set; } = string.Empty;
+
+        public string? Email { get; set; }
+
+        public string? Phone { get; set; }
+
+    }
+
+    [Delete("/Companies/RemoveContact")]
+    public Task RemoveContact([Body(buffered:true)] RemoveContactCommand command);
+
+    public class RemoveContactCommand {
+
+        public int CompanyId { get; set; }
+
+        public int ContactId { get; set; }
+
+    }
 
 }

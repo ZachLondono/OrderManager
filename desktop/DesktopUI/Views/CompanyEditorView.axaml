@@ -2,26 +2,59 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DesktopUI.Views.CompanyEditorView">
-  <StackPanel>
-    
-    <Label>Name</Label>
-    <TextBox Watermark="Company Name" Text="{ Binding Name }"/>
-    
-    <Label>Roles</Label>
-    <TextBox Watermark="Roles" Text="{ Binding Roles }"/>
 
-    <Label>Address</Label>
-    <TextBox Watermark="Line1" Text="{ Binding AddressLine1 }"/>
-    <TextBox Watermark="Line2" Text="{ Binding AddressLine2 }"/>
-    <TextBox Watermark="Line3" Text="{ Binding AddressLine3 }"/>
-    <TextBox Watermark="City" Text="{ Binding AddressCity }"/>
-    <StackPanel Orientation="Horizontal">
-      <TextBox Watermark="State" Text="{ Binding AddressState }"/>
-      <TextBox Watermark="Zip" Text="{ Binding AddressZip }"/>
+  <UserControl.Styles>
+    
+  </UserControl.Styles>
+
+  <StackPanel Orientation="Horizontal" Margin="10,0,10,0">
+    <StackPanel Width="385" Margin="0,0,10,0">
+    
+      <Label>Name</Label>
+      <TextBox Watermark="Company Name" Text="{ Binding Name }"/>
+    
+      <Label>Roles</Label>
+      <StackPanel Orientation="Horizontal" Spacing="40" HorizontalAlignment="Center">
+        <CheckBox IsChecked="{ Binding IsCustomer }">Customer</CheckBox>
+        <CheckBox IsChecked="{ Binding IsVendor }">Vendor</CheckBox>
+        <CheckBox IsChecked="{ Binding IsSupplier }">Supplier</CheckBox>
+      </StackPanel>
+      
+      <Label>Address</Label>
+      <TextBox Watermark="Line1" Text="{ Binding AddressLine1 }"/>
+      <TextBox Watermark="Line2" Text="{ Binding AddressLine2 }"/>
+      <TextBox Watermark="Line3" Text="{ Binding AddressLine3 }"/>
+      <TextBox Watermark="City" Text="{ Binding AddressCity }"/>
+      <Grid ColumnDefinitions="*,2,*">
+        <TextBox Grid.Column="0" Watermark="State" Text="{ Binding AddressState }" />
+        <TextBox Grid.Column="2" Watermark="Zip" Text="{ Binding AddressZip }"/>
+      </Grid>
+    
+      <Button Command="{ Binding SaveChangesCommand }">Save</Button>
     </StackPanel>
-
-    <Button Command="{ Binding SaveChangesCommand }">Save</Button>
+    
+    <StackPanel Width="385">
+      <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,5,0,5">
+        <Label Grid.Column="0" Content="Contacts" VerticalAlignment="Center"/>
+        <Button Grid.Column="2" Content="Add Contact" Command="{ Binding AddContactCommand }"/>
+      </Grid>
+      <DataGrid Items="{ Binding Contacts }" VerticalAlignment="Stretch" BorderBrush="LightGray" BorderThickness="1" Background="White" Height="400">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Name"  Binding="{Binding Name}" Width="*" />
+          <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*" />
+          <DataGridTextColumn Header="Phone" Binding="{Binding Phone}" Width="*" />
+          <DataGridTemplateColumn Header="" Width="50" >
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate >
+                <Button Height="32" Content="X" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+        </DataGrid.Columns>
+      </DataGrid>
+    </StackPanel>
+    
   </StackPanel>
 </UserControl>
