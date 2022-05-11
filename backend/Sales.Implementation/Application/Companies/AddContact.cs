@@ -3,6 +3,7 @@ using FluentValidation;
 using MediatR;
 using Sales.Implementation.Infrastructure;
 using System.Data;
+using System.Linq;
 
 namespace Sales.Implementation.Application.Companies;
 
@@ -50,12 +51,12 @@ public class AddContact {
                                     FROM [Sales].[Contacts]
                                     WHERE [CompanyId] = @CompanyId And [Name] = @Name;";
 
-            int newId = await _connection.QuerySingleAsync<int>(query, new {
+            IEnumerable<int> newId = await _connection.QueryAsync<int>(query, new {
                 CompanyId = company.Id,
                 request.Name
             });
 
-            return newId;
+            return newId.OrderByDescending(i => i).FirstOrDefault();
         }
     }
 
