@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using MediatR;
 using Manufacturing.Implementation.Application;
-using System;
 
 namespace Functions.Endpoints;
 
@@ -18,46 +17,34 @@ public class ManufacturingFunctions {
     }
 
     [FunctionName(nameof(CompleteJob))]
-    public async Task<IActionResult> CompleteJob([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = $"Manufacturing/{nameof(CompleteJob)}")]
-                                                  CompleteJob.Command command) {
-        await _sender.Send(command);
+    public async Task<IActionResult> CompleteJob([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "Manufacturing/CompleteJob/{id}")] HttpRequest req, int id) {
+        await _sender.Send(new CompleteJob.Command(id));
         return new NoContentResult();
     }
 
     [FunctionName(nameof(ReleaseJob))]
-    public async Task<IActionResult> ReleaseJob([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = $"Manufacturing/{nameof(ReleaseJob)}")]
-                                                  ReleaseJob.Command command) {
-        await _sender.Send(command);
+    public async Task<IActionResult> ReleaseJob([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "Manufacturing/ReleaseJob/{id}")] HttpRequest req, int id) {
+        await _sender.Send(new ReleaseJob.Command(id));
         return new NoContentResult();
     }
 
     [FunctionName(nameof(ShipJob))]
-    public async Task<IActionResult> ShipJob([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = $"Manufacturing/{nameof(ShipJob)}")]
-                                                  ShipJob.Command command) {
-        await _sender.Send(command);
+    public async Task<IActionResult> ShipJob([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "Manufacturing/ShipJob/{id}")] HttpRequest req, int id) {
+        await _sender.Send(new ShipJob.Command(id));
         return new NoContentResult();
     }
 
     [FunctionName(nameof(GetJob))]
-    public async Task<IActionResult> GetJob([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"Manufacturing/{nameof(GetJob)}")] HttpRequest req) {
-
-        string id = req.Query["id"];
-
-        int productId;
-        try {
-            productId = int.Parse(id);
-            if (productId <= 0) {
-                throw new InvalidOperationException("Invalid id");
-            }
-        } catch {
+    public async Task<IActionResult> GetJob([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Manufacturing/{id}")] HttpRequest req, int id) {
+    
+        if (id <= 0)
             return new BadRequestObjectResult(new ProblemDetails {
                 Title = "Invalid Id",
                 Detail = "Id is not a valid integer",
                 Status = StatusCodes.Status400BadRequest
             });
-        }
 
-        var result = await _sender.Send(new GetJobById.Query(productId));
+        var result = await _sender.Send(new GetJobById.Query(id));
         return result is not null ? new OkObjectResult(result) : new BadRequestResult();
 
     }
