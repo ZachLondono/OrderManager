@@ -149,10 +149,12 @@ public class CompanyEditorViewModel : ViewModelBase {
         var canSave = this.WhenAny(x => x.CanSave, x => x.Value);
         SaveChangesCommand = ReactiveCommand.CreateFromTask(OnSaveChanges, canExecute: canSave);
         AddContactCommand = ReactiveCommand.CreateFromTask(OnAddContact);
+        RemoveContactCommand = ReactiveCommand.CreateFromTask<ContactModel>(OnRemoveContact);
     }
 
     public ICommand SaveChangesCommand { get; }
     public ICommand AddContactCommand { get; }
+    public ICommand RemoveContactCommand { get; }
 
     public void SetData(Company company) {
         _company = company;
@@ -283,6 +285,22 @@ public class CompanyEditorViewModel : ViewModelBase {
 
             Contacts.Add(new(newId, newName, null, null));
 
+        } catch (Exception ex) {
+            Debug.WriteLine(ex);
+        }
+
+    }
+
+    private async Task OnRemoveContact(ContactModel contact) {
+
+        if (_company is null) return;
+
+        try {
+            await _api.RemoveContact(new() {
+                CompanyId = _company.Id,
+                ContactId = contact.Id
+            });
+            Contacts.Remove(contact);
         } catch (Exception ex) {
             Debug.WriteLine(ex);
         }

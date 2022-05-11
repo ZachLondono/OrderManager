@@ -48,7 +48,12 @@
           <DataGridTemplateColumn Header="" Width="50" >
             <DataGridTemplateColumn.CellTemplate>
               <DataTemplate >
-                <Button Height="32" Content="X" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Button Height="32"
+                        Content="X"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Command="{ Binding $parent[DataGrid].DataContext.RemoveContactCommand }"
+                        CommandParameter="{ Binding }"/>
               </DataTemplate>
             </DataGridTemplateColumn.CellTemplate>
           </DataGridTemplateColumn>
