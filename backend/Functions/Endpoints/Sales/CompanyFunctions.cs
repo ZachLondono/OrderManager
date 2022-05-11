@@ -47,7 +47,7 @@ public class CompanyFunctions {
     }
 
     [FunctionName(nameof(RemoveCompany))]
-    public async Task<IActionResult> RemoveCompany([HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "Sales/Companies/{id}")] HttpRequest req, int id) {
+    public async Task<IActionResult> RemoveCompany([HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "Sales/Companies/Remove/{id}")] HttpRequest req, int id) {
         await _sender.Send(new RemoveCompany.Command(id));
         return new NoContentResult();
     }
