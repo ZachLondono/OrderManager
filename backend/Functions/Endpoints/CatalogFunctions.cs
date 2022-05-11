@@ -52,13 +52,9 @@ public class CatalogFunctions {
     }
 
     [FunctionName(nameof(GetProductDetails))]
-    public async Task<IActionResult> GetProductDetails([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"Catalog/{nameof(GetProductDetails)}/")] HttpRequest req) {
-
-        string id = req.Query["id"];
-
-        int productId;
-        productId = int.Parse(id);
-        if (productId <= 0) {
+    public async Task<IActionResult> GetProductDetails([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Catalog/{id}")] HttpRequest req, int id) {
+        
+        if (id <= 0) {
             return new BadRequestObjectResult(new ProblemDetails {
                 Title = "Invalid Id",
                 Detail = "Id is not a valid integer",
@@ -66,7 +62,7 @@ public class CatalogFunctions {
             });
         }
 
-        var result = await _sender.Send(new GetProductDetails.Query(productId));
+        var result = await _sender.Send(new GetProductDetails.Query(id));
         return result is not null ? new OkObjectResult(result) : new BadRequestResult();
         
     }
