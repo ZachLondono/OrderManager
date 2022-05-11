@@ -50,10 +50,6 @@ public class Company {
     }
 
     public void AddContact(Contact contact) {
-
-        if (_contacts.Where(c => c.Name == contact.Name).Any())
-            throw new InvalidOperationException($"Company already contains contact with the given name '{contact.Name}'");
-
         _contacts.Add(contact);
     }
 
