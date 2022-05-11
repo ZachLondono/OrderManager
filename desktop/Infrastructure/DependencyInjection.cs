@@ -72,8 +72,11 @@ public static class DependencyInjection {
             })
         };
 
-        return services.AddTransient(s => RestService.For<IOrderAPI>("http://localhost:7071/api/Sales", refitOptions))
-                .AddTransient(s => RestService.For<ICompanyAPI>("http://localhost:7071/api/Sales", refitOptions));
+        string baseUrl = "https://royalordermanager.azurewebsites.net/api/Sales";
+        //string baseUrl = "http://localhost:7071/api/Sales";
+
+        return services.AddTransient(s => RestService.For<IOrderAPI>(baseUrl, refitOptions))
+                .AddTransient(s => RestService.For<ICompanyAPI>(baseUrl, refitOptions));
     }
 
 }

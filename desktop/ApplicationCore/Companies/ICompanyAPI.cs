@@ -52,7 +52,7 @@ public interface ICompanyAPI {
     [Get("/Companies/{id}")]
     public Task<Company> GetCompany(int id);
 
-    [Delete("/Companies/{id}")]
+    [Delete("/Companies/Remove/{id}")]
     public Task RemoveCompany(int id);
 
     [Post("/Companies/AddContact")]
