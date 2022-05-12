@@ -5,19 +5,19 @@ namespace OrderManager.ApplicationCore.Jobs;
 
 public interface IJobAPI {
 
-    [Post("Manufacturing/CompleteJob/{id}")]
+    [Post("/CompleteJob/{id}")]
     public Task CompleteJob(int id);
 
-    [Post("Manufacturing/ReleaseJob/{id}")]
+    [Post("/ReleaseJob/{id}")]
     public Task ReleaseJob(int id);
 
-    [Post("Manufacturing/ShipJob/{id}")]
+    [Post("/ShipJob/{id}")]
     public Task ShipJob(int id);
 
-    [Get("Manufacturing/{id}")]
+    [Get("/{id}")]
     public Task<Job> GetJob(int id);
 
-    [Get("Manufacturing/GetJobs")]
+    [Get("/GetJobs")]
     public Task<IEnumerable<JobSummary>> GetJobs();
 
 }

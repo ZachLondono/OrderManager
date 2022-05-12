@@ -9,9 +9,11 @@ using Infrastructure.Profiles.Queries;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OrderManager.ApplicationCore.Catalog;
 using OrderManager.ApplicationCore.Common;
 using OrderManager.ApplicationCore.Companies;
 using OrderManager.ApplicationCore.Emails;
+using OrderManager.ApplicationCore.Jobs;
 using OrderManager.ApplicationCore.Labels;
 using OrderManager.ApplicationCore.Orders;
 using OrderManager.ApplicationCore.Plugins;
@@ -72,11 +74,13 @@ public static class DependencyInjection {
             })
         };
 
-        string baseUrl = "https://royalordermanager.azurewebsites.net/api/Sales";
-        //string baseUrl = "http://localhost:7071/api/Sales";
+        string baseUrl = "https://royalordermanager.azurewebsites.net/api";
+        //string baseUrl = "http://localhost:7071/api";
 
-        return services.AddTransient(s => RestService.For<IOrderAPI>(baseUrl, refitOptions))
-                .AddTransient(s => RestService.For<ICompanyAPI>(baseUrl, refitOptions));
+        return services.AddTransient(s => RestService.For<IOrderAPI>(baseUrl + "/Sales", refitOptions))
+                .AddTransient(s => RestService.For<ICompanyAPI>(baseUrl + "/Sales", refitOptions))
+                .AddTransient(s => RestService.For<ICatalogAPI>(baseUrl + "/Catalog", refitOptions))
+                .AddTransient(s => RestService.For<IJobAPI>(baseUrl + "/Manufacturing", refitOptions));
     }
 
 }

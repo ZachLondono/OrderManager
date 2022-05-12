@@ -7,7 +7,7 @@ public interface ICatalogAPI {
 
     public record CreatedResult(string Location, object Value);
 
-    [Post("Catalog/AddToCatalog")]
+    [Post("/AddToCatalog")]
     public Task<CreatedResult> AddToCatalog([Body(buffered:true)] AddToCatalogCommand command);
 
     public class AddToCatalogCommand {
@@ -16,7 +16,7 @@ public interface ICatalogAPI {
 
     }
 
-    [Post("Catalog/AddAttribute")]
+    [Post("/AddAttribute")]
     public Task<CreatedResult> AddAttribute([Body(buffered:true)] AddAttributeCommand command);
 
     public class AddAttributeCommand {
@@ -29,7 +29,7 @@ public interface ICatalogAPI {
 
     }
 
-    [Delete("Catalog/RemoveAttribute")]
+    [Delete("/RemoveAttribute")]
     public Task<CreatedResult> RemoveAttribute([Body(buffered:true)] RemoveAttributeCommand command);
 
     public class RemoveAttributeCommand {
@@ -40,7 +40,7 @@ public interface ICatalogAPI {
 
     }
 
-    [Delete("Catalog/UpdateAttribute")]
+    [Delete("/UpdateAttribute")]
     public Task<CreatedResult> UpdateAttribute([Body(buffered:true)] UpdateAttributeCommand command);
 
     public class UpdateAttributeCommand {
@@ -53,10 +53,10 @@ public interface ICatalogAPI {
 
     }
 
-    [Get("/Catalog/")]
+    [Get("/")]
     public Task<IEnumerable<ProductSummary>> GetProducts();
 
-    [Get("/Catalog/{id}")]
+    [Get("/{id}")]
     public Task<Product> GetProductDetails(int id);
 
 }
