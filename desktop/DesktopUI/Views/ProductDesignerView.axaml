@@ -1,0 +1,84 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="DesktopUI.Views.ProductDesignerView">
+  
+  <Border Padding="10">
+    <StackPanel>
+      <TextBlock Text="Name"/>
+      <TextBox Watermark="Product Name" Text="{ Binding Name }"/>
+
+      <Border BorderThickness="1" BorderBrush="LightGray" Margin="0,15,0,0">
+        <StackPanel>
+          <Grid ColumnDefinitions="*,*,Auto" RowDefinitions="*,*" Margin="10">
+            <TextBlock Text="Name"
+                       Width="90"
+                       TextAlignment="Center"
+                       Grid.Column="0"
+                       Grid.Row="0"/>
+            <TextBlock Text="Default Value"
+                       Width="90"
+                       TextAlignment="Center"
+                       Grid.Column="1"
+                       Grid.Row="0"/>
+            <TextBlock Text=""
+                       Width="25"
+                       Padding="5,0,0,0"
+                       Grid.Column="2"
+                       Grid.Row="0"/>
+            <TextBlock Text="{ Binding ErrorMessage }"
+                       IsVisible="{ Binding !ValidationContext.IsValid }"
+                       FontSize="12"
+                       Foreground="Red"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Grid.ColumnSpan="3"
+                       Grid.Row="1"/>
+          </Grid>
+          <ScrollViewer VerticalScrollBarVisibility="Visible" MaxHeight="300">
+            <ItemsControl Items="{ Binding Attributes }">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Grid ColumnDefinitions="*,*,Auto" Margin="10">
+                    <TextBox Text="{Binding Name}"
+                             Width="90"
+                             TextAlignment="Center"
+                             Watermark="Name"
+                             Grid.Column="0"/>
+                    <TextBox Text="{Binding Default}"
+                             Width="90"
+                             TextAlignment="Center"
+                             Watermark="Default"
+                             Grid.Column="1"/>
+                    <Button Content="X"
+                            Classes="Danger"
+                            Width="25"
+                            Height="25"
+                            FontSize="10"
+                            Command="{ Binding $parent[ItemsControl].DataContext.RemoveAttributeCommand }"
+                            Grid.Column="2"/>
+                  </Grid>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+        </StackPanel>
+      </Border>
+
+      <Button Content="+ Add Attribute" HorizontalAlignment="Center" Margin="10" Classes="Secondary" Command="{ Binding AddAttributeCommand }"/>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15" Margin="10">
+        <Button Content="Save"
+                Classes="Primary"
+                Width="100"
+                HorizontalContentAlignment="Center" />
+        <Button Content="Close"
+                Classes="Secondary"
+                Width="100"
+                HorizontalContentAlignment="Center" />
+      </StackPanel>
+    </StackPanel>
+  </Border>
+  
+</UserControl>
