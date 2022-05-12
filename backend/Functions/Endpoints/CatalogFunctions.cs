@@ -46,7 +46,7 @@ public class CatalogFunctions {
     }
 
     [FunctionName(nameof(GetProducts))]
-    public async Task<IActionResult> GetProducts([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = $"Catalog/{nameof(GetProducts)}")] HttpRequest req, ILogger log) {
+    public async Task<IActionResult> GetProducts([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Catalog/")] HttpRequest req, ILogger log) {
         var result = await _sender.Send(new GetProducts.Query());
         return result is not null ? new OkObjectResult(result) : new BadRequestResult();
     }
