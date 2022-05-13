@@ -52,8 +52,8 @@ public interface ICatalogAPI {
 
     }
 
-    [Delete("/UpdateAttribute")]
-    public Task<CreatedResult> UpdateAttribute([Body(buffered:true)] UpdateAttributeCommand command);
+    [Put("/UpdateAttribute")]
+    public Task UpdateAttribute([Body(buffered:true)] UpdateAttributeCommand command);
 
     public class UpdateAttributeCommand {
 
@@ -62,6 +62,8 @@ public interface ICatalogAPI {
         public string OldAttribute { get; set; } = string.Empty;
 
         public string NewAttribute { get; set; } = string.Empty;
+
+        public string Default { get; set; } = string.Empty;
 
     }
 
