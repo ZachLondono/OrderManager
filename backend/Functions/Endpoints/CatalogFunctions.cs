@@ -24,6 +24,13 @@ public class CatalogFunctions {
         return new CreatedResult($"/Catalog/GetProductDetails/{newId}", new { Id = newId });
     }
 
+    [FunctionName(nameof(SetProductName))]
+    public async Task<IActionResult> SetProductName([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "Catalog/SetProductName")]
+                                                        SetProductName.Command command) {
+        await _sender.Send(command);
+        return new NoContentResult();
+    }
+
     [FunctionName(nameof(RemoveFromCatalog))]
     public async Task<IActionResult> RemoveFromCatalog([HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "Catalog/{id}")] HttpRequest req, int id) {
         await _sender.Send(new RemoveFromCatalog.Command(id));
