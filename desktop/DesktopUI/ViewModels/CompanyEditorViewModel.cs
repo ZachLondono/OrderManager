@@ -3,11 +3,9 @@ using OrderManager.ApplicationCore.Companies;
 using OrderManager.Domain.Companies;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using static OrderManager.ApplicationCore.Companies.ICompanyAPI;
@@ -141,7 +139,6 @@ public class CompanyEditorViewModel : ViewModelBase {
     private bool _customerRoleChanged = false;
     private bool _vendorRoleChanged = false;
     private bool _supplierRoleChanged = false;
-    //private bool _addContact = false;
 
     public CompanyEditorViewModel(ICompanyAPI api) {
         _api = api;

@@ -17,7 +17,15 @@ public interface ICatalogAPI {
     }
 
     [Delete("/{id}")]
-    public Task<CreatedResult> RemoveFromCatalog(int id);
+    public Task RemoveFromCatalog(int id);
+
+    [Put("/SetProductName")]
+    public Task SetProductName([Body(buffered:true)] SetProductNameCommand command);
+
+    public class SetProductNameCommand {
+        public int ProductId { get; set; }
+        public string Name { get; set; } = string.Empty;
+    }
 
 
     [Post("/AddAttribute")]
