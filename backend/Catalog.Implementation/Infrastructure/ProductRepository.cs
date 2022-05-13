@@ -2,6 +2,7 @@
 using Dapper;
 using Catalog.Implementation.Domain;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace Catalog.Implementation.Infrastructure;
 
@@ -18,7 +19,7 @@ public class ProductRepository {
     public async Task<ProductContext> GetProductById(int id) {
 
         const string query = "SELECT [Id], [Name] FROM [Catalog].[Products] WHERE [Id] = @Id;";
-        const string attrQuery = "SELECT [Id], [ProductId] [Option], [Default] FROM [Catalog].[ProductAttributes] WHERE [ProductId] = @ProductId;";
+        const string attrQuery = "SELECT [Id], [ProductId], [Name], [Default] FROM [Catalog].[ProductAttributes] WHERE [ProductId] = @ProductId;";
 
         var productDto = await _connection.QuerySingleAsync<Persistance.Product>(query, new { Id = id });
         var attributes = await _connection.QueryAsync<Persistance.ProductAttribute>(attrQuery, new { ProductId = id });
@@ -122,12 +123,12 @@ public class ProductRepository {
     private async Task ApplyAttributeAdd(ProductContext product, IDbTransaction trx, AttributeAddedEvent attributeAdded) {
         const string query = @"INSERT INTO [Catalog].[ProductAttributes] ([ProductId], [Name], [Default])
                                 VALUES (@ProductId, @Name, @Default);";
+
         int rows = await _connection.ExecuteAsync(query, new {
             ProductId = product.Id,
             attributeAdded.Name,
-            attributeAdded.Default
+            Default = attributeAdded.Default ?? ""
         }, trx);
-
         if (rows == 0)
             _logger.LogWarning("No rows affected inserting new attribute {Name} into product {ProductId}", attributeAdded.Name, product.Id);
 

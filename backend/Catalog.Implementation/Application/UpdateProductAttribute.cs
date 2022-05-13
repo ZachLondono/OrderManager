@@ -6,7 +6,7 @@ namespace Catalog.Implementation.Application;
 
 public class UpdateProductAttribute {
 
-    public record Command(int ProductId, string OldAttribute, string NewAttribute) : IRequest;
+    public record Command(int ProductId, string OldAttribute, string NewAttribute, string Default) : IRequest;
 
     public class Validation : AbstractValidator<Command> {
 
@@ -47,6 +47,7 @@ public class UpdateProductAttribute {
                 product.RemoveAttribute(request.OldAttribute);
 
                 attribute.Name = request.NewAttribute;
+                attribute.Default = request.Default;
                 product.AddAttribute(attribute);
             }
 

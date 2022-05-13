@@ -55,7 +55,7 @@ public class CatalogFunctions {
     public async Task<IActionResult> UpdateAttribute([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = $"Catalog/{nameof(UpdateAttribute)}")]
                                                         UpdateProductAttribute.Command command) {
         await _sender.Send(command);
-        return new CreatedResult($"/Catalog/GetProductDetails/{command.ProductId}", new { Id = command.ProductId });
+        return new NoContentResult();
     }
 
     [FunctionName(nameof(GetProducts))]
