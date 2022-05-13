@@ -16,6 +16,10 @@ public interface ICatalogAPI {
 
     }
 
+    [Delete("/{id}")]
+    public Task<CreatedResult> RemoveFromCatalog(int id);
+
+
     [Post("/AddAttribute")]
     public Task<CreatedResult> AddAttribute([Body(buffered:true)] AddAttributeCommand command);
 

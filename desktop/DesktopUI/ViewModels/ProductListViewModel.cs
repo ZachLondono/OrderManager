@@ -26,7 +26,7 @@ public class ProductListViewModel : ViewModelBase {
 
         EditProductCommand = ReactiveCommand.CreateFromTask<ProductSummary>(OnProductEdit);
         CreateProductCommand = ReactiveCommand.CreateFromTask(OnProductCreate);
-        DeleteProductCommand = ReactiveCommand.Create(() => Debug.WriteLine("Delete"));
+        DeleteProductCommand = ReactiveCommand.CreateFromTask<ProductSummary>(OnProductDelete);
 
     }
 
@@ -38,11 +38,15 @@ public class ProductListViewModel : ViewModelBase {
 
     public async Task LoadData() {
 
-        var products = await _api.GetProducts();
+        try { 
+            var products = await _api.GetProducts();
 
-        Products.Clear();
-        foreach (var product in products) {
-            Products.Add(product);
+            Products.Clear();
+            foreach (var product in products) {
+                Products.Add(product);
+            }
+        } catch (Exception ex) {
+            Debug.WriteLine(ex);
         }
 
     }
@@ -78,7 +82,7 @@ public class ProductListViewModel : ViewModelBase {
             var editorvm = App.GetRequiredService<ProductDesignerViewModel>();
             editorvm.SetData(details);
 
-            await ShowDialog.Handle(new("Product Editor", 400, 450, new ProductDesignerView {
+            await ShowDialog.Handle(new("Product Editor", 400, 500, new ProductDesignerView {
                 DataContext = editorvm
             }));
 
@@ -86,6 +90,18 @@ public class ProductListViewModel : ViewModelBase {
             Products.RemoveAt(index);
             product.Name = details.Name;
             Products.Insert(index, product);
+        } catch (Exception ex) {
+            Debug.WriteLine(ex);
+        }
+
+    }
+
+    private async Task OnProductDelete(ProductSummary product) {
+
+        try {
+
+            await _api.RemoveFromCatalog(product.Id);
+
         } catch (Exception ex) {
             Debug.WriteLine(ex);
         }
