@@ -64,6 +64,7 @@ public partial class App : Application {
         services.AddTransient<CompanyEditorViewModel>();
         services.AddTransient<ProductDesignerViewModel>();
         services.AddTransient<ProductListViewModel>();
+        services.AddTransient<RibbonViewModel>();
 
         services.AddInfrastructure();
 

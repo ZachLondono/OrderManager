@@ -1,0 +1,90 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:DesktopUI.ViewModels"
+             xmlns:ribbon="clr-namespace:AvaloniaUI.Ribbon;assembly=AvaloniaUI.Ribbon"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="175"
+             x:Class="DesktopUI.Views.RibbonView">
+
+  <UserControl.Resources>
+
+    <ControlTemplate x:Key="Icon2">
+      <Panel Width="27" Height="27">
+        <Path Data="M 0.5 0.5 L 26.5 0.5 L 26.5 26.5 L 3.5 26.5 L 0.5 23.5 Z" Fill="#FFD998DD" Stroke="#FF563457" StrokeThickness="1"/>
+        <Border Background="White" BorderBrush="#7F563457" BorderThickness="1,0,1,1" Margin="1" HorizontalAlignment="Center" VerticalAlignment="Top" Width="19" Height="12"/>
+        <Border Background="White" BorderBrush="#7F563457" BorderThickness="1,1,1,0" Margin="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="11" Height="7"/>
+      </Panel>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="AddProductIcon">
+      <Panel Width="27" Height="27">
+        <Image Source="/Assets/AddProduct.png" />
+      </Panel>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="AddOrderIcon">
+      <Panel Width="27" Height="27">
+        <Image Source="/Assets/AddOrder.png" />
+      </Panel>
+    </ControlTemplate>
+
+  </UserControl.Resources>
+
+  <Control.Styles>
+    <Style Selector="RibbonButton">
+      <Setter Property="FontSize" Value="12"/>
+    </Style>
+  </Control.Styles>
+
+  <StackPanel>
+    <ribbon:Ribbon>
+      <ribbon:Ribbon.Tabs>
+
+        <ribbon:RibbonTab Header="Configuration" ribbon:KeyTip.KeyTipKeys="H">
+
+          <ribbon:RibbonTab.Groups>
+            <ribbon:RibbonGroupBox Header="Local Settings">
+              <ribbon:RibbonButton Content="Profiles"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="N"
+                                    Command="{ Binding ListProfilesCommand }"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+              <ribbon:RibbonButton Content="Emails"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="P"
+                                    Command="{ Binding ListEmailsCommand }"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+              <ribbon:RibbonButton Content="Labels"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="P"
+                                    Command="{ Binding ListLabelsCommand }"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+              <ribbon:RibbonButton Content="Plugins"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="P"
+                                    Command="{ Binding ListPluginsCommand }"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+            </ribbon:RibbonGroupBox>
+
+            <ribbon:RibbonGroupBox Header="Remote Settings">
+              <ribbon:RibbonButton Content="Companies"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="N"
+                                    Command="{ Binding ListCompaniesCommand }"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+              <ribbon:RibbonButton Content="Products"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="P"
+                                    Command="{ Binding ListProductCommand }"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+            </ribbon:RibbonGroupBox>            
+          </ribbon:RibbonTab.Groups>
+
+        </ribbon:RibbonTab>
+
+      </ribbon:Ribbon.Tabs>
+    </ribbon:Ribbon>
+  </StackPanel>
+  
+</UserControl>

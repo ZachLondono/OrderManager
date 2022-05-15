@@ -1,46 +1,76 @@
+using Avalonia;
 using Avalonia.Controls;
-using Avalonia.ReactiveUI;
-using DesktopUI.Common;
-using DesktopUI.ViewModels;
-using ReactiveUI;
-using System.Reactive;
-using System.Threading.Tasks;
+using Avalonia.Input;
+using Avalonia.Markup.Xaml;
+using Avalonia.VisualTree;
+using System.Timers;
 
 namespace DesktopUI.Views;
 
-public partial class MainWindow : ReactiveWindow<MainWindowViewModel> {
+public partial class MainWindow : Window {
+    bool _titlebarSecondClick = false;
 
     public MainWindow() {
         InitializeComponent();
+#if DEBUG
+        this.AttachDevTools();
+#endif
 
-        this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
-        this.WhenActivated(d => d(ViewModel!.ShowFileDialogAndReturnPath.RegisterHandler(DoShowFileDialogAndReturnPathAsync)));
-
-    }
-
-    private async Task DoShowDialogAsync(InteractionContext<DialogWindowContent, Unit> interaction) {
-
-        var windowContent = interaction.Input;
-
-        var dialog = new ToolWindow(windowContent.Title, windowContent.Width, windowContent.Height) {
-            DataContext = new ToolWindowViewModel(windowContent.Content)
+        this.FindControl<Button>("PART_MinimizeButton").Click += delegate {
+            WindowState = WindowState.Minimized;
+        };
+        this.FindControl<Button>("PART_MaximizeButton").Click += delegate {
+            WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+        };
+        this.FindControl<Button>("PART_CloseButton").Click += delegate {
+            Close();
         };
 
-        var result = await dialog.ShowDialog<Unit>(this);
-        interaction.SetOutput(result);
+        var titleBar = this.FindControl<Control>("PART_TitleBar");
+        titleBar.PointerPressed += (object? sender, PointerPressedEventArgs ep) => {
+
+            if (_titlebarSecondClick)
+                WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+            else
+                PlatformImpl?.BeginMoveDrag(ep);
+
+
+            if (!_titlebarSecondClick) {
+                _titlebarSecondClick = true;
+
+                Timer secondClickTimer = new Timer(250);
+                secondClickTimer.Elapsed += (sneder, e) => {
+                    _titlebarSecondClick = false;
+                    secondClickTimer.Stop();
+                };
+                secondClickTimer.Start();
+            }
+        };
+
+        SetupSide("Left_top", StandardCursorType.LeftSide, WindowEdge.West);
+        SetupSide("Left_mid", StandardCursorType.LeftSide, WindowEdge.West);
+        SetupSide("Left_bottom", StandardCursorType.LeftSide, WindowEdge.West);
+        SetupSide("Right_top", StandardCursorType.RightSide, WindowEdge.East);
+        SetupSide("Right_mid", StandardCursorType.RightSide, WindowEdge.East);
+        SetupSide("Right_bottom", StandardCursorType.RightSide, WindowEdge.East);
+        SetupSide("Top", StandardCursorType.TopSide, WindowEdge.North);
+        SetupSide("Bottom", StandardCursorType.BottomSide, WindowEdge.South);
+        SetupSide("TopLeft", StandardCursorType.TopLeftCorner, WindowEdge.NorthWest);
+        SetupSide("TopRight", StandardCursorType.TopRightCorner, WindowEdge.NorthEast);
+        SetupSide("BottomLeft", StandardCursorType.BottomLeftCorner, WindowEdge.SouthWest);
+        SetupSide("BottomRight", StandardCursorType.BottomRightCorner, WindowEdge.SouthEast);
 
     }
 
-    private async Task DoShowFileDialogAndReturnPathAsync(InteractionContext<Unit, string?> interaction) {
-
-        OpenFileDialog dialog = new();
-        dialog.Filters.Add(new FileDialogFilter() { Name = "Label", Extensions = { "label" } });
-
-        string[]? result = await dialog.ShowAsync(this);
-        if (result is null || result.Length == 0) {
-            interaction.SetOutput(null);
-        } else interaction.SetOutput(result[0]);
-
+    private void SetupSide(string name, StandardCursorType cursor, WindowEdge edge) {
+        var control = this.FindControl<Control>(name);
+        control.Cursor = new(cursor);
+        control.PointerPressed += (s, e) => {
+            ((Window)this.GetVisualRoot()).PlatformImpl?.BeginResizeDrag(edge, e);
+        };
     }
 
+    private void InitializeComponent() {
+        AvaloniaXamlLoader.Load(this);
+    }
 }
