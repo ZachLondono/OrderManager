@@ -38,15 +38,21 @@ public class ProductListViewModel : ViewModelBase {
 
     public async Task LoadData() {
 
-        try { 
-            var products = await _api.GetProducts();
+        while (true) { 
+            try { 
 
-            Products.Clear();
-            foreach (var product in products) {
-                Products.Add(product);
+                var products = await _api.GetProducts();
+
+                Products.Clear();
+                foreach (var product in products) {
+                    Products.Add(product);
+                }
+
+                break;
+
+            } catch (Exception ex) {
+                Debug.WriteLine(ex);
             }
-        } catch (Exception ex) {
-            Debug.WriteLine(ex);
         }
 
     }
@@ -76,22 +82,27 @@ public class ProductListViewModel : ViewModelBase {
 
     private async Task OnProductEdit(ProductSummary product) {
 
-        try {
-            var details = await _api.GetProductDetails(product.Id);
+        Product? details = null;
+        var editorvm = App.GetRequiredService<ProductDesignerViewModel>();
 
-            var editorvm = App.GetRequiredService<ProductDesignerViewModel>();
-            editorvm.SetData(details);
+        await ShowDialog.Handle(new("Product Editor", 400, 500, new ProductDesignerView {
+            DataContext = editorvm
+        }, async () => {
 
-            await ShowDialog.Handle(new("Product Editor", 400, 500, new ProductDesignerView {
-                DataContext = editorvm
-            }));
+            try { 
+                details = await _api.GetProductDetails(product.Id);
+                editorvm.SetData(details);
+            } catch (Exception ex) {
+                Debug.WriteLine(ex);
+            }
 
+        }));
+
+        if (details is not null) { 
             var index = Products.IndexOf(product);
             Products.RemoveAt(index);
             product.Name = details.Name;
             Products.Insert(index, product);
-        } catch (Exception ex) {
-            Debug.WriteLine(ex);
         }
 
     }

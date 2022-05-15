@@ -1,0 +1,39 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:DesktopUI.Controls">
+  
+  <Design.PreviewWith>
+    <controls:LoadingSpinner />
+  </Design.PreviewWith>
+
+  <Style Selector="controls|LoadingSpinner">
+
+    <Style.Animations>
+      <Animation Duration="0:0:2" RepeatCount="INFINITE">
+        <KeyFrame Cue="0%">
+          <Setter Property="RotateTransform.Angle" Value="0.0"/>
+        </KeyFrame>
+        <KeyFrame Cue="100%">
+          <Setter Property="RotateTransform.Angle" Value="360.0"/>
+        </KeyFrame>
+      </Animation>
+    </Style.Animations>
+    
+    <Setter Property="Template">
+      <ControlTemplate>
+        
+        <Ellipse Height="100" Width="100" StrokeThickness="8" Classes="Spinny" IsVisible="{ Binding IsLoading }">
+          <Ellipse.Stroke>
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="75%,75%">
+              <LinearGradientBrush.GradientStops>
+                <GradientStop Offset="0" Color="Gray"/>
+                <GradientStop Offset="1" Color="Transparent"/>
+              </LinearGradientBrush.GradientStops>
+            </LinearGradientBrush>
+          </Ellipse.Stroke>
+        </Ellipse>
+        
+      </ControlTemplate>
+    </Setter>
+  </Style>
+</Styles>

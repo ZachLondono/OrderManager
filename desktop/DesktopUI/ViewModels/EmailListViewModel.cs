@@ -21,8 +21,8 @@ public class EmailListViewModel : ViewModelBase {
         _repo = repo;
         _query = query;
 
-        DeleteEmailCommand = ReactiveCommand.CreateFromTask<EmailTemplateSummary, Unit>(OnDeleteEmail);
-        EditEmailCommand = ReactiveCommand.CreateFromTask<EmailTemplateSummary, Unit>(OnEditEmail);
+        DeleteEmailCommand = ReactiveCommand.CreateFromTask<EmailTemplateSummary>(OnDeleteEmail);
+        EditEmailCommand = ReactiveCommand.CreateFromTask<EmailTemplateSummary>(OnEditEmail);
         CreateEmailCommand = ReactiveCommand.CreateFromTask(OnCreateEmail);
 
         ShowDialog = new Interaction<ToolWindowContent, Unit>();
@@ -32,8 +32,8 @@ public class EmailListViewModel : ViewModelBase {
     public Interaction<ToolWindowContent, Unit> ShowDialog { get; }
     public Interaction<Unit, string?> ShowFileDialogAndReturnPath { get; }
 
-    public ReactiveCommand<EmailTemplateSummary, Unit> DeleteEmailCommand { get; set; }
-    public ReactiveCommand<EmailTemplateSummary, Unit> EditEmailCommand { get; set; }
+    public ReactiveCommand<EmailTemplateSummary,Unit> DeleteEmailCommand { get; set; }
+    public ReactiveCommand<EmailTemplateSummary,Unit> EditEmailCommand { get; set; }
     public ReactiveCommand<Unit, Unit> CreateEmailCommand { get; set; }
 
     public async Task LoadData() {
@@ -44,49 +44,53 @@ public class EmailListViewModel : ViewModelBase {
         }
     }
 
-    private async Task<Unit> OnDeleteEmail(EmailTemplateSummary email) {
+    private async Task OnDeleteEmail(EmailTemplateSummary email) {
         await _repo.Remove(email.Id);
         Emails.Remove(email);
-        return Unit.Default;
     }
 
-    private async Task<Unit> OnEditEmail(EmailTemplateSummary email) {
+    private async Task OnEditEmail(EmailTemplateSummary email) {
 
-        var query = App.GetRequiredService<EmailQuery.GetEmailDetailsById>();
-        var details = await query(email.Id);
-
-        var editorvm = App.GetRequiredService<EmailTemplateEditorViewModel>();
-        editorvm.SetData(details);
-
-        await ShowDialog.Handle(new("Email Editor", 800, 450, new EmailTemplateEditorView {
-            DataContext = editorvm
-        }));
+        var details = await OpenEmailEditor(email.Id);
+        if (details is null) return;
 
         var index = Emails.IndexOf(email);
         Emails.RemoveAt(index);
         email.Name = details.Name;
         Emails.Insert(index, email);
 
-        return Unit.Default;
-
     }
 
     private async Task OnCreateEmail() {
         var context = await _repo.Add("New Email Template");
-        var query = App.GetRequiredService<EmailQuery.GetEmailDetailsById>();
-        var details = await query(context.Id);
 
-        var editorvm = App.GetRequiredService<EmailTemplateEditorViewModel>();
-        editorvm.SetData(details);
-
-        await ShowDialog.Handle(new("Email Editor", 800, 450, new EmailTemplateEditorView {
-            DataContext = editorvm
-        }));
+        var details = await OpenEmailEditor(context.Id);
+        if (details is null) return;
 
         Emails.Add(new() {
             Id = details.Id,
             Name = details.Name,
         });
+    }
+
+    private async Task<EmailTemplateDetails?> OpenEmailEditor(int emailId) {
+
+        var query = App.GetRequiredService<EmailQuery.GetEmailDetailsById>();
+        EmailTemplateDetails? details = null;
+
+        var editorvm = App.GetRequiredService<EmailTemplateEditorViewModel>();
+
+        await ShowDialog.Handle(new("Email Editor", 800, 450, new EmailTemplateEditorView {
+            DataContext = editorvm
+        }, async () => {
+
+            details = await query(emailId);
+            editorvm.SetData(details);
+
+        }));
+
+        return details;
+
     }
 
 }

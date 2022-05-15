@@ -109,7 +109,7 @@ public class ProductDesignerViewModel : ViewModelBase {
             string newName = "New Attribute";
 
             int suffix = 1;
-            while (Attributes.Any(a => a.Name.Equals(newName))) {
+            while (Attributes.Any(a => a.PreviousName.Equals(newName) || a.Name.Equals(newName))) {
                 newName = $"New Attribute {suffix++}";
             }
 

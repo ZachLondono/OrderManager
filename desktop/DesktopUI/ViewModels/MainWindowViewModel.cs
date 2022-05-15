@@ -1,9 +1,13 @@
 using DesktopUI.Common;
 using DesktopUI.Views;
-using OrderManager.ApplicationCore.Labels;
+using OrderManager.ApplicationCore.Orders;
+using OrderManager.Domain.Catalog;
+using OrderManager.Domain.Orders;
 using ReactiveUI;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reactive;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -11,54 +15,105 @@ namespace DesktopUI.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase {
 
-    public MainWindowViewModel() {
-
-        ShowDialog = new Interaction<DialogWindowContent, Unit>();
-        ShowFileDialogAndReturnPath = new Interaction<Unit, string?>();
-
-        CreateLabelsCommand = ReactiveCommand.CreateFromTask(OpenLabelCreatorDialog);
-        ListLabelsCommand = ReactiveCommand.CreateFromTask(OpenLabelListDialog);
-
+    private bool _showLoadingSpinner;
+    public bool ShowLoadingSpinner {
+        get => _showLoadingSpinner;
+        set => this.RaiseAndSetIfChanged(ref _showLoadingSpinner, value);
     }
 
-    public Interaction<DialogWindowContent, Unit> ShowDialog { get; }
+    private readonly IOrderAPI _orderApi;
+
+    public MainWindowViewModel(IOrderAPI orderApi) {
+
+        _orderApi = orderApi;
+
+        ShowDialog = new Interaction<ToolWindowOpener, Unit>();
+        ShowFileDialogAndReturnPath = new Interaction<Unit, string?>();
+
+        ListLabelsCommand = ReactiveCommand.CreateFromTask(OpenLabelListDialog);
+        ListEmailsCommand = ReactiveCommand.CreateFromTask(OpenEmailListDialog);
+        ListPluginsCommand = ReactiveCommand.CreateFromTask(OpenPluginListDialog);
+        ListProfilesCommand = ReactiveCommand.CreateFromTask(OpenProfileListDialog);
+        ListCompaniesCommand = ReactiveCommand.CreateFromTask(OpenCompanyListDialog);
+        ListProductCommand = ReactiveCommand.CreateFromTask(OpenProductListDialog);
+        ToggleSpinnerCommand = ReactiveCommand.Create(() => ShowLoadingSpinner = !ShowLoadingSpinner);
+    }
+
+    public Interaction<ToolWindowOpener, Unit> ShowDialog { get; }
     public Interaction<Unit, string?> ShowFileDialogAndReturnPath { get; }
 
-    public ICommand CreateLabelsCommand { get; }
     public ICommand ListLabelsCommand { get; }
+    public ICommand ListEmailsCommand { get; }
+    public ICommand ListPluginsCommand { get; }
+    public ICommand ListProfilesCommand { get; }
+    public ICommand ListCompaniesCommand { get; }
+    public ICommand ListProductCommand { get; }
+    public ICommand ToggleSpinnerCommand { get; }
 
-    private async Task OpenLabelCreatorDialog() {
+    private async Task OpenEmailListDialog() {
 
-        string? path = await ShowFileDialogAndReturnPath.Handle(Unit.Default);
+        var listvm = App.GetRequiredService<EmailListViewModel>();
 
-        if (path is null) return;
-
-        var labelService = App.GetRequiredService<LabelService>();
-        var newContext = await labelService.CreateLabelFieldMap(path);
-        
-        var query = App.GetRequiredService<LabelQuery.GetLabelDetailsById>();
-        var details = await query(newContext.Id);
-
-        var editorvm = App.GetRequiredService<LabelFieldEditorViewModel>();
-        editorvm.SetData(details);
-
-        await ShowDialog.Handle(new("Label Editor", 450, 600, new LabelFieldEditorView {
-            DataContext = editorvm
-        }));
+        await ToolWindowOpener.OpenDialog(new("Email Templates", 450, 375, new EmailListView {
+            DataContext = listvm
+        }, listvm.LoadData));
 
     }
 
     private async Task OpenLabelListDialog() {
 
-        var query = App.GetRequiredService<LabelQuery.GetLabelSummaries>();
-        var labels = await query();
-
         var listvm = App.GetRequiredService<LabelListViewModel>();
-        listvm.Labels = new(labels);
 
-        await ShowDialog.Handle(new("Label Templates", 450, 375, new LabelListView {
+        await ToolWindowOpener.OpenDialog(new("Label Templates", 450, 375, new LabelListView {
             DataContext = listvm
-        }));
+        }, listvm.LoadData));
+
+    }
+
+    private async Task OpenPluginListDialog() {
+
+        var listvm = App.GetRequiredService<PluginListViewModel>();
+        
+        await ToolWindowOpener.OpenDialog(new("Plugins", 450, 375, new PluginListView {
+            DataContext = listvm
+        }, null));
+    }
+
+    private async Task OpenProfileListDialog() {
+
+        var listvm = App.GetRequiredService<ProfileListViewModel>();
+
+        await ToolWindowOpener.OpenDialog(new("Release Profiles", 450, 375, new ProfileListView {
+            DataContext = listvm
+        }, listvm.LoadData));
+
+    }
+
+    private async Task OpenCompanyListDialog() {
+
+        try {
+            var listvm = App.GetRequiredService<CompanyListViewModel>();
+            
+            await ToolWindowOpener.OpenDialog(new("Companies", 450, 375, new CompanyListView {
+                DataContext = listvm
+            }, listvm.LoadData));
+        } catch (Exception ex) {
+            Debug.WriteLine(ex);
+        }
+
+    }
+
+    private async Task OpenProductListDialog() {
+
+        try {
+            var listvm = App.GetRequiredService<ProductListViewModel>();
+
+            await ToolWindowOpener.OpenDialog(new("Products", 450, 375, new ProductListView {
+                DataContext = listvm
+            }, listvm.LoadData));
+        } catch (Exception ex) {
+            Debug.WriteLine(ex);
+        }
 
     }
 

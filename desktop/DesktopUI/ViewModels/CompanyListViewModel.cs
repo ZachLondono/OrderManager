@@ -37,22 +37,28 @@ public class CompanyListViewModel : ViewModelBase {
 
     private async Task OnEditCompany(CompanySummary company) {
 
-        try { 
-            var details = await _api.GetCompany(company.Id);
+        Company? details = null;
 
-            var editorvm = App.GetRequiredService<CompanyEditorViewModel>();
-            editorvm.SetData(details);
+        var editorvm = App.GetRequiredService<CompanyEditorViewModel>();
 
-            await ShowDialog.Handle(new("Company Editor", 800, 450, new CompanyEditorView {
-                DataContext = editorvm
-            }));
+        await ShowDialog.Handle(new("Company Editor", 800, 450, new CompanyEditorView {
+            DataContext = editorvm
+        }, async () => {
 
+            try { 
+                details = await _api.GetCompany(company.Id);
+                editorvm.SetData(details);
+            } catch (Exception ex) {
+                Debug.WriteLine(ex);
+            }
+
+        }));
+
+        if (details is not null) { 
             var index = Companies.IndexOf(company);
             Companies.RemoveAt(index);
             company.Name = details.Name;
             Companies.Insert(index, company);
-        } catch (Exception ex) {
-            Debug.WriteLine(ex);
         }
 
     }
@@ -82,14 +88,19 @@ public class CompanyListViewModel : ViewModelBase {
     }
 
     public async Task LoadData() {
-        try {
-            var companies = await _api.GetCompanies();
-            Companies.Clear();
-            foreach (var company in companies) {
-                Companies.Add(company);
+        while (true) { 
+
+            try {
+                var companies = await _api.GetCompanies();
+                Companies.Clear();
+                foreach (var company in companies) {
+                    Companies.Add(company);
+                }
+                break;
+            } catch (Exception ex) {
+                Debug.WriteLine(ex);
             }
-        } catch (Exception ex) {
-            Debug.WriteLine(ex);
+
         }
     }
 

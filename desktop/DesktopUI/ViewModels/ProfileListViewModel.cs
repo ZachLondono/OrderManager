@@ -26,8 +26,8 @@ public class ProfileListViewModel : ViewModelBase {
         _detailsQuery = detailsQuery;
 
         CreateProfileCommand = ReactiveCommand.CreateFromTask(OnCreateProfile);
-        EditProfileCommand = ReactiveCommand.CreateFromTask<ReleaseProfileSummary, Unit>(OnEditProfile);
-        DeleteProfileCommand = ReactiveCommand.CreateFromTask<ReleaseProfileSummary, Unit>(OnDeleteProfile);
+        EditProfileCommand = ReactiveCommand.CreateFromTask<ReleaseProfileSummary>(OnEditProfile);
+        DeleteProfileCommand = ReactiveCommand.CreateFromTask<ReleaseProfileSummary>(OnDeleteProfile);
 
         ShowDialog = new Interaction<ToolWindowContent, Unit>();
 
@@ -43,14 +43,8 @@ public class ProfileListViewModel : ViewModelBase {
 
         var context = await _repo.Add("New Release Profile");
 
-        var details = await _detailsQuery(context.Id);
-
-        var editorvm = App.GetRequiredService<ReleaseProfileEditorViewModel>();
-        _ = editorvm.SetData(details);
-
-        await ShowDialog.Handle(new("Profile Editor", 450, 650, new ReleaseProfileEditorView {
-            DataContext = editorvm
-        }));
+        var details = await OpenProfileEditor(context.Id);
+        if (details is null) return;
 
         Profiles.Add(new() {
             Id = details.Id,
@@ -59,30 +53,21 @@ public class ProfileListViewModel : ViewModelBase {
 
     }
 
-    private async Task<Unit> OnEditProfile(ReleaseProfileSummary profile) {
-        
-        var details = await _detailsQuery(profile.Id);
+    private async Task OnEditProfile(ReleaseProfileSummary profile) {
 
-        var editorvm = App.GetRequiredService<ReleaseProfileEditorViewModel>();
-        _ = editorvm.SetData(details);
-
-        await ShowDialog.Handle(new("Profile Editor", 450, 650, new ReleaseProfileEditorView {
-            DataContext = editorvm
-        }));
+        var details = await OpenProfileEditor(profile.Id);
+        if (details is null) return;
 
         int index = Profiles.IndexOf(profile);
         Profiles.Remove(profile);
         profile.Name = details.Name;
         Profiles.Insert(index, profile);
 
-        return Unit.Default;
-
     }
 
-    private async Task<Unit> OnDeleteProfile(ReleaseProfileSummary profile) {
+    private async Task OnDeleteProfile(ReleaseProfileSummary profile) {
         await _repo.Remove(profile.Id);
         Profiles.Remove(profile);
-        return Unit.Default;
     }
 
     public async Task LoadData() {
@@ -93,4 +78,22 @@ public class ProfileListViewModel : ViewModelBase {
         }
     }
 
+    private async Task<ReleaseProfileDetails?> OpenProfileEditor(int profileId) {
+
+        ReleaseProfileDetails? details = null;
+
+        var editorvm = App.GetRequiredService<ReleaseProfileEditorViewModel>();
+
+        await ShowDialog.Handle(new("Profile Editor", 450, 650, new ReleaseProfileEditorView {
+            DataContext = editorvm
+        }, async () => {
+
+            details = await _detailsQuery(profileId);
+            await editorvm.SetData(details);
+
+        }));
+
+        return details;
+
+    }
 }

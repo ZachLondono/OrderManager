@@ -6,23 +6,17 @@ using System.Threading.Tasks;
 
 namespace DesktopUI.Common;
 
-public record ToolWindowContent(string Title, int Width, int Height, IControl Content);
+public record ToolWindowContent(string Title, int Width, int Height, IControl Content, Func<Task>? LoadData);
 
 public class ToolWindowOpener {
 
     public static void Open(ToolWindowContent content) {
-        var dialog = new ToolWindow(content.Title, content.Width, content.Height) {
-            DataContext = new ToolWindowViewModel(content.Content)
-        };
-
+        var dialog = CreateWindow(content);
         dialog.Show();
     }
 
     public static async Task OpenDialog(ToolWindowContent content) {
-        var dialog = new ToolWindow(content.Title, content.Width, content.Height) {
-            DataContext = new ToolWindowViewModel(content.Content)
-        };
-
+        var dialog = CreateWindow(content);
         await dialog.ShowDialog(App.MainWindow);
     }
 
@@ -32,9 +26,7 @@ public class ToolWindowOpener {
     /// <param name="content">The content to display in the new tool window</param>
     /// <param name="control">The control from which to find the parent window</param>
     public static async Task OpenDialog(ToolWindowContent content, IControl control) {
-        var dialog = new ToolWindow(content.Title, content.Width, content.Height) {
-            DataContext = new ToolWindowViewModel(content.Content)
-        };
+        var dialog = CreateWindow(content);
 
         Window? window = GetParentWindow(control);
 
@@ -49,6 +41,15 @@ public class ToolWindowOpener {
             control = control.Parent;
         }
         return null;
+    }
+
+    private static ToolWindow CreateWindow(ToolWindowContent content) {
+        var vm = new ToolWindowViewModel(content.Content, content.LoadData);
+        _ = vm.LoadData();
+        return new ToolWindow(content.Title, content.Width, content.Height) {
+            DataContext = vm
+        };
+
     }
 
 }
