@@ -56,6 +56,7 @@ public class ProductDesignerViewModel : ViewModelBase {
 
     public void SetData(Product product) {
         _product = product;
+        this.RaisePropertyChanged(nameof(Name));
 
         Attributes.Clear();
         foreach (var attr in _product.Attributes) {
@@ -80,15 +81,15 @@ public class ProductDesignerViewModel : ViewModelBase {
 
             foreach (var attribute in Attributes) {
 
-                if (!attribute.HasChanged) continue;
+                if (attribute is null || !attribute.HasChanged) continue;
                 await _api.UpdateAttribute(new() {
                     ProductId = _product.Id,
                     OldAttribute = attribute.PreviousName,
                     NewAttribute = attribute.Name,
-                    Default = attribute.Default
+                    Default = attribute?.Default ?? ""
                 });
 
-                attribute.Reset();
+                attribute!.Reset();
 
             }
 
