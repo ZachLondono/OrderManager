@@ -6,7 +6,15 @@
         <Button HorizontalAlignment="Center" Classes="Primary" Content="Primary" />
         <Button HorizontalAlignment="Center" Classes="Secondary" Content="Secondary" />
         <Button HorizontalAlignment="Center" Classes="Danger" Content="Danger" />
-        <TextBox Watermark="Enter Text" />
+        <TextBox Watermark="Enter Text" HorizontalAlignment="Center" />
+        <ComboBox HorizontalAlignment="Center">
+          <ComboBoxItem Classes="Header" Content="Cat A" FontWeight="Bold" Foreground="Black"/>
+          <ComboBoxItem Content="A" IsSelected="True"/>
+          <ComboBoxItem Content="B" />
+          <ComboBoxItem Content="C" />
+          <ComboBoxItem Content="D" />
+          <ComboBoxItem Content="E" />
+        </ComboBox>
       </StackPanel>
     </Border>
   </Design.PreviewWith>
@@ -74,6 +82,33 @@
   </Style>
   <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
     <Setter Property="BorderBrush" Value="{DynamicResource BorderSelected}"/>
+  </Style>
+
+  <!-- Combobox -->
+  <Style Selector="ComboBox">
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="0" />
+  </Style>
+  <Style Selector="ComboBox:pointerover /template/ Border#Background">
+    <Setter Property="Background" Value="{DynamicResource BorderSelected}"/>
+  </Style>
+  <Style Selector="ComboBox:focus /template/ Border#Background">
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="BorderDashOffset" Value="1"/>
+    <Setter Property="BorderDashArray" Value="3,3"/>
+  </Style>
+  <Style Selector="Popup > Border">
+    <Setter Property="Background" Value="Pink"/>
+  </Style>
+
+  <!-- Combobox Item Header -->
+  <Style Selector="ComboBoxItem.Header">
+    <Setter Property="IsEnabled" Value="False"/>
+    <Setter Property="Margin" Value="0"/>
+  </Style>
+  <Style Selector="ComboBoxItem.Header TextBlock">
+    <Setter Property="FontWeight" Value="Bold"/>
+    <Setter Property="Foreground" Value="Black"/>
   </Style>
 
 </Styles>

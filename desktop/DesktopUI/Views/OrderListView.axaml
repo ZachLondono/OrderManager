@@ -159,15 +159,23 @@
           </DataTemplate>
         </ItemsControl.ItemTemplate>
       </ItemsControl>
+      
       <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" Spacing="5">
         <ComboBox>
-          <ComboBoxItem Classes="Header" Content="Sorting" FontWeight="Bold" Foreground="Black"/>
+          <ComboBoxItem Classes="Header" Content="Filter"/>
+          <ComboBoxItem Content="All" />
+          <ComboBoxItem Content="Pending"/>
+          <ComboBoxItem Content="Complete"/>
+          <ComboBoxItem Content="Shipped"/>
+          
+          <ComboBoxItem Classes="Header" Content="Sorting"/>
           <ComboBoxItem Content="By Date" IsSelected="True"/>
           <ComboBoxItem Content="By Priority"/>
           <ComboBoxItem Content="By Name"/>
           <ComboBoxItem Content="By Number"/>
         </ComboBox>
       </StackPanel>
+      
     </Grid>
     
     <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Row="1">
