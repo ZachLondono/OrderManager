@@ -78,6 +78,7 @@ public static class DependencyInjection {
         //string baseUrl = "http://localhost:7071/api";
 
         return services.AddTransient(s => RestService.For<IOrderAPI>(baseUrl + "/Sales", refitOptions))
+                .AddTransient(s => RestService.For<IOrderedItemAPI>(baseUrl + "/Sales", refitOptions))
                 .AddTransient(s => RestService.For<ICompanyAPI>(baseUrl + "/Sales", refitOptions))
                 .AddTransient(s => RestService.For<ICatalogAPI>(baseUrl + "/Catalog", refitOptions))
                 .AddTransient(s => RestService.For<IJobAPI>(baseUrl + "/Manufacturing", refitOptions));
