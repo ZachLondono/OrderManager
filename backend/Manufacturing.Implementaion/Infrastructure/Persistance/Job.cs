@@ -4,15 +4,15 @@ internal class Job {
 
     public int Id { get; set; }
 
+    public int OrderId { get; set; }
+
     public string Name { get; set; } = string.Empty;
 
     public string Number { get; set; } = string.Empty;
 
-    public int CustomerId { get; set; }
+    public string CustomerName { get; set; } = string.Empty;
 
-    public int VendorId { get; set; }
-
-    public int ItemCount { get; set; }
+    public DateTime? ScheduledDate { get; set; }
 
     public DateTime? ReleasedDate { get; set; }
 

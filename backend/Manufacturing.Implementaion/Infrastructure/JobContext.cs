@@ -3,6 +3,7 @@
 namespace Manufacturing.Implementation.Infrastructure;
 
 internal record JobCanceledEvent();
+internal record JobScheduleEvent(DateTime ScheduleDate);
 internal record JobReleasedEvent(DateTime ReleaseTimestamp);
 internal record JobCompletedEvent(DateTime CompleteTimestamp);
 internal record JobShippedEvent(DateTime ShipTimestamp);

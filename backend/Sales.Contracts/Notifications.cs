@@ -11,12 +11,18 @@ public class ConfirmedOrder {
     public string Name { get; set; } = string.Empty;
     
     public string Number { get; set; } = string.Empty;
-    
-    public int CustomerId { get; set; }
-    
-    public int VendorId { get; set; }
 
-    public int ItemCount { get; set; }
+    public string Customer { get; set; } = string.Empty;
+
+    public List<ProductOrdered> Products { get; set; } = new();
+
+}
+
+public class ProductOrdered {
+
+    public int ProductId { get; set; }
+
+    public int QtyOrdered { get; set; }
 
 }
 

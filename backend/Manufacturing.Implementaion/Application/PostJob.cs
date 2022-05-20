@@ -16,18 +16,40 @@ public class PostJob : INotificationHandler<OrderConfirmedNotification> {
 
     public async Task Handle(OrderConfirmedNotification notification, CancellationToken cancellationToken) {
 
-        const string query = @"INSERT INTO [Manufacturing].[Jobs] ([Id], [Name], [Number], [CustomerId], [VendorId], [ItemCount], [Status])
-                                VALUES (@Id, @Name, @Number, @CustomerId, @VendorId, @ItemCount, @Status);";
+        const string query = @"INSERT INTO [Manufacturing].[Jobs] ([OrderId], [Name], [Number], [CustomerName], [Status])
+                                VALUES (@OrderId, @Name, @Number, @Customer, @Status);
+                                SELECT SCOPE_IDENTITY();";
 
-        await _connection.ExecuteAsync(query, new { 
-            notification.Order.Id,
+        const string itemQuery = @"INSERT INTO [Manufacturing].[JobProducts] ([JobId], [ProductId], [QtyOrdered])
+                                VALUES (@JobId, @ProductId, @QtyOrdered )";
+
+        var trx = _connection.BeginTransaction();
+
+        _connection.Open();
+
+        int jobId = await _connection.QuerySingleAsync(query, new { 
+            OrderId = notification.Order.Id,
             notification.Order.Name,
             notification.Order.Number,
-            notification.Order.VendorId,
-            notification.Order.CustomerId,
-            notification.Order.ItemCount,
+            notification.Order.Customer,
             Status = ManufacturingStatus.Pending
-        });
+        }, trx);
+
+        Dictionary<int, int> products = new();
+        foreach (var product in notification.Order.Products) {
+            if (!products.ContainsKey(product.ProductId)) products[product.ProductId] = 0;
+            products[product.ProductId] += product.QtyOrdered;
+        }
+
+        foreach (var product in products) {
+            await _connection.ExecuteAsync(itemQuery, new {
+                JobId = jobId,
+                ProductId = product.Key,
+                QtyOrdered = product.Value
+            }, trx);
+        }
+
+        _connection.Close();
 
     }
 

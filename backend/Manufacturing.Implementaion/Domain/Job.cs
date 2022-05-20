@@ -16,11 +16,9 @@ public class Job {
 
     public string Number { get; private set; }
 
-    public int CustomerId { get; set; }
+    public string Customer { get; set; }
 
-    public int VendorId { get; set; }
-
-    public int ItemCount { get; private set; }
+    public DateTime? ScheduledDate { get; private set; } = null;
 
     public DateTime? ReleasedDate { get; private set; } = null;
 
@@ -30,7 +28,10 @@ public class Job {
 
     public ManufacturingStatus Status { get; private set; }
 
-    public Job(int id, string name, string number, int customerId, int vendorId, int itemCount) {
+    private readonly List<ManufacturedProduct> _products;
+    public IReadOnlyCollection<ManufacturedProduct> Products => Products;
+
+    public Job(int id, string name, string number, string customer, IEnumerable<ManufacturedProduct> products) {
 
         if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Name cannot be null or empty", nameof(name));
@@ -40,13 +41,12 @@ public class Job {
         Id = id;
         Name = name;
         Number = number;
-        CustomerId = customerId;
-        VendorId = vendorId;
-        ItemCount = itemCount;
+        Customer = customer;
+        _products = new(products);
         Status = ManufacturingStatus.Pending;
     }
 
-    public Job(int id, string name, string number, int customerId, int vendorId, int itemCount, DateTime? releasedDate, DateTime? completedDate, DateTime? shippedDate, ManufacturingStatus status) {
+    public Job(int id, string name, string number, string customer, IEnumerable<ManufacturedProduct> products, DateTime? scheduledDate, DateTime? releasedDate, DateTime? completedDate, DateTime? shippedDate, ManufacturingStatus status) {
 
         if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Name cannot be null or empty", nameof(name));
@@ -56,13 +56,19 @@ public class Job {
         Id = id;
         Name = name;
         Number = number;
-        CustomerId = customerId;
-        VendorId = vendorId;
-        ItemCount = itemCount;
+        Customer = customer;
+        ScheduledDate = scheduledDate;
         ReleasedDate = releasedDate;
         CompletedDate = completedDate;
         ShippedDate = shippedDate;
         Status = status;
+        _products = new(products);
+    }
+
+    public void Schedule(DateTime date) {
+        if (date < DateTime.Today)
+            throw new InvalidDataException("Date must be in the future");
+        ScheduledDate = date;
     }
 
     public void ReleaseToProduction() {

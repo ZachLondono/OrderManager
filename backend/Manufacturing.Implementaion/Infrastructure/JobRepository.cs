@@ -17,11 +17,23 @@ public class JobRepository {
 
     public async Task<JobContext> GetJobById(int jobId) {
 
-        const string query = @"SELECT [Id], [Name], [Number], [CustomerId], [VendorId], [ItemCount], [ReleasedDate], [CompletedDate], [ShippedDate], [Status]
+        const string query = @"SELECT [Id], [OrderId], [Name], [Number], [Customer], [CustomerName], [ScheduledDate], [ReleasedDate], [CompletedDate], [ShippedDate], [Status]
                                 FROM [Manufacturing].[Jobs]
                                 WHERE [Id] = @Id;";
 
         var job = await _connection.QuerySingleAsync<Persistance.Job>(query, new { Id = jobId });
+
+
+        const string itemQuery = @"SELECT [Id], [JobId], [ProductId], [QtyOrdered]
+                                FROM [Manufacturing].[JobProducts]
+                                WHERE [JobId] = @JobId;";
+
+        var products = await _connection.QueryAsync<Persistance.JobProduct>(itemQuery, new { JobId = jobId });
+
+        List<ManufacturedProduct> manufacturedProducts = new();
+        foreach (var product in products) {
+            manufacturedProducts.Add(new(product.Id, product.ProductId, product.QtyOrdered));
+        }
 
         ManufacturingStatus status = (ManufacturingStatus) Enum.Parse(typeof(ManufacturingStatus), job.Status);
 
@@ -30,9 +42,9 @@ public class JobRepository {
         return new(new Job(job.Id,
                             job.Name,
                             job.Number, 
-                            job.CustomerId,
-                            job.VendorId,
-                            job.ItemCount,
+                            job.CustomerName,
+                            manufacturedProducts,
+                            job.ScheduledDate,
                             job.ReleasedDate,
                             job.CompletedDate,
                             job.ShippedDate,
@@ -50,6 +62,8 @@ public class JobRepository {
 
             if (e is JobCanceledEvent) {
                 await ApplyCancel(context, trx);
+            } else if (e is JobScheduleEvent scheduleEvent) {
+                await ApplySchedule(context, scheduleEvent, trx);
             } else if (e is JobReleasedEvent releaseEvent) {
                 await ApplyRelease(context, releaseEvent, trx);
             } else if (e is JobCompletedEvent completeEvent) {
@@ -72,6 +86,15 @@ public class JobRepository {
         await _connection.ExecuteAsync(command, new {
             Status = ManufacturingStatus.Canceled.ToString(),
             context.Id
+        }, trx);
+    }
+    
+    private async Task ApplySchedule(JobContext context, JobScheduleEvent scheduleEvent, IDbTransaction trx) {
+        const string command = "UPDATE [Manufacturing].[Jobs] SET [ScheduledDate] = @Date WHERE [Id] = @Id;";
+        await _connection.ExecuteAsync(command, new {
+            Status = ManufacturingStatus.Shipped.ToString(),
+            context.Id,
+            Date = scheduleEvent.ScheduleDate
         }, trx);
     }
 
