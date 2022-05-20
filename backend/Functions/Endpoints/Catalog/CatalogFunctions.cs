@@ -7,7 +7,7 @@ using MediatR;
 using Catalog.Implementation.Application;
 using Microsoft.Extensions.Logging;
 
-namespace Functions.Endpoints;
+namespace Functions.Endpoints.Catalog;
 
 public class CatalogFunctions {
 
