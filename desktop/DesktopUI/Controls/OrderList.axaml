@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="DesktopUI.Views.OrderListView">
+             x:Class="DesktopUI.Controls.OrderList">
 
   <Control.Styles>
     <!-- Order Category Button Styles -->
@@ -168,22 +168,20 @@
           <ComboBoxItem Content="By Name"/>
           <ComboBoxItem Content="By Number"/>
         </ComboBox>
-        <DropDown>
-          <DropDownItem>Hello</DropDownItem>
-        </DropDown>
       </StackPanel>
       
     </Grid>
     
     <ScrollViewer VerticalScrollBarVisibility="Visible" Grid.Row="1">
-      <ItemsControl Items="{Binding Orders}">
+      <ItemsControl Name="OrderItems">
         <ItemsControl.ItemTemplate>
           <DataTemplate>
 
             <RadioButton HorizontalAlignment="Stretch"
                           Classes="OrderItem"
                           GroupName="OrderItems"
-                          Padding="12">
+                          Padding="12"
+                          Click="OrderSelected">
               <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="*,*,*">
                 <TextBlock Text="{Binding Number}" Classes="Title" Grid.Column="0" Grid.Row="0" />
                 <!--<Image Width="12" Height="12" Classes="PriorityIcon" Classes.Priority="{Binding IsPriority}" Source="/Assets/exclamation.png" Grid.Column="2" Grid.Row="0" />-->

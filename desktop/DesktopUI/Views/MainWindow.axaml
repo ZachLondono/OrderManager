@@ -17,12 +17,6 @@
   <Design.DataContext>
       <vm:MainWindowViewModel/>
   </Design.DataContext>
-
-  <Window.DataTemplates>
-    <DataTemplate DataType="{x:Type vm:OrderListViewModel}">
-      <views:OrderListView />
-    </DataTemplate>
-  </Window.DataTemplates>
   
   <Window.Styles>
     <Style Selector="#CaptionButtons > Button">
@@ -108,9 +102,10 @@
             <ColumnDefinition MinWidth="300" />
           </Grid.ColumnDefinitions>
 
-          <ContentControl Content="{Binding OrderListViewModel}" Grid.Column="0" Grid.Row="1" />
+          <controls:OrderList Orders="{ Binding OrderList }" OnSelectedOrder="{ Binding OnSelectedOrder }" Grid.Column="0" Grid.Row="1"/>
           <GridSplitter  Background="#ffffff" BorderThickness="0,0,1,0" BorderBrush="#d4d4d4" Width="5" Grid.Column="1" Grid.Row="1" />
-          <!--<ContentControl Content="{Binding OrderDetailsViewModel}" Grid.Column="2" Grid.Row="1"  />-->
+          <controls:OrderDetails SelectedOrderId="{ Binding SelectedOrderId }" Grid.Column="2" Grid.Row="1" />
+          
         </Grid>
       </Grid>
     </Border>
