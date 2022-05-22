@@ -8,7 +8,6 @@ public static class ConfigureService {
     public static IServiceCollection AddCatalog(this IServiceCollection services) =>
         services.AddMediatR(typeof(ConfigureService).Assembly)
                 .AddValidatorsFromAssembly(typeof(ConfigureService).Assembly)
-                .AddTransient<ProductRepository>()
                 .AddTransient<Application.Catalog>()
                 .AddTransient<Contracts.CatalogProducts.GetProducts>((s) =>
                     s.GetRequiredService<Application.Catalog>().GetProducts)

@@ -1,13 +1,15 @@
-﻿using Dapper;
+﻿using Catalog.Contracts;
+using Dapper;
 using FluentValidation;
 using MediatR;
 using System.Data;
+using System.Text.Json;
 
 namespace Catalog.Implementation.Application;
 
 public class AddToCatalog {
 
-    public record Command(string Name) : IRequest<int>;
+    public record Command(string Name, Dictionary<string,string>? Attributes) : IRequest<ProductDetails>;
 
     public class Validation : AbstractValidator<Command> {
 
@@ -22,7 +24,7 @@ public class AddToCatalog {
 
     }
 
-    public class Handler : IRequestHandler<Command, int> {
+    public class Handler : IRequestHandler<Command, ProductDetails> {
 
         private readonly IDbConnection _connection;
 
@@ -30,13 +32,29 @@ public class AddToCatalog {
             _connection = connection;
         }
 
-        public async Task<int> Handle(Command request, CancellationToken cancellationToken) {
-            const string query = @"INSERT INTO [Catalog].[Products] ([Name]) VALUES (@Name);
+        public async Task<ProductDetails> Handle(Command request, CancellationToken cancellationToken) {
+
+            const string query = @"INSERT INTO [Catalog].[Products] ([Name], [Attributes]) VALUES (@Name, @Attributes);
                                 SELECT SCOPE_IDENTITY();";
 
-            int newId = await _connection.QuerySingleAsync<int>(query, request);
+            string attributeJson = "{}";
+            if (request.Attributes is not null) {
+                attributeJson = JsonSerializer.Serialize(request.Attributes);
+            }
 
-            return newId;
+            int newId = await _connection.QuerySingleAsync<int>(query, new {
+                request.Name,
+                Attributes = attributeJson
+            });
+
+            var product = new ProductDetails() {
+                Id = newId,
+                Name = request.Name,
+                Attributes = request.Attributes ?? new()
+            };
+
+            return product;
+
         }
     }
 

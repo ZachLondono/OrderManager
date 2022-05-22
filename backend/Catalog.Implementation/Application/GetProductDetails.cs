@@ -1,7 +1,9 @@
 ﻿using Catalog.Contracts;
+using Catalog.Implementation.Infrastructure.Persistance;
 using Dapper;
 using MediatR;
 using System.Data;
+using System.Text.Json;
 
 namespace Catalog.Implementation.Application;
 
@@ -18,14 +20,18 @@ public class GetProductDetails {
         }
 
         public async Task<ProductDetails> Handle(Query request, CancellationToken cancellationToken) {
-            
-            const string query = "SELECT [Id], [Name] FROM [Catalog].[Products] WHERE [Id] = @Id;";
-            const string attrQuery = "SELECT [Name], [Default] FROM [Catalog].[ProductAttributes] WHERE [ProductId] = @ProductId;";
 
-            var product = await _connection.QuerySingleAsync<ProductDetails>(query, new { Id = request.ProductId });
-            var attributes = await _connection.QueryAsync<ProductAttribute>(attrQuery, new { request.ProductId });
-            
-            product.Attributes = attributes;
+            const string query = "SELECT [Id], [Name], [Attributes] FROM [Catalog].[Products] WHERE [Id] = @Id;";
+
+            var productDto = await _connection.QuerySingleAsync<Product>(query, new { Id = request.ProductId });
+
+            var attributes = JsonSerializer.Deserialize<Dictionary<string, string>>(productDto.Attributes);
+
+            var product = new ProductDetails() {
+                Id = productDto.Id,
+                Name = productDto.Name,
+                Attributes = attributes ?? new()
+            };
 
             return product;
 

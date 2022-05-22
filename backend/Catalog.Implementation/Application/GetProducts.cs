@@ -1,6 +1,6 @@
 ﻿using Catalog.Contracts;
-using Dapper;
 using MediatR;
+using Dapper;
 using System.Data;
 
 namespace Catalog.Implementation.Application;
@@ -18,8 +18,13 @@ public class GetProducts {
         }
 
         public async Task<IEnumerable<ProductSummary>> Handle(Query request, CancellationToken cancellationToken) {
-            var products = await _connection.QueryAsync<ProductSummary>("SELECT [Id], [Name] FROM [Catalog].[Products];");
-            return products.ToArray();
+            
+            const string query = "SELECT [Id], [Name] FROM [Catalog].[Products]";
+
+            var products = await _connection.QueryAsync<ProductSummary>(query);
+
+            return products;
+
         }
     }
 
