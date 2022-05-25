@@ -30,7 +30,7 @@ This objects represents a placed order. You can retrieve it to see information a
 		"comment" : "My first order"
 	},
 	"items" : [
-		{..}
+		{...}
 	]
 }
 ```
@@ -229,17 +229,17 @@ The companies address
 _todo describe endpoints_ 
 
 # Products
-_todo write description_
+Products are items which make up an order. 
 
 ### <u>The Product Object</u>
 ``` javascript
 {
 	"id" : 1,
 	"name" : "Dovetail Drawer Box",
-	"options" : {
-		"height" : "0",
-		"width" : "0",
-		"depth" : "0"
+	"attributes" : {
+		"Height" : "0",
+		"Width" : "0",
+		"Depth" : "0"
 	}
 }
 ```
@@ -250,19 +250,74 @@ __id__ <small>positive integer</small>
  __name__ <small>string</small>
  The name of the product
  
- __options__ <small>dictionary</small>
+ __attributes__ <small>dictionary</small>
 Key value pair dictionary of all the product's options mapped to their default values
 
 ### <u>Endpoints<u>
 
-| Method      | Endpoint                          | Action
-| ----------- | -----------                       | -------
-| GET         | /api/catalog/products/            | Retrieve a list of companies
-| GET         | /api/catalog/products/:id         | Retrieve a specific company
-| POST        | /api/catalog/products             | Create a new company
-| POST        | /api/catalog/products/:id         | Update an existing company
+| Method      | Endpoint                   | Action
+| ----------- | -----------                | -------
+| GET         | /api/catalog/products/     | Retrieve a list of products
+| GET         | /api/catalog/products/:id  | Retrieve a specific product
+| POST        | /api/catalog/products      | Create a new product
+| PUT		  | /api/catalog/products/     | Update an existing product
+| DELETE	  | /api/catalog/products/:id  | Removes a product
 
-_todo describe endpoints_ 
+- __Retrieve a list of products__  <small>get : /api/catalog/products/</small>
+Retrieves a list of all products in the catalog. The response only includes the name and ID of the products.
+__Parameters__
+_no parameters_
+
+__Response__
+``` javascript
+[
+	{
+		"id" : 1,
+		"name" : "Dovetail Drawer Box"
+	},
+	{
+		"id" : 2,
+		"name" : "MDF Door"
+	},
+	{...}
+]
+```
+
+- __Retrieve a specific products__  <small>get: /api/catalog/products/:id</small>
+Retrieves the details of a specific product. Includes the ID, name and attributes.
+__Parameters__
+_no parameters_
+
+__Response__
+``` javascript
+{
+	"id" : 1,
+	"name" : "Dovetail Drawer Box",
+	"attributes" : {
+		"Height" : "0",
+		"Width" : "0", 
+		"Depth" : "0"
+	}
+}
+```
+
+- __Create a new products__  <small>post : /api/catalog/products/</small>
+Retrieves the details of a specific product. Includes the ID, name and attributes.
+__Parameters__
+<u>name</u> _<small>required</small>_
+The name of the new product
+<u>attributes</u> _<small>optional</small>_
+A dictionary representing the new product's attributes and their default values.
+
+- __Create a new products__  <small>put : /api/catalog/products/</small>
+Retrieves the details of a specific product. Includes the ID, name and attributes.
+__Parameters__
+<u>id</u> _<small>required</small>_
+The existing product's ID
+<u>name</u> _<small>option</small>_
+The new name of the product
+<u>attributes</u> _<small>optional</small>_
+A dictionary representing the new product's attributes and their default values.
 
 # Jobs
 A job represents work that must be done to manufacture some products in an order. A single order may have one or more jobs associated with it. 
