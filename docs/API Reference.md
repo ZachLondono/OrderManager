@@ -192,6 +192,7 @@ A company has at least one of three roles; _customer, vendor, or supplier_.
 {
 	"id" : 1,
 	"name" : "Royal Cabinet Company",
+	"email" : "zach@royalcabinet.com",
 	"roles" : ["customer","vendor","supplier"],
 	"address" : {
 		"line1" : "",
@@ -331,10 +332,7 @@ A job represents work that must be done to manufacture some products in an order
 	"number" : "OT000",
 	"customer" : "Joe's Cabient Shop",
 	"status" : "in-progress",
-	"scheduled_date" : "5-26-2022",
-	"release_date" : "5-18-2022",
 	"completed_date" : null,
-	"shipped_date" : null,
 	"products" : {
 		1 : 2
 	}
@@ -360,10 +358,7 @@ __customer__ <small>string</small>
 The customer who ordered 
 
 __status__ <small>string</small>
-Current status of the job; _in-progress, complete, shipped, canceled_
-
-__scheduled_date__ <small>date</small>
-The date that the order is scheduled to be completed
+Current status of the job; _pending, in-progress, complete, canceled_
 
 __products__ <small>dictionary</small>
 Dictionary mapping product IDs to the quantity of each product in the job
@@ -374,10 +369,76 @@ Dictionary mapping product IDs to the quantity of each product in the job
 | ----------- | -----------                                | -------
 | GET         | /api/manufacturing/jobs/                   | Retrieve a list of jobs
 | GET         | /api/manufacturing/jobs/:id                | Retrieve a specific job
-| POST        | /api/manufacturing/jobs/:id/schedule       | Schedule a job
-| POST        | /api/manufacturing/jobs/:id/release        | Mark a job as released
-| DELETE      | /api/manufacturing/jobs/:id/complete       | Mark a job as complete
-| DELETE      | /api/manufacturing/jobs/:id/ship           | Mark a job as shipped
-| DELETE      | /api/manufacturing/jobs/:id/cancel         | Mark a job as canceled
+| POST      | /api/manufacturing/jobs/:id/complete       | Mark a job as complete
+| POST      | /api/manufacturing/jobs/:id/cancel         | Mark a job as canceled
 
 _todo describe endpoints_ 
+
+# Work Cell
+A work cell represents an arrangement of resources which is able to produce one or more products. Each work cell has an estimated maximum output. A __Job__ is assigned to a work cell and given a scheduled completion date.
+
+### <u>The Work Cell Object</u>
+``` javascript
+{
+	"id" : 1,
+	"alias" : "Dovetail Cell A",
+	"output" : {
+		{
+			"prouct_id" : 1,
+			"daily_output" : 50
+		}
+	},
+	"active_jobs" : [
+		{
+			"job_id" : 1,
+			"scheduled_date" : "05-25-2022"
+		},
+		{ ... }
+	]
+}
+```
+
+### <u>Endpoints<u>
+
+| Method      | Endpoint                                    | Action
+| ----------- | -----------                                 | -------
+| GET         | /api/manufacturing/cells/                   | Retrieve a list of work cells
+| GET         | /api/manufacturing/cells/:id                | Retrieve a specific work cell
+| POST        | /api/manufacturing/cells/			        | Create a work cell
+| POST        | /api/manufacturing/cells/:id				| Update a work cell
+| POST        | /api/manufacturing/cells/:id/schedule       | Schedule a job
+| DELETE      | /api/manufacturing/cells/:id			    | Delete a work cell
+| DELETE      | /api/manufacturing/cells/:cell_id/:job_id   | Remove a job from a work cell
+
+- __Schedule a Job__  <small>post : /api/manufacturing/cell/:id/schedule</small>
+Schedules a job to be completed by the given __Work Cell__ on a given date. If the job already exists in the __Work Cell__ it's scheduled date will be updated. If the job already exists in another __Work Cell__ it will be removed before being added to the new one. If the job is not already assigned to a __Work Cell__ it will be removed from the __Back Log__ before being added.
+__Parameters__
+<u>job_id</u> _<small>required</small>_
+The ID of the job to add to the work cell
+<u>scheduled_date</u> _<small>required</small>_
+The date that the job is scheduled to be completed
+
+
+
+# Backlog
+A backlog is a list of orders which have not been assigned a __Work Cell__. Once an __Order__ is released, all of it's associated __Jobs__ will be added to a __Back Log__, making them available to be assigned to a __Work Cell__. There is 1 backlog for each __Product__ in the catalog, when a product is created a new __Back Log__ is created.
+
+### <u>The Backlog Object</u>
+``` javascript
+{
+	"id" : 1,
+	"product_id" : 1,
+	"jobs" : [
+		{
+			"id" : 1,
+			"number" : "OT000",
+			"qty" : 5 
+		},
+		{ ... }
+	]
+}
+```
+| Method      | Endpoint                                   | Action
+| ----------- | -----------                                | -------
+| GET         | /api/manufacturing/backlogs/                   | Retrieve a list of back logs
+| GET         | /api/manufacturing/backlogs/:id                | Retrieve a specific back log
