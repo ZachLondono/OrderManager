@@ -9,15 +9,7 @@ namespace Catalog.Implementation.Application;
 
 public class UpdateProduct {
 
-    public record Command(int Id, string? Name, Dictionary<string, string>? Attributes) : IRequest;
-
-    public class Validation : AbstractValidator<Command> {
-
-        public Validation() {
-
-        }
-
-    }
+    public record Command(int Id, string? Name, int? Class, Dictionary<string, string>? Attributes) : IRequest;
 
     public class Handler : AsyncRequestHandler<Command> {
 
@@ -33,11 +25,15 @@ public class UpdateProduct {
                                         SET [Name] = @Name
                                         WHERE [Id] = @Id;";
 
+            const string classCommand = @"UPDATE [Catalog].[Products]
+                                        SET [Class] = @Class
+                                        WHERE [Id] = @Id;";
+
             const string attriubteCommand = @"UPDATE [Catalog].[Products]
                                             SET [Attributes] = @Attributes
                                             WHERE [Id] = @Id;";
 
-            string? command = null;
+            string command = string.Empty;
 
             string attributesJson = "{}";
             if (request.Attributes is not null) {
@@ -49,7 +45,11 @@ public class UpdateProduct {
                 command += nameCommand;
             }
 
-            if (command is null) return;
+            if (request.Class is not null) {
+                command += classCommand;
+            }
+
+            if (string.IsNullOrEmpty(command)) return;
 
             await _connection.ExecuteAsync(command, new {
                 request.Name,

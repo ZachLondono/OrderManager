@@ -9,7 +9,7 @@ namespace Catalog.Implementation.Application;
 
 public class AddToCatalog {
 
-    public record Command(string Name, Dictionary<string,string>? Attributes) : IRequest<ProductDetails>;
+    public record Command(string Name, int Class, Dictionary<string,string>? Attributes) : IRequest<ProductDetails>;
 
     public class Validation : AbstractValidator<Command> {
 
@@ -34,7 +34,7 @@ public class AddToCatalog {
 
         public async Task<ProductDetails> Handle(Command request, CancellationToken cancellationToken) {
 
-            const string query = @"INSERT INTO [Catalog].[Products] ([Name], [Attributes]) VALUES (@Name, @Attributes);
+            const string query = @"INSERT INTO [Catalog].[Products] ([Name], [Class], [Attributes]) VALUES (@Name, [@Class], @Attributes);
                                 SELECT SCOPE_IDENTITY();";
 
             string attributeJson = "{}";
@@ -44,12 +44,14 @@ public class AddToCatalog {
 
             int newId = await _connection.QuerySingleAsync<int>(query, new {
                 request.Name,
+                request.Class,
                 Attributes = attributeJson
             });
 
             var product = new ProductDetails() {
                 Id = newId,
                 Name = request.Name,
+                Class = request.Class,
                 Attributes = request.Attributes ?? new()
             };
 

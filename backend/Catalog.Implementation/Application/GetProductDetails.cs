@@ -21,7 +21,7 @@ public class GetProductDetails {
 
         public async Task<ProductDetails> Handle(Query request, CancellationToken cancellationToken) {
 
-            const string query = "SELECT [Id], [Name], [Attributes] FROM [Catalog].[Products] WHERE [Id] = @Id;";
+            const string query = "SELECT [Id], [Name], [Class], [Attributes] FROM [Catalog].[Products] WHERE [Id] = @Id;";
 
             var productDto = await _connection.QuerySingleAsync<Product>(query, new { Id = request.ProductId });
 
