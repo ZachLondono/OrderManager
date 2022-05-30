@@ -1,5 +1,8 @@
 ﻿namespace Sales.Contracts;
 
+/// <summary>
+/// Represents the details of an existing order
+/// </summary>
 public class OrderDetails {
 
     public int Id {  get; set; }
@@ -8,11 +11,11 @@ public class OrderDetails {
 
     public string Number { get; set; } = string.Empty;
 
-    public int CustomerId { get; set; }
+    public CompanySummary? Customer { get; set; }
 
-    public int VendorId { get; set; }
+    public CompanySummary? Vendor { get; set; }
 
-    public int SupplierId { get; set; }
+    public CompanySummary? Supplier { get; set; }
 
     public string Status { get; set; } = string.Empty;
 
@@ -20,10 +23,14 @@ public class OrderDetails {
 
     public DateTime? ConfirmedDate { get; set; }
 
+    public DateTime? ReleasedDate { get; set; }
+
     public DateTime? CompletedDate { get; set; }
 
-    public string Fields { get; set; } = string.Empty;
+    public DateTime? LastModifiedDate { get; set; }
 
-    public IEnumerable<int> OrderedItems { get; set; } = Enumerable.Empty<int>();
+    public string Info { get; set; } = string.Empty;
+
+    public IEnumerable<OrderedItemDetails> OrderedItems { get; set; } = Enumerable.Empty<OrderedItemDetails>();
 
 }

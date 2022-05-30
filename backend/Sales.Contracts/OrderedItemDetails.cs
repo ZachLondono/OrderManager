@@ -6,7 +6,9 @@ public class OrderedItemDetails {
 
     public int ProductId { get; set; }
 
-    public string Name { get; set; } = string.Empty;
+    public int ProductClass { get; set; }
+
+    public string ProductName { get; set; } = string.Empty;
 
     public int Qty { get; set; }
 
