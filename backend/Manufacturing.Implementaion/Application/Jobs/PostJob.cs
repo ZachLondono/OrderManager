@@ -24,8 +24,8 @@ public class PostJob : INotificationHandler<OrderReleasedNotification> {
                                 g => g.Sum(p => p.QtyOrdered));
 
         const string command = @"INSERT INTO [Manufacturing].[Jobs]
-                                ([OrderId], [Name], [Number], [CustomerName], [Status], [ProductQty], [ProductClass])
-                                VALUES (@OrderId, @Name, @Number, @Customer, @Status);";
+                                ([OrderId], [Name], [Number], [CustomerName], [Status], [ProductQty], [ProductClass], [ReleasedDate])
+                                VALUES (@OrderId, @Name, @Number, @Customer, @Status, @ReleasedDate);";
 
         _connection.Open();
         var trx = _connection.BeginTransaction();
@@ -39,7 +39,8 @@ public class PostJob : INotificationHandler<OrderReleasedNotification> {
                 CustomerName = notification.Order.Customer,
                 Status = ManufacturingStatus.Pending,
                 ProductQty = prodClass.Value,
-                ProductClass = prodClass.Key
+                ProductClass = prodClass.Key,
+                ReleasedDate = DateTime.Now
             }, trx);
 
         }

@@ -28,8 +28,9 @@ public class JobRepository {
         _logger.LogInformation("Found job with ID {ID}, {Job}", job);
 
         return new(new Job(job.Id,
+                            job.OrderId,
                             job.Name,
-                            job.Number, 
+                            job.Number,
                             job.CustomerName,
                             job.ScheduledDate,
                             job.ReleasedDate,
@@ -52,10 +53,6 @@ public class JobRepository {
 
             if (e is JobCanceledEvent) {
                 await ApplyCancel(context, trx);
-            } else if (e is JobScheduleEvent scheduleEvent) {
-                await ApplySchedule(context, scheduleEvent, trx);
-            } else if (e is JobReleasedEvent releaseEvent) {
-                await ApplyRelease(context, releaseEvent, trx);
             } else if (e is JobCompletedEvent completeEvent) {
                 await ApplyComplete(context, completeEvent, trx);
             } else if (e is JobShippedEvent shipEvent) {
@@ -76,24 +73,6 @@ public class JobRepository {
         await _connection.ExecuteAsync(command, new {
             Status = ManufacturingStatus.Canceled.ToString(),
             context.Id
-        }, trx);
-    }
-    
-    private async Task ApplySchedule(JobContext context, JobScheduleEvent scheduleEvent, IDbTransaction trx) {
-        const string command = "UPDATE [Manufacturing].[Jobs] SET [ScheduledDate] = @Date WHERE [Id] = @Id;";
-        await _connection.ExecuteAsync(command, new {
-            Status = ManufacturingStatus.Shipped.ToString(),
-            context.Id,
-            Date = scheduleEvent.ScheduleDate
-        }, trx);
-    }
-
-    private async Task ApplyRelease(JobContext context, JobReleasedEvent releaseEvent, IDbTransaction trx) {
-        const string command = "UPDATE [Manufacturing].[Jobs] SET [Status] = @Status, [ReleasedDate] = @Date WHERE [Id] = @Id;";
-        await _connection.ExecuteAsync(command, new {
-            Status = ManufacturingStatus.InProgress.ToString(),
-            context.Id,
-            Date = releaseEvent.ReleaseTimestamp
         }, trx);
     }
 

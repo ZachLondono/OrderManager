@@ -78,26 +78,14 @@ public class Job {
         WorkCell = workCell;
 
     }
-
-    public void Schedule(DateTime date) {
-        if (date < DateTime.Today)
-            throw new InvalidDataException("Date must be in the future");
-        ScheduledDate = date;
-    }
-
-    public void ReleaseToProduction() {
-        ReleasedDate = DateTime.Now;
-        Status = ManufacturingStatus.InProgress;
-    }
+    
 
     public void Complete() {
-        if (ReleasedDate is null) ReleaseToProduction();
         CompletedDate = DateTime.Now;
         Status = ManufacturingStatus.Completed;
     }
 
     public void Ship() {
-        if (ReleasedDate is null) ReleaseToProduction();
         if (CompletedDate is null) Complete();
         ShippedDate = DateTime.Now;
         Status = ManufacturingStatus.Shipped;

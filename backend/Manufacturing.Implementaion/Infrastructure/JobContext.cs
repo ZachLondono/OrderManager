@@ -3,8 +3,6 @@
 namespace Manufacturing.Implementation.Infrastructure;
 
 internal record JobCanceledEvent();
-internal record JobScheduleEvent(DateTime ScheduleDate);
-internal record JobReleasedEvent(DateTime ReleaseTimestamp);
 internal record JobCompletedEvent(DateTime CompleteTimestamp);
 internal record JobShippedEvent(DateTime ShipTimestamp);
 
@@ -24,11 +22,6 @@ public class JobContext {
     public void Cancel() {
         _job.Cancel();
         _events.Add(new JobCanceledEvent());
-    }
-
-    public void ReleaseToProduction() {
-        _job.ReleaseToProduction();
-        _events.Add(new JobReleasedEvent(DateTime.Now));
     }
 
     public void Complete() {
