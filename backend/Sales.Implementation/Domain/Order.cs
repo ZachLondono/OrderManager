@@ -3,6 +3,7 @@
 public enum OrderStatus {
     Bid,
     Confirmed,
+    Released,
     Completed,
     Void
 }
@@ -26,12 +27,14 @@ public class Order {
     public int[] Items;
     
     public Dictionary<string, string> Fields { get; set; } = new();
-    
+
+    public DateTime? PlacedDate { get; set; }
+
     public DateTime? CompletedDate { get; set; }
 
     public DateTime? ConfirmedDate { get; set; }
-    
-    public DateTime? PlacedDate { get; set; }
+
+    public DateTime? ReleaseDate { get; set; }
 
     public Order(int id, string name, string number, int[] items, OrderStatus status, DateTime? placedDate) {
         Id = id;
@@ -48,10 +51,19 @@ public class Order {
     }
 
     public void CompleteOrder() {
-        if (ConfirmedDate is null)
+        if (ConfirmedDate is null) {
             ConfirmedDate = DateTime.Now;
+            ReleaseDate = DateTime.Now;
+        }
         CompletedDate = DateTime.Now;
         Status = OrderStatus.Completed;
+    }
+
+    public void ReleaseOrder() {
+        if (ConfirmedDate is null)
+            ConfirmedDate = DateTime.Now;
+        ReleaseDate = DateTime.Now;
+        Status = OrderStatus.Released;
     }
 
     public void VoidOrder() {
