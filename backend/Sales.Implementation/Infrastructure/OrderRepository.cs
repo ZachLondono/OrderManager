@@ -34,7 +34,7 @@ public class OrderRepository {
         var status = Enum.Parse<OrderStatus>(orderDto.Status);
 
         var order = new Order(id, orderDto.Name, orderDto.Number, items.ToArray(), status, orderDto.PlacedDate) {
-            Fields = fields,
+            Info = fields,
             CompletedDate = orderDto.CompletedDate,
             ConfirmedDate = orderDto.ConfirmedDate,
             VendorId = orderDto.VendorId,

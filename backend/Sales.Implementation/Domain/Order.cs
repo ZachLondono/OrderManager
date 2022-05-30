@@ -26,15 +26,17 @@ public class Order {
 
     public int[] Items;
     
-    public Dictionary<string, string> Fields { get; set; } = new();
+    public Dictionary<string, string> Info { get; set; } = new();
 
     public DateTime? PlacedDate { get; set; }
 
-    public DateTime? CompletedDate { get; set; }
-
     public DateTime? ConfirmedDate { get; set; }
 
+    public DateTime? CompletedDate { get; set; }
+
     public DateTime? ReleaseDate { get; set; }
+
+    public DateTime? LastModifiedDate { get; set; }
 
     public Order(int id, string name, string number, int[] items, OrderStatus status, DateTime? placedDate) {
         Id = id;
