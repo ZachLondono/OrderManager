@@ -15,7 +15,7 @@ public static class CompleteOrder {
         }
 
         public async Task Handle(JobCompleteNotification notification, CancellationToken cancellationToken) {
-            var order = await _orderRepo.GetOrderById(notification.JobId);
+            var order = await _orderRepo.GetOrderById(notification.Job.OrderId);
             order.CompleteOrder();
             await _orderRepo.Save(order);
         }

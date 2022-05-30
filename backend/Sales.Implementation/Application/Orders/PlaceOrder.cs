@@ -8,7 +8,8 @@ namespace Sales.Implementation.Application.Orders;
 
 public class PlaceOrder {
 
-    public record Command(string Name, string Number, int CustomerId, int VendorId, int SupplierId, string Fields) : IRequest<int>;
+    // TODO Info field should be a dictionary
+    public record Command(string Name, string Number, int CustomerId, int VendorId, int SupplierId, string Info) : IRequest<int>;
 
     public class Validation : AbstractValidator<Command> {
 
@@ -51,7 +52,7 @@ public class PlaceOrder {
 
         public async Task<int> Handle(Command request, CancellationToken cancellationToken) {
 
-            const string command = @"INSERT INTO [Sales].[Orders] ([Name], [Number], [CustomerId], [VendorId], [SupplierId], [Fields], [Status], [PlacedDate])
+            const string command = @"INSERT INTO [Sales].[Orders] ([Name], [Number], [CustomerId], [VendorId], [SupplierId], [Info], [Status], [PlacedDate])
                                     VALUES (@Name, @Number, @CustomerId, @VendorId, @SupplierId, @Fields, @Status, @PlacedDate);";
 
             int newId = await _connection.QuerySingleAsync<int>(command, new {
@@ -60,7 +61,7 @@ public class PlaceOrder {
                 request.CustomerId,
                 request.VendorId,
                 request.SupplierId,
-                request.Fields,
+                request.Info,
                 Status = OrderStatus.Bid.ToString(),
                 PlacedDate = DateTime.Now,
             });
