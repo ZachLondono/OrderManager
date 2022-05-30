@@ -17,23 +17,11 @@ public class JobRepository {
 
     public async Task<JobContext> GetJobById(int jobId) {
 
-        const string query = @"SELECT [Id], [OrderId], [Name], [Number], [Customer], [CustomerName], [ScheduledDate], [ReleasedDate], [CompletedDate], [ShippedDate], [Status]
+        const string query = @"SELECT [Id], [OrderId], [Name], [Number], [Customer], [CustomerName], [ScheduledDate], [ReleasedDate], [CompletedDate], [ShippedDate], [Status], [ProductClass], [ProductQty], [WorkCell]
                                 FROM [Manufacturing].[Jobs]
                                 WHERE [Id] = @Id;";
 
-        var job = await _connection.QuerySingleAsync<Persistance.Job>(query, new { Id = jobId });
-
-
-        const string itemQuery = @"SELECT [Id], [JobId], [ProductId], [QtyOrdered]
-                                FROM [Manufacturing].[JobProducts]
-                                WHERE [JobId] = @JobId;";
-
-        var products = await _connection.QueryAsync<Persistance.JobProduct>(itemQuery, new { JobId = jobId });
-
-        List<ManufacturedProduct> manufacturedProducts = new();
-        foreach (var product in products) {
-            manufacturedProducts.Add(new(product.Id, product.ProductId, product.QtyOrdered));
-        }
+        var job = await _connection.QuerySingleAsync<Persistance.JobModel>(query, new { Id = jobId });
 
         ManufacturingStatus status = (ManufacturingStatus) Enum.Parse(typeof(ManufacturingStatus), job.Status);
 
@@ -43,12 +31,14 @@ public class JobRepository {
                             job.Name,
                             job.Number, 
                             job.CustomerName,
-                            manufacturedProducts,
                             job.ScheduledDate,
                             job.ReleasedDate,
                             job.CompletedDate,
                             job.ShippedDate,
-                            status));
+                            status,
+                            job.ProductClass,
+                            job.ProductQty,
+                            job.WorkCell));
 
     }
 

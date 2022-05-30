@@ -1,6 +1,6 @@
 ﻿namespace Manufacturing.Implementation.Infrastructure.Persistance;
 
-internal class Job {
+internal class JobModel {
 
     public int Id { get; set; }
 
@@ -21,5 +21,11 @@ internal class Job {
     public DateTime? ShippedDate { get; set; }
 
     public string Status { get; set; } = string.Empty;
+
+    public int ProductClass { get; set; }
+
+    public int ProductQty { get; set; }
+
+    public int? WorkCell { get; set; } = null;
 
 }

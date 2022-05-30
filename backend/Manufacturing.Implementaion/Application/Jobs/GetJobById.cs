@@ -19,7 +19,7 @@ public class GetJobById {
 
         public async Task<JobDetails> Handle(Query request, CancellationToken cancellationToken) {
 
-            const string query = @"SELECT [Id], [Name], [Number], [CustomerId], [VendorId], [ItemCount], [ReleasedDate], [CompletedDate], [ShippedDate]
+            const string query = @"SELECT [Id], [OrderId], [Name], [Number], [Customer], [Status], [ScheduledDate] [ReleasedDate], [CompletedDate], [ShippedDate], [ProductClass], [ProductQty], [WorkCell]
                                     FROM [Manufacturing].[Jobs]
                                     WHERE [Id] = @Id;";
 

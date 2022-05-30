@@ -10,6 +10,8 @@ public class JobSummary {
 
     public string Customer { get; set; } = string.Empty;
 
-    public int ItemCount { get; set; }
+    public int ProductQty { get; set; }
+
+    public int ProductClass { get; set; }
 
 }

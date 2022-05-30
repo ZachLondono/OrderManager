@@ -12,6 +12,8 @@ public class Job {
 
     public int Id { get; init; }
 
+    public int OrderId { get; init; }
+
     public string Name { get; private set; }
 
     public string Number { get; private set; }
@@ -28,10 +30,13 @@ public class Job {
 
     public ManufacturingStatus Status { get; private set; }
 
-    private readonly List<ManufacturedProduct> _products;
-    public IReadOnlyCollection<ManufacturedProduct> Products => Products;
+    public int ProductClass { get; init; }
 
-    public Job(int id, string name, string number, string customer, IEnumerable<ManufacturedProduct> products) {
+    public int ProductQty { get; init; }
+
+    public int? WorkCell { get; set; } = null;
+
+    public Job(int id, int orderId, string name, string number, string customer,int productClass, int productQty) {
 
         if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Name cannot be null or empty", nameof(name));
@@ -39,14 +44,19 @@ public class Job {
             throw new ArgumentException("Name cannot be null or empty", nameof(number));
 
         Id = id;
+        OrderId = orderId;
         Name = name;
         Number = number;
         Customer = customer;
-        _products = new(products);
         Status = ManufacturingStatus.Pending;
+        ProductClass = productClass;
+        ProductQty = productQty;
+        WorkCell = null;
     }
 
-    public Job(int id, string name, string number, string customer, IEnumerable<ManufacturedProduct> products, DateTime? scheduledDate, DateTime? releasedDate, DateTime? completedDate, DateTime? shippedDate, ManufacturingStatus status) {
+    public Job(int id, int orderId, string name, string number, string customer,
+        DateTime? scheduledDate, DateTime? releasedDate, DateTime? completedDate, DateTime? shippedDate,
+        ManufacturingStatus status, int productClass, int productQty, int? workCell) {
 
         if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Name cannot be null or empty", nameof(name));
@@ -54,6 +64,7 @@ public class Job {
             throw new ArgumentException("Name cannot be null or empty", nameof(number));
 
         Id = id;
+        OrderId = orderId;
         Name = name;
         Number = number;
         Customer = customer;
@@ -62,7 +73,10 @@ public class Job {
         CompletedDate = completedDate;
         ShippedDate = shippedDate;
         Status = status;
-        _products = new(products);
+        ProductClass = productClass;
+        ProductQty = productQty;
+        WorkCell = workCell;
+
     }
 
     public void Schedule(DateTime date) {
@@ -92,6 +106,5 @@ public class Job {
     public void Cancel() {
         Status = ManufacturingStatus.Canceled;
     }
-
 
 }

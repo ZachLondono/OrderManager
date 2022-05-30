@@ -2,8 +2,22 @@
 
 namespace Manufacturing.Contracts;
 
-public record JobReleasedNotification(int JobId, string Name, string Number, string Customer, DateTime ReleaseDate) : INotification;
+public record JobCompleteNotification(CompletedJob Job) : INotification;
 
-public record JobCompleteNotification(int JobId, string Name, string Number, string Customer, DateTime CompleteDate) : INotification;
+public record CompletedJob {
+    public int JobId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Number { get; set; } = string.Empty;
+    public string Customer { get; set; } = string.Empty;
+    public DateTime CompletedDate { get; set; }
+}
 
-public record JobShippedNotification(int JobId, string Name, string Number, string Customer, DateTime ShipDate) : INotification;
+public record JobShippedNotification(ShippedJob Job) : INotification;
+
+public record ShippedJob {
+    public int JobId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Number { get; set; } = string.Empty;
+    public string Customer { get; set; } = string.Empty;
+    public DateTime ShippedDate { get; set; }
+}

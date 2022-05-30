@@ -16,12 +16,16 @@ public class JobDetails {
 
     public DateTime? ScheduledDate { get; set; }
 
-    public DateTime? ReleaseDate { get; set; }
+    public DateTime? ReleasedDate { get; set; }
 
-    public DateTime? CompleteDate { get; set; }
+    public DateTime? CompletedDate { get; set; }
 
-    public DateTime? ShipDate { get; set; }
+    public DateTime? ShippedDate { get; set; }
 
-    public Dictionary<int, int> Products { get; set; } = new();
+    public int ProductQty { get; set; }
+
+    public int ProductClass { get; set; }
+
+    public int? WorkCell { get; set; } = null;
 
 }
