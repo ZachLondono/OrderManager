@@ -7,6 +7,7 @@ internal record ContactRemovedEvent(int ContactId);
 internal record ContactUpdatedEvent(Contact Contact);
 internal record AddressSetEvent(Address Address);
 internal record NameSetEvent(string Name);
+internal record EmailSetEvent(string Email);
 internal record RoleAddedEvent(CompanyRole Role);
 internal record RoleRemovedEvent(CompanyRole Role);
 
@@ -53,6 +54,11 @@ public class CompanyContext {
     public void SetName(string name) {
         _company.Name = name;
         _events.Add(new NameSetEvent(name));
+    }
+
+    public void SetEmail(string email) {
+        _company.Email = email;
+        _events.Add(new EmailSetEvent(email));
     }
 
     public void AddRole(CompanyRole role) {

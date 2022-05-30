@@ -14,6 +14,8 @@ public class Company {
     
     public string Name { get; set; }
 
+    public string Email { get; set; }
+
     private readonly List<Contact> _contacts;
     public IReadOnlyCollection<Contact> Contacts => _contacts;
     
@@ -22,17 +24,19 @@ public class Company {
     private readonly List<CompanyRole> _roles;
     public ReadOnlyCollection<CompanyRole> Roles => _roles.AsReadOnly();
 
-    public Company(int id, string name) {
+    public Company(int id, string name, string email) {
         Id = id;
         Name = name;
+        Email = email;
         Address = new();
         _roles = new();
         _contacts = new();
     }
 
-    public Company(int id, string name, List<Contact> contacts, Address adderss, List<CompanyRole> roles) {
+    public Company(int id, string name, string email, List<Contact> contacts, Address adderss, List<CompanyRole> roles) {
         Id = id;
         Name = name;
+        Email = email;
         Address = adderss;
         _roles = roles;
         _contacts = contacts;

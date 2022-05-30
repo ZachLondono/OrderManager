@@ -5,6 +5,7 @@ namespace Sales.Implementation.Infrastructure;
 
 public record OrderPlacedEvent(DateTime TimeStamp);
 public record OrderConfirmedEvent(DateTime TimeStamp);
+public record OrderReleasedEvent(DateTime TimeStamp);
 public record OrderCompletedEvent(DateTime TimeStamp);
 public record OrderCanceledEvent(DateTime TimeStamp);
 
@@ -25,6 +26,11 @@ public class OrderContext {
     public void ConfirmOrder() {
         _order.ConfirmOrder();
         _events.Add(new OrderConfirmedEvent(DateTime.Now));
+    }
+
+    public void ReleaseOrder() {
+        _order.ReleaseOrder();
+        _events.Add(new OrderReleasedEvent(DateTime.Now));
     }
 
     public void CompleteOrder() {

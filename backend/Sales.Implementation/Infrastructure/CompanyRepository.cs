@@ -17,7 +17,7 @@ public class CompanyRepository {
 
     public async Task<CompanyContext> GetCompanyById(int id) {
 
-        const string query = @"SELECT [Id], [Name], [Line1], [Line2], [Line3], [City], [State], [Zip]
+        const string query = @"SELECT [Id], [Name], [Email], [Line1], [Line2], [Line3], [City], [State], [Zip]
                                 FROM [Sales].[Companies]
                                 WHERE [Id] = @Id;";
         var companyDto = await _connection.QuerySingleAsync<Persistance.Company>(query, new {
@@ -56,7 +56,7 @@ public class CompanyRepository {
             });
         }
 
-        Company company = new(companyDto.Id, companyDto.Name, contacts, address, roles);
+        Company company = new(companyDto.Id, companyDto.Name, companyDto.Email, contacts, address, roles);
 
         _logger.LogInformation("Found company with ID {ID}, {Company}", id, company);
 
@@ -81,6 +81,8 @@ public class CompanyRepository {
                 await ApplyAddressSet(company, addressSet, trx);
             } else if (e is NameSetEvent nameSet) {
                 await ApplyNameSet(company, nameSet, trx);
+            } else if (e is EmailSetEvent emailSet) {
+                await ApplyEmailSet(company, emailSet, trx);
             } else if (e is RoleAddedEvent roleAdd) {
                 await ApplyRoleAdd(company, roleAdd, trx);
             } else if (e is RoleRemovedEvent roleRemove) {
@@ -143,11 +145,21 @@ public class CompanyRepository {
 
     private async Task ApplyNameSet(CompanyContext company, NameSetEvent e, IDbTransaction trx) {
         const string command = @"UPDATE [Sales].[Companies]
-                                SET [Name] = @Name,
+                                SET [Name] = @Name
                                 WHERE [Id] = @Id;";
         await _connection.ExecuteAsync(command, new {
             company.Id,
             e.Name
+        }, trx);
+    }
+
+    private async Task ApplyEmailSet(CompanyContext company, EmailSetEvent e, IDbTransaction trx) {
+        const string command = @"UPDATE [Sales].[Companies]
+                                SET [Email] = @Email
+                                WHERE [Id] = @Id;";
+        await _connection.ExecuteAsync(command, new {
+            company.Id,
+            e.Email
         }, trx);
     }
 
@@ -179,7 +191,7 @@ public class CompanyRepository {
 
         //TODO remove empty strings from list
         var rolesArr = roles.Split(',')
-                            .Where(r => r != e.Role.ToString());
+                            .Where(r => r != e.Role.ToString() && !string.IsNullOrEmpty(r) && !string.IsNullOrWhiteSpace(r));
 
         roles = string.Join(',', rolesArr);
 
