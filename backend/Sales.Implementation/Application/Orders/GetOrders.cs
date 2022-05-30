@@ -19,8 +19,9 @@ public class GetOrders {
 
         public async Task<IEnumerable<OrderSummary>> Handle(Query request, CancellationToken cancellationToken) {
 
-            const string query = @"SELECT [Id], [Name], [Number], [CustomerId], [PlacedDate], [Status]
-                                    FROM [Sales].[Orders];";
+            const string query = @"SELECT [Id], [Name], [Number], [Sales].[Companies].[Name] As [Customer], [PlacedDate], [Status]
+                                    FROM [Sales].[Orders]
+                                    INNER JOIN [Sales].[Companies] ON [Sales].[Orders].CustomerId=[Sales].[Companies].Id;";
 
             var orders = await _connection.QueryAsync<OrderSummary>(query);
 

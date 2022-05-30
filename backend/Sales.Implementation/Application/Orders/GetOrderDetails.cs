@@ -7,7 +7,7 @@ namespace Sales.Implementation.Application.Orders;
 
 public class GetOrderDetails {
 
-    public record Query(int Id) : IRequest<OrderDetails>;
+    public record Query(int OrderId) : IRequest<OrderDetails>;
 
     public class Handler : IRequestHandler<Query, OrderDetails> {
 
@@ -19,21 +19,40 @@ public class GetOrderDetails {
 
         public async Task<OrderDetails> Handle(Query request, CancellationToken cancellationToken) {
 
-            const string query = @"SELECT [Id], [Name], [Number], [CustomerId], [VendorId], [SupplierId], [PlacedDate], [ConfirmedDate], [CompletedDate], [Status], [Fields]
+            const string query = @"SELECT [Id], [Name], [Number], [Status], [PlacedDate], [ConfirmedDate], [ReleasedDate], [CompletedDate], [LastModifiedDate], [Info],
+	                                    [CustomerId] As [Id],
+	                                    [Name] = ( SELECT [Name] FROM [Sales].[Companies] WHERE [Id] = [CustomerId] ),
+	                                    [Roles] = ( SELECT [Roles] FROM [Sales].[Companies] WHERE [Id] = [CustomerId] ),
+	                                    [VendorId] As [Id],
+	                                    [Name] = ( SELECT [Name] FROM [Sales].[Companies] WHERE [Id] = [VendorId] ),
+	                                    [Roles] = ( SELECT [Roles] FROM [Sales].[Companies] WHERE [Id] = [VendorId] ),
+	                                    [SupplierId] As [Id],
+	                                    [Name] = ( SELECT [Name] FROM [Sales].[Companies] WHERE [Id] = [SupplierId] ),
+	                                    [Roles] = ( SELECT [Roles] FROM [Sales].[Companies] WHERE [Id] = [SupplierId] )
                                     FROM [Sales].[Orders]
-                                    WHERE [Id] = @Id;";
+                                    WHERE [Sales].[Orders].Id = @OrderId;";
 
-            var order = await _connection.QuerySingleAsync<OrderDetails>(query, request);
+            var data = await _connection.QueryAsync<OrderDetails, CompanySummary, CompanySummary, CompanySummary, OrderDetails>(sql:query, param:request, map:MapOrderCompanies, splitOn:"Id");
+            var order = data.First();
 
-            const string itemQuery = @"SELECT [Id] FROM [Sales].[OrderedItems]
+            const string itemQuery = @"SELECT [Id], [ProductId], [ProductClass], [ProductName], [Qty], [Options]
+                                        FROM [Sales].[OrderedItems]
                                         WHERE [OrderId] = @OrderId";
 
-            var items = await _connection.QueryAsync<int>(itemQuery, new { OrderId = request.Id });
+            var items = await _connection.QueryAsync<OrderedItemDetails>(itemQuery, request);
             order.OrderedItems = items;
 
             return order;
             
         }
+
+        private static OrderDetails MapOrderCompanies(OrderDetails order, CompanySummary customer, CompanySummary vendor, CompanySummary supplier) {
+            order.Customer = customer;
+            order.Vendor = vendor;
+            order.Supplier = supplier;
+            return order;
+        }
+
     }
 
 }

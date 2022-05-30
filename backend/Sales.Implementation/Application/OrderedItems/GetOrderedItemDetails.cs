@@ -19,7 +19,7 @@ public class GetOrderedItemsDetails {
 
         public async Task<IEnumerable<OrderedItemDetails>> Handle(Query request, CancellationToken cancellationToken) {
 
-            const string query = @"SELECT [Id], [ProductName], [ProductId], [Quantity], [Options]
+            const string query = @"SELECT [Id], [ProductName], [ProductId], [ProductClass], [Quantity], [Options]
                                     FROM [Sales].[OrderedItems] WHERE [OrderId] = @OrderId;";
 
             var items = await _connection.QueryAsync<OrderedItemDetails>(query, request);
