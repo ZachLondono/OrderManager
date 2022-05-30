@@ -4,6 +4,7 @@ Go
 create table Sales.Companies (
 	[Id] int IDENTITY(1,1) PRIMARY KEY,
 	[Name] varchar(255) NOT NULL,
+	[Email] varchar(255) NOT NULL,
 	[Roles] varchar(255),
 	[Line1] varchar(255),
 	[Line2] varchar(255),
@@ -32,6 +33,7 @@ create table Sales.OrderedItems (
 	[OrderId] int FOREIGN KEY REFERENCES Sales.Orders(Id),
 	[ProductId] int NOT NULL,
 	[ProductName] varchar(255) NOT NULL,
+	[ProductClass] int NOT NULL,
 	[Qty] varchar(255) NOT NULL,
 	[Options] varchar(MAX)
 );
