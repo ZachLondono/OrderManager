@@ -19,7 +19,7 @@ public class GetProductClasses {
 
         public async Task<IEnumerable<ProductClass>> Handle(Query request, CancellationToken cancellationToken) {
 
-            const string command = @"SELECT (Id], [Name])
+            const string command = @"SELECT [Id], [Name]
                                     FROM [Catalog].[ProductClasses];";
 
             var classes = await _connection.QueryAsync<ProductClass>(command);
