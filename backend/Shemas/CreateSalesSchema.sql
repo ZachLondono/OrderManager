@@ -23,9 +23,10 @@ create table Sales.Orders (
 	[SupplierId] int FOREIGN KEY REFERENCES Sales.Companies(Id),
 	[PlacedDate] datetime,
 	[ConfirmedDate] datetime,
+	[ReleasedDate] datetime,
 	[CompletedDate] datetime,
 	[Status] varchar(255) NOT NULL,
-	[Fields] varchar(MAX)
+	[Info] varchar(MAX)
 );
 
 create table Sales.OrderedItems (
