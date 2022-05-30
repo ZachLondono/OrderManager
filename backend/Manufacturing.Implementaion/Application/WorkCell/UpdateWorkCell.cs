@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Manufacturing.Implementation.Application.WorkCell;
 
-internal class UpdateWorkCell {
+public class UpdateWorkCell {
 
     public record Command(int WorkCellId, string? Alias, int? ExpectedMaxOutput) : IRequest;
 
