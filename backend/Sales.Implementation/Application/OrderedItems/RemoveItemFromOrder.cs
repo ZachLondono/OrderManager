@@ -5,7 +5,7 @@ namespace Sales.Implementation.Application.OrderedItems;
 
 public class RemoveItemFromOrder {
 
-    public record Command(int Id) : IRequest;
+    public record Command(int ItemId) : IRequest;
 
     public class Handler : AsyncRequestHandler<Command> {
 
@@ -16,7 +16,7 @@ public class RemoveItemFromOrder {
         }
 
         protected override async Task Handle(Command request, CancellationToken cancellationToken) {
-            await _repo.Remove(request.Id);
+            await _repo.Remove(request.ItemId);
         }
     }
 }
