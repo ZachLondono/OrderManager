@@ -19,4 +19,8 @@ internal class Catalog {
         return _sender.Send(new GetProductDetails.Query(id));
     }
 
+    internal Task<ProductClass> GetProductClass(int id) {
+        return _sender.Send(new GetProductClass.Query(id));
+    }
+
 }

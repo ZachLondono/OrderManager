@@ -12,5 +12,7 @@ public static class ConfigureService {
                 .AddTransient<Contracts.CatalogProducts.GetProducts>((s) =>
                     s.GetRequiredService<Application.Catalog>().GetProducts)
                 .AddTransient<Contracts.CatalogProducts.GetProductDetails>((s) =>
-                    s.GetRequiredService<Application.Catalog>().GetProductDetails);
+                    s.GetRequiredService<Application.Catalog>().GetProductDetails)
+                .AddTransient<Contracts.CatalogProducts.GetProductClass>((s) =>
+                    s.GetRequiredService<Application.Catalog>().GetProductClass);
 }
