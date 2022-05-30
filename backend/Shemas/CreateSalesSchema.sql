@@ -21,10 +21,11 @@ create table Sales.Orders (
 	[CustomerId] int FOREIGN KEY REFERENCES Sales.Companies(Id),
 	[VendorId] int FOREIGN KEY REFERENCES Sales.Companies(Id),
 	[SupplierId] int FOREIGN KEY REFERENCES Sales.Companies(Id),
-	[PlacedDate] datetime,
+	[PlacedDate] datetime DEFAULT CURRENT_TIMESTAMP,
 	[ConfirmedDate] datetime,
 	[ReleasedDate] datetime,
 	[CompletedDate] datetime,
+	[LastModifiedDate] datetime DEFAULT CURRENT_TIMESTAMP,
 	[Status] varchar(255) NOT NULL,
 	[Info] varchar(MAX)
 );
@@ -46,3 +47,14 @@ create table Sales.Contacts (
 	[Email] varchar(255),
 	[Phone] varchar(255)
 );
+
+go
+
+/* This trigger will update the LastModifiedDate of an Order whenever it is updated */
+create trigger trg_Orders_UpdateModifiedDate
+on Sales.Orders
+after update
+as
+update Sales.Orders
+set [LastModifiedDate] = CURRENT_TIMESTAMP
+where [Id] in (select distinct Id from inserted);
