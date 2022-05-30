@@ -9,11 +9,11 @@ using System;
 
 namespace Functions.Endpoints.Manufacturing;
 
-public class ManufacturingFunctions {
+public class JobFunctions {
 
     private readonly ISender _sender;
 
-    public ManufacturingFunctions(ISender sender) {
+    public JobFunctions(ISender sender) {
         _sender = sender;
     }
 
@@ -38,18 +38,6 @@ public class ManufacturingFunctions {
 
     }
 
-    [FunctionName(nameof(ScheduleJob))]
-    public async Task<IActionResult> ScheduleJob([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "manufacturing/jobs/{id}/schedule")] HttpRequest req, int id, DateTime scheduledDate) {
-        await _sender.Send(new ScheduleJob.Command(id, scheduledDate));
-        return new NoContentResult();
-    }
-
-    [FunctionName(nameof(ReleaseJob))]
-    public async Task<IActionResult> ReleaseJob([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "manufacturing/jobs/{id}/release")] HttpRequest req, int id) {
-        await _sender.Send(new ReleaseJob.Command(id));
-        return new NoContentResult();
-    }
-
     [FunctionName(nameof(CompleteJob))]
     public async Task<IActionResult> CompleteJob([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "manufacturing/jobs/{id}/complete")] HttpRequest req, int id) {
         await _sender.Send(new CompleteJob.Command(id));
@@ -58,12 +46,6 @@ public class ManufacturingFunctions {
 
     [FunctionName(nameof(ShipJob))]
     public async Task<IActionResult> ShipJob([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "manufacturing/jobs/{id}/ship")] HttpRequest req, int id) {
-        await _sender.Send(new ShipJob.Command(id));
-        return new NoContentResult();
-    }
-
-    [FunctionName(nameof(VoidJob))]
-    public async Task<IActionResult> VoidJob([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "manufacturing/jobs/{id}/ship")] HttpRequest req, int id) {
         await _sender.Send(new ShipJob.Command(id));
         return new NoContentResult();
     }
