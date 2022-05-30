@@ -9,6 +9,7 @@ create table Manufacturing.WorkCells (
 
 create table Manufacturing.Jobs (
 	[Id] int IDENTITY(1,1) PRIMARY KEY,
+	[OrderId] int NOT NULL,
 	[Name] varchar(255) NOT NULL,
 	[Number] varchar(255) NOT NULL,
 	[CustomerName] varchar(255),

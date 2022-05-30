@@ -47,7 +47,7 @@ public class CompleteJob {
 
         private async Task PublishJobCompletedNotification(Command request) {
 
-            const string query = @"SELECT [Id] AS JobId, [Name], [Number], [Customer], [CompletedDate]
+            const string query = @"SELECT [Id] AS JobId, [OrderId], [Name], [Number], [Customer], [CompletedDate]
                                     FROM [Manufacturing].[Jobs]
                                     WHERE [Id] = @Id;";
 

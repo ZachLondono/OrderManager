@@ -47,7 +47,7 @@ public class ShipJob {
 
         private async Task PublishJobShippedNotification(Command request) {
 
-            const string query = @"SELECT [Id] AS JobId, [Name], [Number], [Customer], [ShippedDate]
+            const string query = @"SELECT [Id] AS JobId, [OrderId], [Name], [Number], [Customer], [ShippedDate]
                                     FROM [Manufacturing].[Jobs]
                                     WHERE [Id] = @Id;";
 
