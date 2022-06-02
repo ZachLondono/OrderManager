@@ -21,7 +21,7 @@ internal class WorkShopRepository {
         var jobs =  await _connection.QueryAsync<BackLogItem>(query);
 
         return new() {
-            Count = jobs.Count,
+            Count = jobs.Count(),
             Jobs = jobs
         };
 

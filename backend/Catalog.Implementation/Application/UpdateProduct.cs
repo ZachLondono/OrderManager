@@ -1,6 +1,4 @@
-﻿using Catalog.Implementation.Domain;
-using Dapper;
-using FluentValidation;
+﻿using Dapper;
 using MediatR;
 using System.Data;
 using System.Text.Json;
