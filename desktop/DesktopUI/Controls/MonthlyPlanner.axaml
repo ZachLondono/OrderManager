@@ -1,0 +1,125 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="DesktopUI.Controls.MonthlyPlanner">
+
+  <UserControl.Styles>
+
+    <Style Selector="ItemsControl > ContentPresenter">
+      <Setter Property="Grid.Row" Value="{ Binding WeekNo }" />
+      <Setter Property="Grid.Column" Value="{ Binding DayOfWeek }" />
+    </Style>
+
+    <Style Selector="Button#ScheduleDayBtn.NotCurrentMonth">
+      <Setter Property="Background" Value="LightGray" />
+      <Setter Property="BorderBrush" Value="#CFCFCF" />
+      <Setter Property="IsEnabled" Value="False" />
+    </Style>
+
+    <Style Selector="Button#ScheduleDayBtn.CurrentMonth">
+      <Setter Property="Background" Value="White" />
+      <Setter Property="BorderBrush" Value="LightGray" />
+    </Style>
+    <Style Selector="Button#ScheduleDayBtn.CurrentMonth:pointerover">
+      <Setter Property="Background" Value="AliceBlue" />
+      <Setter Property="BorderBrush" Value="Blue" />
+    </Style>
+
+    <Style Selector="TextBlock.NotCurrentMonth">
+      <Setter Property="Foreground" Value="#A0A0A0" />
+    </Style>
+    
+  </UserControl.Styles>
+
+  <Grid ColumnDefinitions="Auto, *">
+
+    <StackPanel Grid.Column="0">
+      <TextBlock Text="Back Log" FontWeight="Bold"/>
+      <ListBox>
+        <ListBoxItem>OT000 - 5</ListBoxItem>
+        <ListBoxItem>OT001 - 39</ListBoxItem>
+        <ListBoxItem>OT002 - 6</ListBoxItem>
+        <ListBoxItem>OT003 - 1</ListBoxItem>
+        <ListBoxItem>OT004 - 32</ListBoxItem>
+        <ListBoxItem>OT005 - 7</ListBoxItem>
+      </ListBox>
+    </StackPanel>
+    
+    <Grid RowDefinitions="Auto,Auto,*" ColumnDefinitions="*" Grid.Column="1">
+
+      <Grid Margin="3" Grid.Row="0" Grid.Column="0" ColumnDefinitions="Auto,*,Auto">
+        <Button Classes="Secondary"
+                Command="{ Binding OnPrevMonth }"
+                Grid.Column="0"
+                Margin="15,0,0,0"
+                ToolTip.Tip="Go To Previous Month" 
+                Content="prev"/>
+      
+        <Button BorderThickness="0"
+                Background="Transparent"
+                FontWeight="Bold"
+                FontSize="16"
+                Content="{ Binding MonthName }"
+                Command="{ Binding OnSetCurrDate }"
+                ToolTip.Tip="Go To Today"
+                Grid.Column="1"
+                HorizontalAlignment="Center"/>
+      
+        <Button Classes="Secondary"
+                Command="{ Binding OnNextMonth }"
+                Grid.Column="2"
+                Margin="0,0,15,0"
+                ToolTip.Tip="Go To Next Month"
+                Content="next"/>
+      </Grid>
+    
+      <Grid Margin="3" ColumnDefinitions="*,*,*,*,*,*,*" Grid.Row="1" Grid.Column="0">
+        <TextBlock HorizontalAlignment="Center" FontWeight="DemiBold" FontSize="12" Grid.Row="0" Grid.Column="0">Sunday</TextBlock>
+        <TextBlock HorizontalAlignment="Center" FontWeight="DemiBold" FontSize="12" Grid.Row="0" Grid.Column="1">Monday</TextBlock>
+        <TextBlock HorizontalAlignment="Center" FontWeight="DemiBold" FontSize="12" Grid.Row="0" Grid.Column="2">Tuesday</TextBlock>
+        <TextBlock HorizontalAlignment="Center" FontWeight="DemiBold" FontSize="12" Grid.Row="0" Grid.Column="3">Wednesday</TextBlock>
+        <TextBlock HorizontalAlignment="Center" FontWeight="DemiBold" FontSize="12" Grid.Row="0" Grid.Column="4">Thursday</TextBlock>
+        <TextBlock HorizontalAlignment="Center" FontWeight="DemiBold" FontSize="12" Grid.Row="0" Grid.Column="5">Friday</TextBlock>
+        <TextBlock HorizontalAlignment="Center" FontWeight="DemiBold" FontSize="12" Grid.Row="0" Grid.Column="6">Saturday</TextBlock>
+      </Grid>
+    
+      <ItemsControl Grid.Row="2" Grid.Column="0" Items="{ Binding Days }" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">s  
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <Grid Name="CalanderGrid" RowDefinitions="*,*,*,*,*,*" ColumnDefinitions="*,*,*,*,*,*,*" VerticalAlignment="Stretch" Background="LightGray">
+            </Grid>
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+              <Button Name="ScheduleDayBtn"
+                      VerticalAlignment="Stretch"
+                      HorizontalAlignment="Stretch"
+                      Classes.CurrentMonth="{ Binding IsCurrentMonth }"
+                      Classes.NotCurrentMonth="{ Binding !IsCurrentMonth }">
+              
+                <StackPanel VerticalAlignment="Center">
+                  <TextBlock HorizontalAlignment="Center"
+                              Text="{ Binding }"
+                              Classes.CurrentMonth="{ Binding IsCurrentMonth }"
+                              Classes.NotCurrentMonth="{ Binding !IsCurrentMonth }"/>
+                  <TextBlock HorizontalAlignment="Center"
+                              Text="{ Binding Items }"
+                              ToolTip.Tip="{ Binding ToolTip }"
+                              FontWeight="Bold"
+                              Classes.CurrentMonth="{ Binding IsCurrentMonth }"
+                              Classes.NotCurrentMonth="{ Binding !IsCurrentMonth }"/>
+                </StackPanel>
+              
+              </Button>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      
+      </ItemsControl>
+    </Grid>
+  </Grid>
+  
+</UserControl>
