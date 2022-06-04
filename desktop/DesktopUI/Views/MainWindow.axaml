@@ -15,7 +15,7 @@
         WindowStartupLocation="CenterOwner">
 
   <Design.DataContext>
-      <vm:MainWindowViewModel/>
+    <vm:MainWindowViewModel/>
   </Design.DataContext>
   
   <Window.Styles>
@@ -91,6 +91,8 @@
           </Button>
         </Grid>
 
+        <!--
+        TODO: This should be moved into an 'OrdersView' that contains the order list and order details controls
         <Grid Grid.Row="1" Grid.ColumnSpan="2" x:Name="Content">
           <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -106,7 +108,22 @@
           <GridSplitter  Background="#ffffff" BorderThickness="0,0,1,0" BorderBrush="#d4d4d4" Width="5" Grid.Column="1" Grid.Row="1" />
           <controls:OrderDetails SelectedOrderId="{ Binding SelectedOrderId }" Grid.Column="2" Grid.Row="1" />
           
-        </Grid>
+        </Grid>-->
+        <controls:VerticalMenu Grid.Row="1"
+                               Grid.Column="0"
+                               OpenWidth="150"
+                               CollapsedWidth="45">
+          <controls:VerticalMenu.MenuItems>
+            <controls:VerticalMenuItem Text="Orders" />
+            <controls:VerticalMenuItem Text="Job List" />
+            <controls:VerticalMenuItem Text="Schedule" />
+          </controls:VerticalMenu.MenuItems>
+        </controls:VerticalMenu>
+        
+        <views:MonthlyPlannerView DataContext="{ Binding schedulerVM }"
+                                 Grid.Row="1"
+                                 Grid.Column="1" />
+
       </Grid>
     </Border>
     <Grid x:Name="ResizeGrid" ColumnDefinitions="8,*,8" RowDefinitions="8,*,8" >

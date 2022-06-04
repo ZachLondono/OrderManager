@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="DesktopUI.Controls.MonthlyPlanner">
+             x:Class="DesktopUI.Views.MonthlyPlannerView">
 
   <UserControl.Styles>
 
@@ -31,11 +31,15 @@
       <Setter Property="Foreground" Value="#A0A0A0" />
     </Style>
     
+    <Style Selector="ListBox /template/ VirtualizingStackPanel">
+      <Setter Property="Orientation" Value="Horizontal"/>
+    </Style>
+    
   </UserControl.Styles>
-
-  <Grid ColumnDefinitions="Auto, *">
-
-    <StackPanel Grid.Column="0">
+    
+  <Grid RowDefinitions="*, Auto">
+    
+    <StackPanel Grid.Row="1">
       <TextBlock Text="Back Log" FontWeight="Bold"/>
       <ListBox>
         <ListBoxItem>OT000 - 5</ListBoxItem>
@@ -47,7 +51,7 @@
       </ListBox>
     </StackPanel>
     
-    <Grid RowDefinitions="Auto,Auto,*" ColumnDefinitions="*" Grid.Column="1">
+    <Grid RowDefinitions="Auto,Auto,*" ColumnDefinitions="*" Grid.Row="0">
 
       <Grid Margin="3" Grid.Row="0" Grid.Column="0" ColumnDefinitions="Auto,*,Auto">
         <Button Classes="Secondary"
