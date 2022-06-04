@@ -4,7 +4,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace DesktopUI.Controls;
 
@@ -65,6 +64,7 @@ public class VerticalMenu : TemplatedControl {
 
     private Button? _openButton = null;
     private Button? _closeButton = null;
+    private ListBox? _listBox = null;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e) {
         base.OnApplyTemplate(e);
@@ -75,11 +75,20 @@ public class VerticalMenu : TemplatedControl {
         if (_openButton is not null) _openButton.Click += ToggleMenuMode;
         if (_closeButton is not null) _closeButton.Click += ToggleMenuMode;
 
+        _listBox = e.NameScope.Find<ListBox>("VerticalMenuListBox");
+        if (_listBox is not null)
+            _listBox.SelectionChanged += SelectionChanged;
+
     }
 
+    private void SelectionChanged(object? sender, SelectionChangedEventArgs e) {
+        var item = e.AddedItems[0] as VerticalMenuItem;
+        if (item is not null) item.Command.Execute(null);
+    }
 
     public void ToggleMenuMode(object? sender, RoutedEventArgs args) {
         IsOpen = !IsOpen;
         PseudoClasses.Set(pcCollapsed, !IsOpen);
     }
+
 }
