@@ -1,0 +1,16 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:DesktopUI.Controls">
+  <Design.PreviewWith>
+    <controls:VerticalMenuItem Text="Hello World" />
+  </Design.PreviewWith>
+
+  <Style Selector="controls|VerticalMenuItem">
+    <!-- Set Defaults -->
+    <Setter Property="Template">
+      <ControlTemplate>
+        <TextBlock Text="{ TemplateBinding Text }" />
+      </ControlTemplate>
+    </Setter>
+  </Style>
+</Styles>

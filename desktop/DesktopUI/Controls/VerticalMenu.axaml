@@ -1,0 +1,54 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:DesktopUI.Controls">
+  <Design.PreviewWith>
+    <controls:VerticalMenu OpenWidth="150" CollapsedWidth="45">
+      <controls:VerticalMenu.MenuItems>
+        <controls:VerticalMenuItem Text="Orders" />
+        <controls:VerticalMenuItem Text="Jobs" />
+        <controls:VerticalMenuItem Text="Schedule" />
+      </controls:VerticalMenu.MenuItems>
+    </controls:VerticalMenu>
+  </Design.PreviewWith>
+
+  <Style Selector="controls|VerticalMenu">
+    
+    <Setter Property="Template">
+      <ControlTemplate>
+
+        <StackPanel Name="VerticalMenuPanel" Width="{ TemplateBinding MenuWidth }">
+          <Panel Background="LightGray">
+            <Button Classes="Secondary"
+                    Name="OpenBtn"
+                    IsVisible="{ TemplateBinding IsOpen}"
+                    HorizontalAlignment="Right">&lt;</Button>
+            <Button Classes="Secondary"
+                    Name="CloseBtn"
+                    IsVisible="{ Binding RelativeSource={RelativeSource TemplatedParent}, Path=!IsOpen}"
+                    HorizontalAlignment="Left">&gt;</Button>
+          </Panel>
+          <ListBox Items="{TemplateBinding MenuItems}">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <Border Background="Red" CornerRadius="4" Padding="4">
+                  <TextBlock Text="ABC"/>
+                </Border>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </StackPanel>
+        
+      </ControlTemplate>
+    </Setter>
+    
+  </Style>
+
+  <Style Selector="controls|VerticalMenu:collapsed">
+    <Setter Property="MenuWidth" Value="45" />
+  </Style>
+  
+  <Style Selector="controls|VerticalMenu">
+    <Setter Property="MenuWidth" Value="150" />
+  </Style>
+  
+</Styles>
