@@ -24,18 +24,10 @@
                     HorizontalAlignment="Right">&lt;</Button>
             <Button Classes="Secondary"
                     Name="CloseBtn"
-                    IsVisible="{ Binding RelativeSource={RelativeSource TemplatedParent}, Path=!IsOpen}"
-                    HorizontalAlignment="Left">&gt;</Button>
+                    Width="{ TemplateBinding MenuWidth }"
+                    IsVisible="{ Binding RelativeSource={RelativeSource TemplatedParent}, Path=!IsOpen}">&gt;</Button>
           </Panel>
-          <ListBox Items="{TemplateBinding MenuItems}">
-            <ListBox.ItemTemplate>
-              <DataTemplate>
-                <Border Background="Red" CornerRadius="4" Padding="4">
-                  <TextBlock Text="ABC"/>
-                </Border>
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
+          <ListBox Items="{TemplateBinding MenuItems}" SelectionMode="Single" Name="VerticalMenuListBox"/>
         </StackPanel>
         
       </ControlTemplate>
