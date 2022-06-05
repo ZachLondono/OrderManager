@@ -41,6 +41,155 @@
     <ribbon:Ribbon>
       <ribbon:Ribbon.Tabs>
 
+        <ribbon:RibbonTab Header="Home" ribbon:KeyTip.KeyTipKeys="H">
+
+          <ribbon:RibbonTab.Groups>
+            
+            <ribbon:RibbonGroupBox Header="New">
+              <ribbon:RibbonButton Content="Allmoxy"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="A"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+              <ribbon:RibbonButton Content="Hafele"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="H"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+              <ribbon:RibbonButton Content="Richelieu"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="P"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+              <ribbon:RibbonButton Content="OT"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="P"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+              <ribbon:RibbonButton Content="Closets"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="P"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+            </ribbon:RibbonGroupBox>
+
+            <ribbon:RibbonGroupBox Header="Plug-Ins">
+              <ribbon:RibbonButton Content="Action 1"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="A"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+              <ribbon:RibbonButton Content="Action 2"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="H"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+              <ribbon:RibbonButton Content="Action 3"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="P"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+            </ribbon:RibbonGroupBox>
+            
+          </ribbon:RibbonTab.Groups>
+
+        </ribbon:RibbonTab>
+
+        <ribbon:RibbonTab Header="Orders" ribbon:KeyTip.KeyTipKeys="H">
+
+          <ribbon:RibbonTab.Groups>
+            <ribbon:RibbonGroupBox Header="Update">
+              <ribbon:RibbonButton Content="Confirm"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="A"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+              <ribbon:RibbonButton Content="Void"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="A"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+              <ribbon:RibbonButton Content="Archive"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="A"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+              <ribbon:RibbonButton Content="Add Item"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="A"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+              <!--Show a dialog where you can mark some or all jobs as complete -->
+              <ribbon:RibbonButton Content="Complete"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="A"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+              <!--Show a dialog where you can mark some or all jobs as shipped -->
+              <ribbon:RibbonButton Content="Ship"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="A"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+            </ribbon:RibbonGroupBox>
+          </ribbon:RibbonTab.Groups>
+
+          <ribbon:RibbonTab.Groups>
+            <ribbon:RibbonGroupBox Header="Actions">
+              <ribbon:RibbonButton Content="Release"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="A"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+              <ribbon:RibbonButton Content="Email"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="A"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+              <ribbon:RibbonButton Content="Print Label"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="A"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+            </ribbon:RibbonGroupBox>
+          </ribbon:RibbonTab.Groups>
+
+        </ribbon:RibbonTab>
+
+        <ribbon:RibbonTab Header="Jobs" ribbon:KeyTip.KeyTipKeys="H">
+          
+          <ribbon:RibbonTab.Groups>
+            <ribbon:RibbonGroupBox Header="Actions">
+              <ribbon:RibbonButton Content="Complete"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="A"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+              <ribbon:RibbonButton Content="Shipped"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="A"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+              <ribbon:RibbonButton Content="Reschedule"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="A"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+            </ribbon:RibbonGroupBox>
+          </ribbon:RibbonTab.Groups>
+          
+          <ribbon:RibbonTab.Groups>
+
+            <ribbon:RibbonGroupBox Header="Test" ribbon:KeyTip.KeyTipKeys="T">
+              <DatePicker Header="Start Date" MonthFormat="MMM" YearFormat="yy" FontSize="12" />
+              <DatePicker Header="End Date" MonthFormat="MMM" YearFormat="yy" FontSize="12" />
+            </ribbon:RibbonGroupBox>
+          
+            <ribbon:RibbonGroupBox Header="Vendors" ribbon:KeyTip.KeyTipKeys="V">
+              <ribbon:Gallery>
+                <ListBoxItem Content="OT"/>
+                <ListBoxItem Content="Richelieu"/>
+                <ListBoxItem Content="Hafele"/>
+                <ListBoxItem Content="Royal"/>
+                <ListBoxItem Content="Allmoxy"/>
+              </ribbon:Gallery>
+            </ribbon:RibbonGroupBox>
+
+            <ribbon:RibbonGroupBox Header="Arrange" ribbon:KeyTip.KeyTipKeys="S">
+              <ribbon:Gallery SelectedIndex="0">
+                <ListBoxItem Content="Schedule Date" />
+                <ListBoxItem Content="Number" />
+                <ListBoxItem Content="Date" />
+                <ListBoxItem Content="Vendor" />
+                <ListBoxItem Content="Customer" />
+                <ListBoxItem Content="Work Cell" />
+              </ribbon:Gallery>
+            </ribbon:RibbonGroupBox>
+            
+          </ribbon:RibbonTab.Groups>
+
+        </ribbon:RibbonTab>
+        
         <ribbon:RibbonTab Header="Configuration" ribbon:KeyTip.KeyTipKeys="H">
 
           <ribbon:RibbonTab.Groups>
@@ -78,7 +227,15 @@
                                     ribbon:KeyTip.KeyTipKeys="P"
                                     Command="{ Binding ListProductCommand }"
                                     LargeIcon="{ DynamicResource Icon2 }"/>
-            </ribbon:RibbonGroupBox>            
+            </ribbon:RibbonGroupBox>
+
+            <ribbon:RibbonGroupBox Header="Developer">
+              <ribbon:RibbonButton Content="Console"
+                                    MinSize="Large"
+                                    ribbon:KeyTip.KeyTipKeys="C"
+                                    LargeIcon="{ DynamicResource Icon2 }"/>
+            </ribbon:RibbonGroupBox>
+            
           </ribbon:RibbonTab.Groups>
 
         </ribbon:RibbonTab>
