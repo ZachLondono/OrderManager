@@ -17,6 +17,7 @@
       <ControlTemplate>
 
         <StackPanel Name="VerticalMenuPanel" Width="{ TemplateBinding MenuWidth }">
+          
           <Panel Background="LightGray">
             <Button Classes="Secondary"
                     Name="OpenBtn"
@@ -27,7 +28,11 @@
                     Width="{ TemplateBinding MenuWidth }"
                     IsVisible="{ Binding RelativeSource={RelativeSource TemplatedParent}, Path=!IsOpen}">&gt;</Button>
           </Panel>
-          <ListBox Items="{TemplateBinding MenuItems}" SelectionMode="Single" Name="VerticalMenuListBox"/>
+          
+          <ListBox Items="{TemplateBinding MenuItems}"
+                   SelectionMode="Single"
+                   Name="VerticalMenuListBox" />
+          
         </StackPanel>
         
       </ControlTemplate>

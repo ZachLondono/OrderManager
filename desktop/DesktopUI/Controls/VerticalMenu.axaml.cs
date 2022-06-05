@@ -82,8 +82,8 @@ public class VerticalMenu : TemplatedControl {
     }
 
     private void SelectionChanged(object? sender, SelectionChangedEventArgs e) {
-        var item = e.AddedItems[0] as VerticalMenuItem;
-        if (item is not null) item.Command.Execute(null);
+        if (e.AddedItems[0] is VerticalMenuItem item)
+            item.Command.Execute(null);
     }
 
     public void ToggleMenuMode(object? sender, RoutedEventArgs args) {
