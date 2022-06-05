@@ -90,5 +90,4 @@ public class VerticalMenu : TemplatedControl {
         IsOpen = !IsOpen;
         PseudoClasses.Set(pcCollapsed, !IsOpen);
     }
-
 }

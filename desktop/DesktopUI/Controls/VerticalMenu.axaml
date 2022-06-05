@@ -33,6 +33,14 @@
                    SelectionMode="Single"
                    Name="VerticalMenuListBox" />
           
+                </Border>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+                </Border>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
         </StackPanel>
         
       </ControlTemplate>
