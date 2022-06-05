@@ -91,9 +91,19 @@
           </Button>
         </Grid>
 
-        <!--
-        TODO: This should be moved into an 'OrdersView' that contains the order list and order details controls
-        <Grid Grid.Row="1" Grid.ColumnSpan="2" x:Name="Content">
+        <controls:VerticalMenu Grid.Row="1"
+                               Grid.Column="0"
+                               OpenWidth="150"
+                               CollapsedWidth="45">
+          <controls:VerticalMenu.MenuItems>
+            <controls:VerticalMenuItem Command="{ Binding SetOrderListView }" Text="Orders" />
+            <controls:VerticalMenuItem Command="{ Binding SetJobListView }" Text="Job List" />
+            <controls:VerticalMenuItem Command="{ Binding SetSchedulerView }" Text="Schedule" />
+          </controls:VerticalMenu.MenuItems>
+        </controls:VerticalMenu>
+
+        <!-- TODO: This should be moved into an 'OrdersView' that contains the order list and order details controls -->
+        <Grid Grid.Row="1" Grid.Column="1" x:Name="Content" IsVisible="{ Binding IsOrderListVisible }">
           <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -108,21 +118,15 @@
           <GridSplitter  Background="#ffffff" BorderThickness="0,0,1,0" BorderBrush="#d4d4d4" Width="5" Grid.Column="1" Grid.Row="1" />
           <controls:OrderDetails SelectedOrderId="{ Binding SelectedOrderId }" Grid.Column="2" Grid.Row="1" />
           
-        </Grid>-->
-        <controls:VerticalMenu Grid.Row="1"
-                               Grid.Column="0"
-                               OpenWidth="150"
-                               CollapsedWidth="45">
-          <controls:VerticalMenu.MenuItems>
-            <controls:VerticalMenuItem Text="Orders" />
-            <controls:VerticalMenuItem Text="Job List" />
-            <controls:VerticalMenuItem Text="Schedule" />
-          </controls:VerticalMenu.MenuItems>
-        </controls:VerticalMenu>
-        
-        <views:MonthlyPlannerView DataContext="{ Binding schedulerVM }"
-                                 Grid.Row="1"
-                                 Grid.Column="1" />
+        </Grid>
+
+        <Panel IsVisible="{ Binding IsScheduleVisible }" Grid.Row="1" Grid.Column="1">
+          <views:MonthlyPlannerView DataContext="{ Binding schedulerVM }"/>
+        </Panel>
+
+        <Panel IsVisible="{ Binding IsJobListVisible }" Grid.Row="1" Grid.Column="1">
+          <views:JobListView DataContext="{ Binding jobVM }"/>
+        </Panel>
 
       </Grid>
     </Border>
