@@ -1,0 +1,81 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="650"
+             x:Class="DesktopUI.Views.JobListView">
+  
+  <Grid RowDefinitions="Auto, *, Auto" ColumnDefinitions="*, Auto" Margin="10">
+
+    <StackPanel Orientation="Horizontal"
+                Grid.Row="0"
+                Grid.ColumnSpan="2"
+                HorizontalAlignment="Right"
+                Margin="0,5,0,5">
+      <TextBox Watermark="Sarch" Width="150" Height="35"/>
+      <Button Height="35">Search</Button>
+    </StackPanel>
+    
+    <DataGrid Items="{ Binding Jobs }" Grid.Row="1" Grid.Column="0">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="Num"  Binding="{Binding Number}"/>
+        <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+        <DataGridTextColumn Header="Vendor" Binding="{Binding Vendor}" />
+        <DataGridTextColumn Header="Customer" Binding="{Binding Customer}" />
+        <DataGridTextColumn Header="#" Binding="{Binding Qty}" />
+        <DataGridTextColumn Header="Class" Binding="{Binding ProductClass}" />
+        <DataGridTextColumn Header="Scheduled" Binding="{Binding ScheduledDate}" />
+        <DataGridTextColumn Header="Cell" Binding="{Binding WorkCell}" />
+      </DataGrid.Columns>
+    </DataGrid>
+
+    <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center">
+      <Button Height="30">&lt;</Button>
+      <TextBlock Height="30" Padding="5" FontSize="18" Foreground="LightBlue" TextDecorations="Underline">1</TextBlock>
+      <TextBlock Height="30" Padding="5" FontSize="18" Foreground="LightBlue" TextDecorations="Underline">2</TextBlock>
+      <TextBlock Height="30" Padding="5" FontSize="18" >...</TextBlock>
+      <TextBlock Height="30" Padding="5" FontSize="18" Foreground="LightBlue" TextDecorations="Underline">5</TextBlock>
+      <Button Height="30">&gt;</Button>
+    </StackPanel>
+
+    <StackPanel Grid.Row="1" Grid.Column="1" Margin="10">
+      
+      <TextBlock Text="Filters"
+                 FontWeight="Bold"
+                 HorizontalAlignment="Left"
+                 FontSize="20"
+                 TextDecorations="Underline"/>
+      
+      <TextBlock Text="Vendors"
+                 FontWeight="DemiBold"
+                 HorizontalAlignment="Left"
+                 FontSize="18"/>
+      <CheckBox IsChecked="True" Content="OT"/>
+      <CheckBox IsChecked="True" Content="Hafele"/>
+      <CheckBox IsChecked="True" Content="Richelieu"/>
+      <CheckBox IsChecked="True" Content="Royal"/>
+
+      <TextBlock Text="Scheduled Date"
+                 FontWeight="DemiBold"
+                 HorizontalAlignment="Left"
+                 FontSize="18"/>
+      <TextBlock Text="Start" />
+      <DatePicker />
+      <TextBlock Text="End" />
+      <DatePicker />
+
+      <TextBlock Text="Sort"
+                 FontWeight="Bold"
+                 HorizontalAlignment="Left"
+                 FontSize="20"
+                 TextDecorations="Underline"/>
+      
+      <RadioButton Content="Number" />
+      <RadioButton Content="Name" />
+      <RadioButton Content="Qty" />
+
+    </StackPanel>
+
+
+  </Grid>
+</UserControl>
