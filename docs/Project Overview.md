@@ -1,7 +1,9 @@
 ﻿# Project Overview
 
 ## Objectives
-The main objective of this project is to improve the process of managing orders from the point of receiving the order up until the order is manufactured. The project will provide increased insight into  the status of orders as well as what stage of production they are in. This consists of two main components a backend web api which reads and writes data to a database, and a desktop application used to view and edit data as well as other features listed bellow. Secondary applications include a barcode scanning desktop application used in the workshop to keep track of order statuses and an online vendor portal webpage used by vendors to see up to date information on their orders.
+In an effort to increase the volume and efficiency of our manufacturing processes this project will improve insight into the current status of orders as they move through out the ordering and manufacturing processes. By streamlining the procedure for receiving orders  and creating a unified pipeline for all different product offerings we can minimize complexity and increase the throughput on the front end. By providing the ability to view jobs both from a big-picture-view as well as more fine grained work-cell-view job scheduling can be done more efficiently and bottlenecks can found and eliminated more easily.
+
+ This consists of two main components a backend web api which reads and writes data to a database, and a desktop application used to view and edit data as well as other features listed bellow. Secondary applications include a barcode scanning desktop application used in the workshop to keep track of order statuses and an online vendor portal webpage used by vendors to see up to date information on their orders.
 
 ## Web API Features
 The web API consists of three 'contexts', Sales, Catalog and Manufacturing.

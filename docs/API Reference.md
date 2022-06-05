@@ -11,20 +11,23 @@ This objects represents a placed order. You can retrieve it to see information a
 	"number" : "OT000",
 	"customer" : {
 		"id" :  1,
-		"name" : "Joe's Cabinet Shop"
+		"name" : "Joe's Cabinet Shop",
+		"roles" : "customer"
 	},
 	"vendor" : {
 		"id" :  2,
-		"name" : "Metro Cabinet Parts"
+		"name" : "Metro Cabinet Parts",
+		"roles" : "vendor"
 	},
 	"supplier" : {
 		"id" :  3,
-		"name" : "Royal Cabinet Company"
+		"name" : "Royal Cabinet Company",
+		"roles" : "customer,vendor, supplier"
 	},
 	"status" : "confirmed",
 	"placed_date" : 5-18-22,
-	"completion_date" : null,
 	"confirmation_date" : null,
+	"completed_date" : null,
 	"last_modified_date" : null,
 	"info" : {
 		"comment" : "My first order"
@@ -78,12 +81,11 @@ List of ordered items (see ordered items section)
 
 | Method      | Endpoint                             | Action
 | ----------- | -----------                          | -------
-| GET         | /api/sales/orders                    | Retrieve a list of orders
-| GET         | /api/sales/orders/:id                | Retrieve a specific order
+| GET         |  /api/sales/orders                   | Retrieve a list of orders
+| GET         |  /api/sales/orders/:id               | Retrieve a specific order
 | POST        |  /api/sales/orders                   | Place an order
-| POST        |  /api/sales/orders/:id               | Update an order
+| PUT	      |  /api/sales/orders/                  | Update an order
 | POST        |  /api/sales/orders/:id/confirm       | Mark an order as confirmed
-| POST        |  /api/sales/orders/:id/complete      | Mark an order as completed
 | POST        |  /api/sales/orders/:id/void          | Mark an order as voided
 
 
@@ -169,19 +171,19 @@ Key value pairs which represent the options and their values for this item
 
 ### <u>Endpoints<u>
 
-| Method      | Endpoint                                  | Action
-| ----------- | -----------                               | -------
-| POST        | /api/sales/orders/:order_id/items         | Add an item to an order
-| POST        | /api/sales/orders/:order_id/items/:item_id| Update an ordered item
-| DELETE      | /api/sales/orders/:order_id/items/:item_id| Removes an item from an order
+| Method      | Endpoint                    | Action
+| ----------- | -----------                 | -------
+| POST        | /api/sales/orders/items     | Add an item to an order
+| PUT         | /api/sales/orders/items		| Update an ordered item
+| DELETE      | /api/sales/orders/items/:id	| Removes an item from an order
 
-- __Add an item to an order__  <small>post : /api/sales/orders/:order_id/items</small>
+- __Add an item to an order__  <small>post : /api/sales/orders/items</small>
 Adds a new item to an existing order
 
-- __Update an item in an order__  <small>post : /api/sales/orders/:order_id/items/:item_id</small>
+- __Update an item in an order__  <small>put: /api/sales/orders/items</small>
 Updates an existing item in an existing order
 
-- __Remove an item from an order__  <small>delete : /api/sales/orders/:order_id/items/:item_id</small>
+- __Remove an item from an order__  <small>delete : /api/sales/orders/items/:id</small>
 Removes an exiting ordered item from an existing order
 
 # Companies
@@ -193,7 +195,7 @@ A company has at least one of three roles; _customer, vendor, or supplier_.
 	"id" : 1,
 	"name" : "Royal Cabinet Company",
 	"email" : "zach@royalcabinet.com",
-	"roles" : ["customer","vendor","supplier"],
+	"roles" : "customer,vendor,supplier",
 	"address" : {
 		"line1" : "",
 		"line2" : "",
@@ -211,8 +213,8 @@ __id__ <small>positive integer</small>
  __name__ <small>string</small>
  The companies name
  
- __roles__ <small>array</small>
- A list of the companies roles
+ __roles__ <small>string</small>
+Comma separated list of roles
  
  __address__ <small>object</small>
 The companies address
@@ -226,6 +228,34 @@ The companies address
 | POST        | /api/sales/companies             | Create a new company
 | POST        | /api/sales/companies/:id         | Update an existing company
 | DELETE      | /api/sales/companies/:id         | Remove an existing company
+
+_todo describe endpoints_ 
+
+# Product Classes
+A product class is a subset of available products which can be manufactured together.
+
+### <u>The ProductClass Object</u>
+``` javascript
+{
+	"id" : 1,
+	"name" : "Drawer Boxes"
+}
+```
+
+### <u>Attributes</u>
+__id__ <small>positive integer</small>
+ Unique identifier for the product class
+ 
+ __name__ <small>string</small>
+ The name of the product class
+### <u>Endpoints<u>
+
+| Method      | Endpoint                  | Action
+| ----------- | -----------               | -------
+| GET         | /api/catalog/classes/     | Retrieve a list of product classes
+| POST        | /api/catalog/classes      | Create a new product class
+| POST		  | /api/catalog/classes/:id  | Update an existing product class
+| DELETE	  | /api/catalog/classes/:id  | Removes a product class
 
 _todo describe endpoints_ 
 
@@ -261,7 +291,8 @@ Key value pair dictionary of all the product's options mapped to their default v
 | GET         | /api/catalog/products/     | Retrieve a list of products
 | GET         | /api/catalog/products/:id  | Retrieve a specific product
 | POST        | /api/catalog/products      | Create a new product
-| PUT		  | /api/catalog/products/     | Update an existing product
+| POST		  | /api/catalog/products/:id
+  | Update an existing product
 | DELETE	  | /api/catalog/products/:id  | Removes a product
 
 - __Retrieve a list of products__  <small>get : /api/catalog/products/</small>
@@ -370,9 +401,10 @@ Dictionary mapping product IDs to the quantity of each product in the job
 | GET         | /api/manufacturing/jobs/                   | Retrieve a list of jobs
 | GET         | /api/manufacturing/jobs/:id                | Retrieve a specific job
 | POST      | /api/manufacturing/jobs/:id/complete       | Mark a job as complete
-| POST      | /api/manufacturing/jobs/:id/cancel         | Mark a job as canceled
+| POST      | /api/manufacturing/jobs/:id/ship       | Mark a job as shipped
 
 _todo describe endpoints_ 
+_todo add query param to the GET request to get all jobs that are part of an order_
 
 # Work Cell
 A work cell represents an arrangement of resources which is able to produce one or more products. Each work cell has an estimated maximum output. A __Job__ is assigned to a work cell and given a scheduled completion date.
@@ -405,8 +437,8 @@ A work cell represents an arrangement of resources which is able to produce one 
 | GET         | /api/manufacturing/cells/                   | Retrieve a list of work cells
 | GET         | /api/manufacturing/cells/:id                | Retrieve a specific work cell
 | POST        | /api/manufacturing/cells/			        | Create a work cell
-| POST        | /api/manufacturing/cells/:id				| Update a work cell
-| POST        | /api/manufacturing/cells/:id/schedule       | Schedule a job
+| PUT        | /api/manufacturing/cells/					| Update a work cell
+| POST        | /api/manufacturing/cells/schedule       	| Schedule a job
 | DELETE      | /api/manufacturing/cells/:id			    | Delete a work cell
 | DELETE      | /api/manufacturing/cells/:cell_id/:job_id   | Remove a job from a work cell
 
@@ -421,24 +453,22 @@ The date that the job is scheduled to be completed
 
 
 # Backlog
-A backlog is a list of orders which have not been assigned a __Work Cell__. Once an __Order__ is released, all of it's associated __Jobs__ will be added to a __Back Log__, making them available to be assigned to a __Work Cell__. There is 1 backlog for each __Product__ in the catalog, when a product is created a new __Back Log__ is created.
+A backlog is a list of orders which have not been assigned a __Work Cell__. 
 
 ### <u>The Backlog Object</u>
 ``` javascript
 {
-	"id" : 1,
-	"product_id" : 1,
+	"count" : 3,
 	"jobs" : [
 		{
 			"id" : 1,
-			"number" : "OT000",
-			"qty" : 5 
+			"product_class" : 1,
+			"qty" : 5
 		},
 		{ ... }
 	]
 }
 ```
-| Method      | Endpoint                                   | Action
-| ----------- | -----------                                | -------
-| GET         | /api/manufacturing/backlogs/                   | Retrieve a list of back logs
-| GET         | /api/manufacturing/backlogs/:id                | Retrieve a specific back log
+| Method      | Endpoint                    | Action
+| ----------- | -----------                 | -------
+| GET         | /api/manufacturing/backlog/ | Retrieve a list of jobs in the back lock
