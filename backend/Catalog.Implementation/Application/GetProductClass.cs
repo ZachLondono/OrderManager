@@ -1,7 +1,6 @@
 ﻿using Catalog.Contracts;
 using Dapper;
 using MediatR;
-using System.Data;
 
 namespace Catalog.Implementation.Application;
 
@@ -11,19 +10,29 @@ public class GetProductClass {
 
     public class Handler : IRequestHandler<Query, ProductClass> {
 
-        private readonly IDbConnection _connection;
+        private readonly CatalogSettings _settings;
 
-        public Handler(IDbConnection connection) {
-            _connection = connection;
+        public Handler(CatalogSettings settings) {
+            _settings = settings;
         }
 
         public async Task<ProductClass> Handle(Query request, CancellationToken cancellationToken) {
 
-            const string query = @"SELECT [Class]
-                                    FROM [Catalog].[Products]
-                                    WHERE [Id] = @ProductId;";
+            string query = _settings.PersistanceMode switch {
 
-            var prodClass = await _connection.QuerySingleAsync<ProductClass>(query, request);
+                PersistanceMode.SQLServer => @"SELECT [Class]
+                                                FROM [Catalog].[Products]
+                                                WHERE [Id] = @ProductId;",
+
+                PersistanceMode.SQLite => @"SELECT [Class]
+                                            FROM [Products]
+                                            WHERE [Id] = @ProductId;",
+
+                _ => throw new InvalidDataException("Invalid DataBase mode"),
+            };
+
+
+            var prodClass = await _settings.Connection.QuerySingleAsync<ProductClass>(query, request);
 
             return prodClass;
 

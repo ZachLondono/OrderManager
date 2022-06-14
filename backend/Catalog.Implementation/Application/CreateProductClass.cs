@@ -1,7 +1,6 @@
 ﻿using Catalog.Contracts;
 using Dapper;
 using MediatR;
-using System.Data;
 
 namespace Catalog.Implementation.Application;
 
@@ -11,20 +10,30 @@ public class CreateProductClass {
 
     public class Handler : IRequestHandler<Command, ProductClass> {
 
-        private readonly IDbConnection _connection;
+        private readonly CatalogSettings _settings;
 
-        public Handler(IDbConnection connection) {
-            _connection = connection;
+        public Handler(CatalogSettings settings) {
+            _settings = settings;
         }
 
         public async Task<ProductClass> Handle(Command request, CancellationToken cancellationToken) {
 
-            const string command = @"INSERT INTO [Catalog].[ProductClasses]
-                                    ([Name])
-                                    VALUES (@Name);
-                                    SELECT SCOPE_IDENTITY();";
+            string command = _settings.PersistanceMode switch {
+                
+                PersistanceMode.SQLServer => @"INSERT INTO [Catalog].[ProductClasses]
+                                            ([Name])
+                                            VALUES (@Name)
+                                            RETURNING [Id];",
+                
+                PersistanceMode.SQLite => @"INSERT INTO [ProductClasses]
+                                            ([Name])
+                                            VALUES (@Name)
+                                            RETURNING [Id];",
 
-            int newId = await _connection.QuerySingleAsync<int>(command, new { request.Name });
+                _ => throw new InvalidDataException("Invalid DataBase mode"),
+            };
+
+            int newId = await _settings.Connection.QuerySingleAsync<int>(command, new { request.Name });
 
             return new() {
                 Id = newId,

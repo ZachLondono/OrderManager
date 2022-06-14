@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Dapper;
-using System.Data;
+using Catalog.Contracts;
 
 namespace Catalog.Implementation.Application;
 
@@ -10,17 +10,24 @@ public class RemoveFromCatalog {
 
     public class Handler : AsyncRequestHandler<Command> {
 
-        private readonly IDbConnection _connection;
+        private readonly CatalogSettings _settings;
 
-        public Handler(IDbConnection connection) {
-            _connection = connection;
+        public Handler(CatalogSettings settings) {
+            _settings = settings;
         }
 
         protected override async Task Handle(Command request, CancellationToken cancellationToken) {
+
+            string command = _settings.PersistanceMode switch {
+                
+                PersistanceMode.SQLServer => "DELETE FROM [Catalog].[Products] WHERE [Id] = @ProductId",
+                
+                PersistanceMode.SQLite => "DELETE FROM [Products] WHERE [Id] = @ProductId",
+
+                _ => throw new InvalidDataException("Invalid DataBase mode"),
+            };
             
-            const string command = "DELETE FROM [Catalog].[Products] WHERE [Id] = @ProductId";
-            
-            await _connection.ExecuteAsync(command, new { request.ProductId });
+            await _settings.Connection.ExecuteAsync(command, new { request.ProductId });
 
         }
     }

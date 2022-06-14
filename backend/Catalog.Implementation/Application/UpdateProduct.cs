@@ -1,6 +1,6 @@
-﻿using Dapper;
+﻿using Catalog.Contracts;
+using Dapper;
 using MediatR;
-using System.Data;
 using System.Text.Json;
 
 namespace Catalog.Implementation.Application;
@@ -11,25 +11,19 @@ public class UpdateProduct {
 
     public class Handler : AsyncRequestHandler<Command> {
 
-        private readonly IDbConnection _connection;
+        private readonly CatalogSettings _settings;
 
-        public Handler(IDbConnection connection) {
-            _connection = connection;
+        public Handler(CatalogSettings settings) {
+            _settings = settings;
         }
 
         protected override async Task Handle(Command request, CancellationToken cancellationToken) {
 
-            const string nameCommand = @"UPDATE [Catalog].[Products]
-                                        SET [Name] = @Name
-                                        WHERE [Id] = @Id;";
+            string nameCommand = NameCommand();
 
-            const string classCommand = @"UPDATE [Catalog].[Products]
-                                        SET [Class] = @Class
-                                        WHERE [Id] = @Id;";
+            string classCommand = ClassCommand();
 
-            const string attriubteCommand = @"UPDATE [Catalog].[Products]
-                                            SET [Attributes] = @Attributes
-                                            WHERE [Id] = @Id;";
+            string attriubteCommand = AttributeCommand();
 
             string command = string.Empty;
 
@@ -49,12 +43,52 @@ public class UpdateProduct {
 
             if (string.IsNullOrEmpty(command)) return;
 
-            await _connection.ExecuteAsync(command, new {
+            await _settings.Connection.ExecuteAsync(command, new {
                 request.Name,
                 Attributes = attributesJson
             });
 
         }
+
+        public string NameCommand() => _settings.PersistanceMode switch {
+            
+            PersistanceMode.SQLServer => @"UPDATE [Catalog].[Products]
+                                            SET [Name] = @Name
+                                            WHERE [Id] = @Id;",
+
+            PersistanceMode.SQLite => @"UPDATE [Products]
+                                        SET [Name] = @Name
+                                        WHERE [Id] = @Id;",
+
+            _ => throw new InvalidDataException("Invalid DataBase mode"),
+        };
+
+        public string ClassCommand() => _settings.PersistanceMode switch {
+
+            PersistanceMode.SQLServer => @"UPDATE [Catalog].[Products]
+                                            SET [Class] = @Class
+                                            WHERE [Id] = @Id;",
+
+            PersistanceMode.SQLite => @"UPDATE [Products]
+                                        SET [Class] = @Class
+                                        WHERE [Id] = @Id;",
+
+            _ => throw new InvalidDataException("Invalid DataBase mode"),
+        };
+
+        public string AttributeCommand() => _settings.PersistanceMode switch {
+            
+            PersistanceMode.SQLServer => @"UPDATE [Catalog].[Products]
+                                            SET [Attributes] = @Attributes
+                                            WHERE [Id] = @Id;",
+            
+            PersistanceMode.SQLite => @"UPDATE [Products]
+                                        SET [Attributes] = @Attributes
+                                        WHERE [Id] = @Id;",
+
+            _ => throw new InvalidDataException("Invalid DataBase mode"),
+        };
+
     }
 
 }
