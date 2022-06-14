@@ -5,7 +5,6 @@ using Manufacturing.Implementation.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using MediatR;
 using System;
-using System.Data;
 using System.Data.SqlClient;
 using Microsoft.Azure.WebJobs.Host;
 using Functions.Endpoints;
@@ -21,10 +20,18 @@ public class Startup : FunctionsStartup {
 
         builder.Services
                 .AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>))
-                .AddCatalog()
-                .AddSales()
-                .AddManufacturing()
-                .AddTransient<IDbConnection>(s => new SqlConnection(connString))
+                .AddCatalog(() => new() {
+                    PersistanceMode = Catalog.Contracts.PersistanceMode.SQLServer,
+                    Connection = new SqlConnection(connString)
+                })
+                .AddSales(() => new() {
+                    PersistanceMode = Sales.Contracts.PersistanceMode.SQLServer,
+                    Connection = new SqlConnection(connString)
+                })
+                .AddManufacturing(() => new() {
+                    PersistanceMode = Manufacturing.Contracts.PersistanceMode.SQLServer,
+                    Connection = new SqlConnection(connString)
+                })
                 .AddSingleton<IFunctionFilter, ValidationFilter>();
     }
 

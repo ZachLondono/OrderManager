@@ -1,18 +1,20 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Catalog.Contracts;
 
 namespace Catalog.Implementation.Infrastructure;
 
 public static class ConfigureService {
-    public static IServiceCollection AddCatalog(this IServiceCollection services) =>
+    public static IServiceCollection AddCatalog(this IServiceCollection services, Func<CatalogSettings> configureSettings) =>
         services.AddMediatR(typeof(ConfigureService).Assembly)
                 .AddValidatorsFromAssembly(typeof(ConfigureService).Assembly)
+                .AddTransient(s => configureSettings())
                 .AddTransient<Application.Catalog>()
-                .AddTransient<Contracts.CatalogProducts.GetProducts>((s) =>
+                .AddTransient<CatalogProducts.GetProducts>((s) =>
                     s.GetRequiredService<Application.Catalog>().GetProducts)
-                .AddTransient<Contracts.CatalogProducts.GetProductDetails>((s) =>
+                .AddTransient<CatalogProducts.GetProductDetails>((s) =>
                     s.GetRequiredService<Application.Catalog>().GetProductDetails)
-                .AddTransient<Contracts.CatalogProducts.GetProductClass>((s) =>
+                .AddTransient<CatalogProducts.GetProductClass>((s) =>
                     s.GetRequiredService<Application.Catalog>().GetProductClass);
 }
