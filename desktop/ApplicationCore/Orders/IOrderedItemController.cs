@@ -2,7 +2,7 @@
 
 namespace OrderManager.ApplicationCore.Orders;
 
-public interface IOrderedItemAPI {
+public interface IOrderedItemController {
 
     [Post("/Orders/Items")]
     public Task AddItemToOrder([Body(buffered:true)]AddItemToOrderCommand command);

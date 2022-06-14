@@ -5,6 +5,7 @@ using Avalonia.Markup.Xaml;
 using DesktopUI.ViewModels;
 using DesktopUI.Views;
 using Infrastructure;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -44,12 +45,17 @@ public partial class App : Application {
     public static T GetRequiredService<T>() where T : notnull => (T) GetRequiredService(typeof(T));
 
     private static void ConfigureServiceProvider() {
-        var services = ConfigureServices();
+
+        IConfiguration config = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        var services = ConfigureServices(config);
         _services = services.BuildServiceProvider();
         if (_services is null) throw new InvalidOperationException("Service provider could not be built");
     }
 
-    private static IServiceCollection ConfigureServices() {
+    private static IServiceCollection ConfigureServices(IConfiguration config) {
         var services = new ServiceCollection();
 
         services.AddTransient<MainWindowViewModel>();
@@ -66,7 +72,7 @@ public partial class App : Application {
         services.AddTransient<ProductListViewModel>();
         services.AddTransient<RibbonViewModel>();
 
-        services.AddInfrastructure();
+        services.AddInfrastructure(config);
 
         return services;
     }

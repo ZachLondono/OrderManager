@@ -3,7 +3,7 @@ using Refit;
 
 namespace OrderManager.ApplicationCore.Catalog;
 
-public interface ICatalogAPI {
+public interface ICatalogController {
 
     public record CreatedResult(string Location, object Value);
 

@@ -3,7 +3,7 @@ using Refit;
 
 namespace OrderManager.ApplicationCore.Companies;
 
-public interface ICompanyAPI {
+public interface ICompanyController {
 
     [Post("/Companies")]
     public Task<int> CreateCompany([Body(buffered: true)] CreateCompanyCommand command);

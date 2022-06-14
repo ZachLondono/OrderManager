@@ -3,13 +3,13 @@ using Refit;
 
 namespace OrderManager.ApplicationCore.Orders;
 
-public interface IOrderAPI {
+public interface IOrderController {
 
     [Get($"/Orders")]
-    Task<IEnumerable<OrderSummary>> GetOrders();
+    Task<IEnumerable<OrderSummaryResponse>> GetOrders();
 
     [Get("/Orders/{OrderId}")]
-    Task<OrderDetails> GetOrderDetails([AliasAs("OrderId")] int orderId);
+    Task<OrderDetailsResponse> GetOrderDetails([AliasAs("OrderId")] int orderId);
 
     [Get("/Orders/{OrderId}/Items")]
     Task GetOrderedItemsDetails([AliasAs("OrderId")] int orderId);

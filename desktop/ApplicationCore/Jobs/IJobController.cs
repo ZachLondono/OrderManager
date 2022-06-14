@@ -3,7 +3,7 @@ using Refit;
 
 namespace OrderManager.ApplicationCore.Jobs;
 
-public interface IJobAPI {
+public interface IJobController {
 
     [Post("/CompleteJob/{id}")]
     public Task CompleteJob(int id);

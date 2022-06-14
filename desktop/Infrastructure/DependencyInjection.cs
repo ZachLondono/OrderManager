@@ -20,21 +20,38 @@ using OrderManager.ApplicationCore.Plugins;
 using OrderManager.ApplicationCore.Profiles;
 using Refit;
 using System.Data;
+using LocalPersistanceAdapter;
 
 namespace Infrastructure;
 
 public static class DependencyInjection {
 
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services/*, IConfiguration config */) {
-        //TODO: get connection string from Configuration
-        string connString = @"Data Source=C:\Users\Zachary Londono\Desktop\Order Manager\settings.db;";//config.GetConnectionString("SettingsFile");
-        return services.AddTransient<IDbConnection>(s => new SqliteConnection(connString))
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config) {
+
+        string path = config["LocalSettings:Path"];
+
+        string connString = $@"Data Source={path};";
+        services = services.AddTransient<IDbConnection>(s => new SqliteConnection(connString))
                     .AddTransient<IFileIO, FileIO>()
-                    .AddApis()
                     .AddProfiles()
                     .AddEmail()
                     .AddLabels()
                     .AddPlugins();
+
+        var mode = config["DataBase:mode"];
+        switch (mode) {
+            case "Remote":
+                services = services.AddApis(config);
+                break;
+            case "Local":
+                services = services.AddLocalPersistance(config);
+                break;
+            default:
+                throw new InvalidDataException("Invalid DataBase mode");
+        }
+
+        return services;
+
     }
 
     private static IServiceCollection AddProfiles(this IServiceCollection services)
@@ -67,21 +84,23 @@ public static class DependencyInjection {
     private static IServiceCollection AddPlugins(this IServiceCollection services)
         => services.AddTransient<IPluginManager, PluginManager>();
 
-    private static IServiceCollection AddApis(this IServiceCollection services) {
+    private static IServiceCollection AddApis(this IServiceCollection services, IConfiguration config) {
+        
         var refitOptions = new RefitSettings {
             ContentSerializer = new SystemTextJsonContentSerializer(new() {
                 PropertyNameCaseInsensitive = true
             })
         };
 
-        string baseUrl = "https://royalordermanager.azurewebsites.net/api";
-        //string baseUrl = "http://localhost:7071/api";
+        var salesUrl = config["DataBase:RemoteConfig:Sales"];
+        var manufacturingUrl = config["DataBase:RemoteConfig:Manufacturing"];
+        var catalogUrl = config["DataBase:RemoteConfig:Catalog"];
 
-        return services.AddTransient(s => RestService.For<IOrderAPI>(baseUrl + "/Sales", refitOptions))
-                .AddTransient(s => RestService.For<IOrderedItemAPI>(baseUrl + "/Sales", refitOptions))
-                .AddTransient(s => RestService.For<ICompanyAPI>(baseUrl + "/Sales", refitOptions))
-                .AddTransient(s => RestService.For<ICatalogAPI>(baseUrl + "/Catalog", refitOptions))
-                .AddTransient(s => RestService.For<IJobAPI>(baseUrl + "/Manufacturing", refitOptions));
+        return services.AddTransient(s => RestService.For<IOrderController>(salesUrl, refitOptions))
+                .AddTransient(s => RestService.For<IOrderedItemController>(salesUrl, refitOptions))
+                .AddTransient(s => RestService.For<ICompanyController>(salesUrl, refitOptions))
+                .AddTransient(s => RestService.For<ICatalogController>(catalogUrl, refitOptions))
+                .AddTransient(s => RestService.For<IJobController>(manufacturingUrl, refitOptions));
     }
 
 }
