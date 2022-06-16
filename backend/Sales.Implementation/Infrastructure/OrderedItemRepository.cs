@@ -23,11 +23,11 @@ public class OrderedItemRepository {
 
         string query = _settings.PersistanceMode switch {
 
-            PersistanceMode.SQLServer => @"SELECT [Id], [OrderId], [ProductId], [ProductName], [Qty], [Options]
+            PersistanceMode.SQLServer => @"SELECT [Id], [OrderId], [ProductClass], [ProductId], [ProductName], [Qty], [Options]
                                             FROM [Sales].[OrderedItems]
                                             WHERE [Id] = @Id;",
 
-            PersistanceMode.SQLite => @"SELECT [Id], [OrderId], [ProductId], [ProductName], [Qty], [Options]
+            PersistanceMode.SQLite => @"SELECT [Id], [OrderId], [ProductClass], [ProductId], [ProductName], [Qty], [Options]
                                         FROM [OrderedItems]
                                         WHERE [Id] = @Id;",
 
@@ -37,7 +37,7 @@ public class OrderedItemRepository {
 
         var itemDto = await _settings.Connection.QuerySingleAsync<Persistance.OrderedItem>(query, new { Id = id });
 
-        var item = new OrderedItem(id, itemDto.ProductId, itemDto.OrderId);
+        var item = new OrderedItem(id, itemDto.ProductId, itemDto.ProductClass, itemDto.OrderId);
         item.SetQuantity(itemDto.Qty);
 
         var options = JsonSerializer.Deserialize<Dictionary<string, string>>(itemDto.Options);
