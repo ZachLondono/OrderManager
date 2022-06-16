@@ -1,5 +1,4 @@
-﻿using System.Data;
-using Dapper;
+﻿using Dapper;
 using MediatR;
 using Sales.Contracts;
 
@@ -11,18 +10,30 @@ public class GetOrderedItemsDetails {
 
     public class Handler : IRequestHandler<Query, IEnumerable<OrderedItemDetails>> {
 
-        private readonly IDbConnection _connection;
 
-        public Handler(IDbConnection connection) {
-            _connection = connection;
+        private readonly SalesSettings _settings;
+
+        public Handler(SalesSettings settings) {
+            _settings = settings;
         }
 
         public async Task<IEnumerable<OrderedItemDetails>> Handle(Query request, CancellationToken cancellationToken) {
 
-            const string query = @"SELECT [Id], [ProductName], [ProductId], [ProductClass], [Quantity], [Options]
-                                    FROM [Sales].[OrderedItems] WHERE [OrderId] = @OrderId;";
+            string query = _settings.PersistanceMode switch {
 
-            var items = await _connection.QueryAsync<OrderedItemDetails>(query, request);
+                PersistanceMode.SQLServer => @"SELECT [Id], [ProductName], [ProductId], [ProductClass], [Quantity], [Options]
+                                                FROM [Sales].[OrderedItems]
+                                                WHERE [OrderId] = @OrderId;",
+
+                PersistanceMode.SQLite => @"SELECT [Id], [ProductName], [ProductId], [ProductClass], [Quantity], [Options]
+                                            FROM [OrderedItems]
+                                            WHERE [OrderId] = @OrderId;",
+
+                _ => throw new InvalidDataException("Invalid persistance mode")
+
+            };
+
+            var items = await _settings.Connection.QueryAsync<OrderedItemDetails>(query, request);
 
             return items;
 

@@ -1,5 +1,4 @@
-﻿using System.Data;
-using Dapper;
+﻿using Dapper;
 using MediatR;
 using Sales.Contracts;
 
@@ -11,17 +10,25 @@ public class GetCompanies {
 
     public class Handler : IRequestHandler<Query, IEnumerable<CompanySummary>> {
 
-        private readonly IDbConnection _connection;
+        private readonly SalesSettings _settings;
 
-        public Handler(IDbConnection connection) {
-            _connection = connection;
+        public Handler(SalesSettings settings) {
+            _settings = settings;
         }
 
         public async Task<IEnumerable<CompanySummary>> Handle(Query request, CancellationToken cancellationToken) {
 
-            const string query = "SELECT [Id], [Name], [Roles] FROM [Sales].[Companies];";
+            string query = _settings.PersistanceMode switch {
 
-            var companies = await _connection.QueryAsync<CompanySummary>(query);
+                PersistanceMode.SQLServer => "SELECT [Id], [Name], [Roles] FROM [Sales].[Companies];",
+
+                PersistanceMode.SQLite => "SELECT [Id], [Name], [Roles] FROM [Companies];",
+
+                _ => throw new InvalidDataException("Invalid persistance mode")
+
+            };
+
+            var companies = await _settings.Connection.QueryAsync<CompanySummary>(query);
 
             return companies;
 

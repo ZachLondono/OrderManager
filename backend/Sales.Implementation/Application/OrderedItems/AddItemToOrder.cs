@@ -1,8 +1,9 @@
-﻿using System.Data;
-using MediatR;
+﻿using MediatR;
 using Dapper;
 using FluentValidation;
 using Catalog.Contracts;
+using Sales.Contracts;
+using PersistanceMode = Sales.Contracts.PersistanceMode;
 
 namespace Sales.Implementation.Application.OrderedItems;
 
@@ -38,24 +39,35 @@ public class AddItemToOrder {
 
     public class Handler : IRequestHandler<Command, int> {
 
-        private readonly IDbConnection _connection;
+        private readonly SalesSettings _settings;
         private readonly CatalogProducts.GetProductClass _getProductClass;
 
-        public Handler(IDbConnection connection, CatalogProducts.GetProductClass getProductClass) {
-            _connection = connection;
+        public Handler(SalesSettings settings, CatalogProducts.GetProductClass getProductClass) {
+            _settings = settings;
             _getProductClass = getProductClass;
         }
 
         public async Task<int> Handle(Command request, CancellationToken cancellationToken) {
 
-            const string command = @"INSERT INTO [Sales].[OrderedItems]
-                                ([OrderId], [ProductId], [ProductClass], [ProductName], [Qty], [Options])
-                                VALUES (@OrderId, @ProductId, @ProductName, @Qty, @Options);
-                                SELECT SCOPE_IDENTITY();";
+            string command = _settings.PersistanceMode switch {
+
+                PersistanceMode.SQLServer => @"INSERT INTO [Sales].[OrderedItems]
+                                            ([OrderId], [ProductId], [ProductClass], [ProductName], [Qty], [Options])
+                                            VALUES (@OrderId, @ProductId, @ProductName, @Qty, @Options);
+                                            SELECT SCOPE_IDENTITY();",
+
+                PersistanceMode.SQLite => @"INSERT INTO [Sales].[OrderedItems]
+                                            ([OrderId], [ProductId], [ProductClass], [ProductName], [Qty], [Options])
+                                            VALUES (@OrderId, @ProductId, @ProductName, @Qty, @Options)
+                                            RETURNING [Id];",
+
+                _ => throw new InvalidDataException("Invalid persistance mode")
+
+            };
 
             var prodClass = await _getProductClass(request.ProductId);
 
-            int newId = await _connection.QuerySingleAsync<int>(command, new {
+            int newId = await _settings.Connection.QuerySingleAsync<int>(command, new {
                 request.OrderId,
                 request.ProductId,
                 ProductClass = prodClass.Id,

@@ -11,18 +11,25 @@ public class GetJobs {
 
     public class Handler : IRequestHandler<Query, IEnumerable<JobSummary>> {
 
-        private readonly IDbConnection _connection;
+        private readonly ManufacturingSettings _settings;
 
-        public Handler(IDbConnection connection) {
-            _connection = connection;
+        public Handler(ManufacturingSettings settings) {
+            _settings = settings;
         }
 
         public async Task<IEnumerable<JobSummary>> Handle(Query request, CancellationToken cancellationToken) {
             
-            const string query = @"SELECT [Id], [Name], [Number], [CustomerId], [VendorId], [ItemCount]
-                                    FROM [Manufacturing].[Jobs];";
+            string query = _settings.PersistanceMode switch {
 
-            var jobs = await _connection.QueryAsync<JobSummary>(query);
+                PersistanceMode.SQLServer => "SELECT [Id], [Name], [Number], [CustomerId], [VendorId], [ItemCount] FROM [Manufacturing].[Jobs];",
+
+                PersistanceMode.SQLite => "SELECT [Id], [Name], [Number], [CustomerId], [VendorId], [ItemCount] FROM [Jobs];",
+
+                _ => throw new InvalidDataException("Invalid DataBase mode")
+
+            };
+
+            var jobs = await _settings.Connection.QueryAsync<JobSummary>(query);
 
             return jobs;
 

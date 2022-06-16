@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using System.Data;
 using Dapper;
 using FluentValidation;
+using Sales.Contracts;
 
 namespace Sales.Implementation.Application.Companies;
 
@@ -24,18 +24,25 @@ public class CreateCompany {
 
     public class Handler : IRequestHandler<Command, int> {
 
-        private readonly IDbConnection _connection;
+        private readonly SalesSettings _settings;
 
-        public Handler(IDbConnection connection) {
-            _connection = connection;
+        public Handler(SalesSettings settings) {
+            _settings = settings;
         }
 
         public async Task<int> Handle(Command request, CancellationToken cancellationToken) {
 
-            const string command = @"INSERT INTO [Sales].[Companies] ([Name]) VALUES (@Name);
-                                    SELECT SCOPE_IDENTITY();";
+            string command = _settings.PersistanceMode switch {
 
-            int newId = await _connection.QuerySingleAsync<int>(command, new {
+                PersistanceMode.SQLServer => @"INSERT INTO [Sales].[Companies] ([Name]) VALUES (@Name); SELECT SCOPE_IDENTITY();",
+                
+                PersistanceMode.SQLite => @"INSERT INTO [Companies] ([Name]) VALUES (@Name) RETURNING [Id];",
+
+                _ => throw new InvalidDataException("Invalid persistance mode")
+
+            };
+
+            int newId = await _settings.Connection.QuerySingleAsync<int>(command, new {
                 request.Name
             });
 

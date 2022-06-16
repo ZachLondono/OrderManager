@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Logging;
+using Sales.Contracts;
 using Sales.Implementation.Domain;
 using System.Data;
 
@@ -7,20 +8,31 @@ namespace Sales.Implementation.Infrastructure;
 
 public class CompanyRepository {
 
-    private readonly IDbConnection _connection;
+    private readonly SalesSettings _settings;
     private readonly ILogger<CompanyRepository> _logger;
 
-    public CompanyRepository(IDbConnection connection, ILogger<CompanyRepository> logger) {
-        _connection = connection;
+    public CompanyRepository(SalesSettings settings, ILogger<CompanyRepository> logger) {
+        _settings = settings;
         _logger = logger;
     }
 
     public async Task<CompanyContext> GetCompanyById(int id) {
 
-        const string query = @"SELECT [Id], [Name], [Email], [Line1], [Line2], [Line3], [City], [State], [Zip]
-                                FROM [Sales].[Companies]
-                                WHERE [Id] = @Id;";
-        var companyDto = await _connection.QuerySingleAsync<Persistance.Company>(query, new {
+        string query = _settings.PersistanceMode switch {
+
+            PersistanceMode.SQLServer => @"SELECT [Id], [Name], [Email], [Line1], [Line2], [Line3], [City], [State], [Zip]
+                                            FROM [Sales].[Companies]
+                                            WHERE [Id] = @Id;",
+
+            PersistanceMode.SQLite => @"SELECT [Id], [Name], [Email], [Line1], [Line2], [Line3], [City], [State], [Zip]
+                                        FROM [Companies]
+                                        WHERE [Id] = @Id;",
+
+            _ => throw new InvalidDataException("Invalid persistance mode")
+
+        };
+
+        var companyDto = await _settings.Connection.QuerySingleAsync<Persistance.Company>(query, new {
             Id = id
         });
 
@@ -40,10 +52,21 @@ public class CompanyRepository {
                 roles.Add(role);
         }
 
-        const string contactQuery = @"SELECT [Id], [Name], [Email], [Phone]
-                                    FROM [Sales].[Contacts]
-                                    WHERE [CompanyId] = @Id;";
-        var contactDtos = await _connection.QueryAsync<Persistance.Contact>(contactQuery, new {
+        string contactQuery = _settings.PersistanceMode switch {
+
+            PersistanceMode.SQLServer => @"SELECT [Id], [Name], [Email], [Phone]
+                                        FROM [Sales].[Contacts]
+                                        WHERE [CompanyId] = @Id;",
+
+            PersistanceMode.SQLite => @"SELECT [Id], [Name], [Email], [Phone]
+                                        FROM [Contacts]
+                                        WHERE [CompanyId] = @Id;",
+
+            _ => throw new InvalidDataException("Invalid persistance mode")
+
+        };
+
+        var contactDtos = await _settings.Connection.QueryAsync<Persistance.Contact>(contactQuery, new {
             Id = id
         });
 
@@ -66,8 +89,10 @@ public class CompanyRepository {
 
     public async Task Save(CompanyContext company) {
 
-        _connection.Open();
-        var trx = _connection.BeginTransaction();
+        if (_settings.Connection is null) return;
+
+        _settings.Connection.Open();
+        var trx = _settings.Connection.BeginTransaction();
         var events = company.Events;
 
         foreach (var e in events) {
@@ -91,16 +116,27 @@ public class CompanyRepository {
         }
 
         trx.Commit();
-        _connection.Close();
+        _settings.Connection.Close();
 
         _logger.LogInformation("Applied {EventCount} events to company with ID {ID}", events.Count, company.Id);
 
     }
 
     private async Task ApplyContactAdd(CompanyContext company, ContactAddedEvent e, IDbTransaction trx) {
-        const string command = @"INSERT INTO [Sales].[Contacts] ([Name], [CompanyId], [Email], [Phone])
-                                VALUES (@Name, @CompanyId, @Email, @Phone);";
-        await _connection.ExecuteAsync(command, new {
+        
+        string command = _settings.PersistanceMode switch {
+
+            PersistanceMode.SQLServer => @"INSERT INTO [Sales].[Contacts] ([Name], [CompanyId], [Email], [Phone])
+                                        VALUES (@Name, @CompanyId, @Email, @Phone);",
+
+            PersistanceMode.SQLite => @"INSERT INTO [Contacts] ([Name], [CompanyId], [Email], [Phone])
+                                        VALUES (@Name, @CompanyId, @Email, @Phone);",
+
+            _ => throw new InvalidDataException("Invalid persistance mode")
+
+        };
+
+        await _settings.Connection.ExecuteAsync(command, new {
             e.Contact.Name,
             CompanyId = company.Id,
             e.Contact.Email,
@@ -109,18 +145,41 @@ public class CompanyRepository {
     }
 
     private async Task ApplyContactRemove(ContactRemovedEvent e, IDbTransaction trx) {
-        const string command = @"DELETE FROM [Sales].[Contacts]
-                                WHERE [Id] = @ContactId;";
-        await _connection.ExecuteAsync(command, new {
+        
+        string command = _settings.PersistanceMode switch {
+
+            PersistanceMode.SQLServer => @"DELETE FROM [Sales].[Contacts]
+                                            WHERE [Id] = @ContactId;",
+
+            PersistanceMode.SQLite => @"DELETE FROM [Contacts]
+                                        WHERE [Id] = @ContactId;",
+
+            _ => throw new InvalidDataException("Invalid persistance mode")
+
+        };
+
+        await _settings.Connection.ExecuteAsync(command, new {
             e.ContactId
         }, trx);
     }
 
     private async Task ApplyContactUpdated(ContactUpdatedEvent e, IDbTransaction trx) {
-        const string command = @"UPDATE [Sales].[Contacts]
-                                SET [Name] = @Name, [Email] = @Email, [Phone] = @Phone
-                                WHERE [Id] = @ContactId;";
-        await _connection.ExecuteAsync(command, new {
+        
+        string command = _settings.PersistanceMode switch {
+
+            PersistanceMode.SQLServer => @"UPDATE [Sales].[Contacts]
+                                            SET [Name] = @Name, [Email] = @Email, [Phone] = @Phone
+                                            WHERE [Id] = @ContactId;",
+
+            PersistanceMode.SQLite => @"UPDATE [Contacts]
+                                        SET [Name] = @Name, [Email] = @Email, [Phone] = @Phone
+                                        WHERE [Id] = @ContactId;",
+
+            _ => throw new InvalidDataException("Invalid persistance mode")
+
+        };
+
+        await _settings.Connection.ExecuteAsync(command, new {
             ContactId = e.Contact.Id,
             e.Contact.Name,
             e.Contact.Email,
@@ -129,10 +188,22 @@ public class CompanyRepository {
     }
 
     private async Task ApplyAddressSet(CompanyContext company, AddressSetEvent e, IDbTransaction trx) {
-        const string command = @"UPDATE [Sales].[Companies]
-                                SET [Line1] = @Line1, [Line2] = @Line2, [Line3] = @Line3, [City] = @City, [State] = @State, [Zip] = @Zip
-                                WHERE [Id] = @Id;";
-        await _connection.ExecuteAsync(command, new {
+        
+        string command = _settings.PersistanceMode switch {
+
+            PersistanceMode.SQLServer => @"UPDATE [Sales].[Companies]
+                                            SET [Line1] = @Line1, [Line2] = @Line2, [Line3] = @Line3, [City] = @City, [State] = @State, [Zip] = @Zip
+                                            WHERE [Id] = @Id;",
+
+            PersistanceMode.SQLite => @"UPDATE [Companies]
+                                        SET [Line1] = @Line1, [Line2] = @Line2, [Line3] = @Line3, [City] = @City, [State] = @State, [Zip] = @Zip
+                                        WHERE [Id] = @Id;",
+
+            _ => throw new InvalidDataException("Invalid persistance mode")
+
+        };
+
+        await _settings.Connection.ExecuteAsync(command, new {
             e.Address.Line1,
             e.Address.Line2,
             e.Address.Line3,
@@ -144,20 +215,44 @@ public class CompanyRepository {
     }
 
     private async Task ApplyNameSet(CompanyContext company, NameSetEvent e, IDbTransaction trx) {
-        const string command = @"UPDATE [Sales].[Companies]
-                                SET [Name] = @Name
-                                WHERE [Id] = @Id;";
-        await _connection.ExecuteAsync(command, new {
+        
+        string command = _settings.PersistanceMode switch {
+
+            PersistanceMode.SQLServer => @"UPDATE [Sales].[Companies]
+                                            SET [Name] = @Name
+                                            WHERE [Id] = @Id;",
+
+            PersistanceMode.SQLite => @"UPDATE [Companies]
+                                        SET [Name] = @Name
+                                        WHERE [Id] = @Id;",
+
+            _ => throw new InvalidDataException("Invalid persistance mode")
+
+        };
+
+        await _settings.Connection.ExecuteAsync(command, new {
             company.Id,
             e.Name
         }, trx);
     }
 
     private async Task ApplyEmailSet(CompanyContext company, EmailSetEvent e, IDbTransaction trx) {
-        const string command = @"UPDATE [Sales].[Companies]
-                                SET [Email] = @Email
-                                WHERE [Id] = @Id;";
-        await _connection.ExecuteAsync(command, new {
+        
+        string command = _settings.PersistanceMode switch {
+
+            PersistanceMode.SQLServer => @"UPDATE [Sales].[Companies]
+                                            SET [Email] = @Email
+                                            WHERE [Id] = @Id;",
+
+            PersistanceMode.SQLite => @"UPDATE [Companies]
+                                        SET [Email] = @Email
+                                        WHERE [Id] = @Id;",
+
+            _ => throw new InvalidDataException("Invalid persistance mode")
+
+        };
+
+        await _settings.Connection.ExecuteAsync(command, new {
             company.Id,
             e.Email
         }, trx);
@@ -165,16 +260,24 @@ public class CompanyRepository {
 
     private async Task ApplyRoleAdd(CompanyContext company, RoleAddedEvent e, IDbTransaction trx) {
 
-        const string query = @"SELECT [Roles] FROM [Sales].[Companies] WHERE [Id] = @Id;";
+        string query = _settings.PersistanceMode switch {
 
-        string roles = await _connection.QuerySingleAsync<string>(query, new {
+            PersistanceMode.SQLServer => @"SELECT [Roles] FROM [Sales].[Companies] WHERE [Id] = @Id;",
+
+            PersistanceMode.SQLite => @"SELECT [Roles] FROM [Companies] WHERE [Id] = @Id;",
+
+            _ => throw new InvalidDataException("Invalid persistance mode")
+
+        };
+
+        string roles = await _settings.Connection.QuerySingleAsync<string>(query, new {
             company.Id
         }, trx);
 
         roles += $",{e.Role}";
 
         const string command = @"UPDATE [Sales].[Companies] SET [Roles] = @Roles WHERE [Id] = @Id;";
-        await _connection.ExecuteAsync(command, new {
+        await _settings.Connection.ExecuteAsync(command, new {
             Roles = roles,
             company.Id
         }, trx);
@@ -183,9 +286,17 @@ public class CompanyRepository {
 
     private async Task ApplyRoleRemove(CompanyContext company, RoleRemovedEvent e, IDbTransaction trx) {
 
-        const string query = @"SELECT [Roles] FROM [Sales].[Companies] WHERE [Id] = @Id;";
+        string query = _settings.PersistanceMode switch {
 
-        string roles = await _connection.QuerySingleAsync<string>(query, new {
+            PersistanceMode.SQLServer => @"SELECT [Roles] FROM [Sales].[Companies] WHERE [Id] = @Id;",
+
+            PersistanceMode.SQLite => @"SELECT [Roles] FROM [Companies] WHERE [Id] = @Id;",
+
+            _ => throw new InvalidDataException("Invalid persistance mode")
+
+        };
+
+        string roles = await _settings.Connection.QuerySingleAsync<string>(query, new {
             company.Id
         }, trx);
 
@@ -196,7 +307,7 @@ public class CompanyRepository {
         roles = string.Join(',', rolesArr);
 
         const string command = @"UPDATE [Sales].[Companies] SET [Roles] = @Roles WHERE [Id] = @Id;";
-        await _connection.ExecuteAsync(command, new {
+        await _settings.Connection.ExecuteAsync(command, new {
             Roles = roles,
             company.Id
         }, trx);

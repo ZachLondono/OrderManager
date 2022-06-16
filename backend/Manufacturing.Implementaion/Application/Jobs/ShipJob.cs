@@ -27,12 +27,12 @@ public class ShipJob {
         
         private readonly JobRepository _repo;
         private readonly IPublisher _publisher;
-        private readonly IDbConnection _connection;
+        private readonly ManufacturingSettings _settings;
 
-        public Handler(JobRepository repo, IPublisher publisher, IDbConnection connection) {
+        public Handler(JobRepository repo, IPublisher publisher, ManufacturingSettings settings) {
             _repo = repo;
             _publisher = publisher;
-            _connection = connection;
+            _settings = settings;
         }
 
         protected override async Task Handle(Command request, CancellationToken cancellationToken) {
@@ -47,11 +47,21 @@ public class ShipJob {
 
         private async Task PublishJobShippedNotification(Command request) {
 
-            const string query = @"SELECT [Id] AS JobId, [OrderId], [Name], [Number], [Customer], [ShippedDate]
-                                    FROM [Manufacturing].[Jobs]
-                                    WHERE [Id] = @Id;";
+            string query = _settings.PersistanceMode switch {
 
-            var job = await _connection.QuerySingleAsync<ShippedJob>(query, new {
+                PersistanceMode.SQLServer => @"SELECT [Id] AS JobId, [OrderId], [Name], [Number], [Customer], [ShippedDate]
+                                            FROM [Manufacturing].[Jobs]
+                                            WHERE [Id] = @Id;",
+
+                PersistanceMode.SQLite => @"SELECT [Id] AS JobId, [OrderId], [Name], [Number], [Customer], [ShippedDate]
+                                            FROM [Jobs]
+                                            WHERE [Id] = @Id;",
+
+                _ => throw new InvalidDataException("Invalid DataBase mode")
+
+            };
+
+            var job = await _settings.Connection.QuerySingleAsync<ShippedJob>(query, new {
                 request.Id
             });
 

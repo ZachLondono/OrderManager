@@ -1,5 +1,4 @@
-﻿using System.Data;
-using Dapper;
+﻿using Dapper;
 using MediatR;
 using Sales.Contracts;
 
@@ -11,35 +10,64 @@ public class GetOrderDetails {
 
     public class Handler : IRequestHandler<Query, OrderDetails> {
 
-        private readonly IDbConnection _connection;
+        private readonly SalesSettings _settings;
 
-        public Handler(IDbConnection connection) {
-            _connection = connection;
+        public Handler(SalesSettings settings) {
+            _settings = settings;
         }
 
         public async Task<OrderDetails> Handle(Query request, CancellationToken cancellationToken) {
 
-            const string query = @"SELECT [Id], [Name], [Number], [Status], [PlacedDate], [ConfirmedDate], [ReleasedDate], [CompletedDate], [LastModifiedDate], [Info],
-	                                    [CustomerId] As [Id],
-	                                    [Name] = ( SELECT [Name] FROM [Sales].[Companies] WHERE [Id] = [CustomerId] ),
-	                                    [Roles] = ( SELECT [Roles] FROM [Sales].[Companies] WHERE [Id] = [CustomerId] ),
-	                                    [VendorId] As [Id],
-	                                    [Name] = ( SELECT [Name] FROM [Sales].[Companies] WHERE [Id] = [VendorId] ),
-	                                    [Roles] = ( SELECT [Roles] FROM [Sales].[Companies] WHERE [Id] = [VendorId] ),
-	                                    [SupplierId] As [Id],
-	                                    [Name] = ( SELECT [Name] FROM [Sales].[Companies] WHERE [Id] = [SupplierId] ),
-	                                    [Roles] = ( SELECT [Roles] FROM [Sales].[Companies] WHERE [Id] = [SupplierId] )
-                                    FROM [Sales].[Orders]
-                                    WHERE [Sales].[Orders].Id = @OrderId;";
+            string query = _settings.PersistanceMode switch {
 
-            var data = await _connection.QueryAsync<OrderDetails, CompanySummary, CompanySummary, CompanySummary, OrderDetails>(sql:query, param:request, map:MapOrderCompanies, splitOn:"Id");
+                PersistanceMode.SQLServer => @"SELECT [Id], [Name], [Number], [Status], [PlacedDate], [ConfirmedDate], [ReleasedDate], [CompletedDate], [LastModifiedDate], [Info],
+	                                            [CustomerId] As [Id],
+	                                            [Name] = ( SELECT [Name] FROM [Sales].[Companies] WHERE [Id] = [CustomerId] ),
+	                                            [Roles] = ( SELECT [Roles] FROM [Sales].[Companies] WHERE [Id] = [CustomerId] ),
+	                                            [VendorId] As [Id],
+	                                            [Name] = ( SELECT [Name] FROM [Sales].[Companies] WHERE [Id] = [VendorId] ),
+	                                            [Roles] = ( SELECT [Roles] FROM [Sales].[Companies] WHERE [Id] = [VendorId] ),
+	                                            [SupplierId] As [Id],
+	                                            [Name] = ( SELECT [Name] FROM [Sales].[Companies] WHERE [Id] = [SupplierId] ),
+	                                            [Roles] = ( SELECT [Roles] FROM [Sales].[Companies] WHERE [Id] = [SupplierId] )
+                                            FROM [Sales].[Orders]
+                                            WHERE [Sales].[Orders].Id = @OrderId;",
+
+                PersistanceMode.SQLite => @"SELECT [Id], [Name], [Number], [Status], [PlacedDate], [ConfirmedDate], [ReleasedDate], [CompletedDate], [LastModifiedDate], [Info],
+	                                            [CustomerId] As [Id],
+	                                            [Name] = ( SELECT [Name] FROM [Companies] WHERE [Id] = [CustomerId] ),
+	                                            [Roles] = ( SELECT [Roles] FROM [Companies] WHERE [Id] = [CustomerId] ),
+	                                            [VendorId] As [Id],
+	                                            [Name] = ( SELECT [Name] FROM [Companies] WHERE [Id] = [VendorId] ),
+	                                            [Roles] = ( SELECT [Roles] FROM [Companies] WHERE [Id] = [VendorId] ),
+	                                            [SupplierId] As [Id],
+	                                            [Name] = ( SELECT [Name] FROM [Companies] WHERE [Id] = [SupplierId] ),
+	                                            [Roles] = ( SELECT [Roles] FROM [Companies] WHERE [Id] = [SupplierId] )
+                                            FROM [Orders]
+                                            WHERE [Orders].Id = @OrderId;",
+
+                _ => throw new InvalidDataException("Invalid persistance mode")
+
+            };
+
+            var data = await _settings.Connection.QueryAsync<OrderDetails, CompanySummary, CompanySummary, CompanySummary, OrderDetails>(sql:query, param:request, map:MapOrderCompanies, splitOn:"Id");
             var order = data.First();
 
-            const string itemQuery = @"SELECT [Id], [ProductId], [ProductClass], [ProductName], [Qty], [Options]
-                                        FROM [Sales].[OrderedItems]
-                                        WHERE [OrderId] = @OrderId";
+            string itemQuery = _settings.PersistanceMode switch {
 
-            var items = await _connection.QueryAsync<OrderedItemDetails>(itemQuery, request);
+                PersistanceMode.SQLServer => @"SELECT [Id], [ProductId], [ProductClass], [ProductName], [Qty], [Options]
+                                                FROM [Sales].[OrderedItems]
+                                                WHERE [OrderId] = @OrderId",
+
+                PersistanceMode.SQLite => @"SELECT [Id], [ProductId], [ProductClass], [ProductName], [Qty], [Options]
+                                            FROM [OrderedItems]
+                                            WHERE [OrderId] = @OrderId",
+
+                _ => throw new InvalidDataException("Invalid persistance mode")
+
+            };
+
+            var items = await _settings.Connection.QueryAsync<OrderedItemDetails>(itemQuery, request);
             order.OrderedItems = items;
 
             return order;

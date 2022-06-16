@@ -1,8 +1,8 @@
 ﻿using MediatR;
-using System.Data;
 using Dapper;
 using Sales.Implementation.Domain;
 using FluentValidation;
+using Sales.Contracts;
 
 namespace Sales.Implementation.Application.Orders;
 
@@ -44,18 +44,27 @@ public class PlaceOrder {
 
     public class Handler : IRequestHandler<Command, int> {
 
-        private readonly IDbConnection _connection;
+        private readonly SalesSettings _settings;
 
-        public Handler(IDbConnection connection) {
-            _connection = connection;
+        public Handler(SalesSettings settings) {
+            _settings = settings;
         }
 
         public async Task<int> Handle(Command request, CancellationToken cancellationToken) {
 
-            const string command = @"INSERT INTO [Sales].[Orders] ([Name], [Number], [CustomerId], [VendorId], [SupplierId], [Info], [Status], [PlacedDate])
-                                    VALUES (@Name, @Number, @CustomerId, @VendorId, @SupplierId, @Fields, @Status, @PlacedDate);";
+            string command = _settings.PersistanceMode switch {
 
-            int newId = await _connection.QuerySingleAsync<int>(command, new {
+                PersistanceMode.SQLServer => @"INSERT INTO [Sales].[Orders] ([Name], [Number], [CustomerId], [VendorId], [SupplierId], [Info], [Status], [PlacedDate])
+                                            VALUES (@Name, @Number, @CustomerId, @VendorId, @SupplierId, @Fields, @Status, @PlacedDate);",
+
+                PersistanceMode.SQLite => @"INSERT INTO [Orders] ([Name], [Number], [CustomerId], [VendorId], [SupplierId], [Info], [Status], [PlacedDate])
+                                            VALUES (@Name, @Number, @CustomerId, @VendorId, @SupplierId, @Fields, @Status, @PlacedDate);",
+
+                _ => throw new InvalidDataException("Invalid persistance mode")
+
+            };
+
+            int newId = await _settings.Connection.QuerySingleAsync<int>(command, new {
                 request.Name,
                 request.Number,
                 request.CustomerId,

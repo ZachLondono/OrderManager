@@ -1,5 +1,4 @@
-﻿using System.Data;
-using Dapper;
+﻿using Dapper;
 using MediatR;
 using Sales.Contracts;
 
@@ -11,23 +10,41 @@ public class GetCompanyDetails {
 
     public class Handler : IRequestHandler<Query, CompanyDetails> {
 
-        private readonly IDbConnection _connection;
+        private readonly SalesSettings _settings;
 
-        public Handler(IDbConnection connection) {
-            _connection = connection;
+        public Handler(SalesSettings settings) {
+            _settings = settings;
         }
 
         public async Task<CompanyDetails> Handle(Query request, CancellationToken cancellationToken) {
 
-            const string query = @"SELECT [Id], [Name], [Line1], [Line2], [Line3], [City], [State], [Zip], [Roles]
-                                    FROM [Sales].[Companies] WHERE [Id] = @Id;";
+            string query = _settings.PersistanceMode switch {
 
-            var company = await _connection.QuerySingleAsync<CompanyDetails>(query, request);
+                PersistanceMode.SQLServer => @"SELECT [Id], [Name], [Line1], [Line2], [Line3], [City], [State], [Zip], [Roles]
+                                                FROM [Sales].[Companies] WHERE [Id] = @Id;",
 
-            const string contactQuery = @"SELECT [Id], [Name], [Email], [Phone]
-                                            FROM [Sales].[Contacts] WHERE [CompanyId] = @CompanyId;";
+                PersistanceMode.SQLite => @"SELECT [Id], [Name], [Line1], [Line2], [Line3], [City], [State], [Zip], [Roles]
+                                            FROM [Companies] WHERE [Id] = @Id;",
 
-            var contacts = await _connection.QueryAsync<ContactDetails>(contactQuery, new { CompanyId = request.Id });
+                _ => throw new InvalidDataException("Invalid persistance mode")
+
+            };
+
+            var company = await _settings.Connection.QuerySingleAsync<CompanyDetails>(query, request);
+
+            string contactQuery = _settings.PersistanceMode switch {
+
+                PersistanceMode.SQLServer => @"SELECT [Id], [Name], [Email], [Phone]
+                                            FROM [Sales].[Contacts] WHERE [CompanyId] = @CompanyId;",
+
+                PersistanceMode.SQLite => @"SELECT [Id], [Name], [Email], [Phone]
+                                            FROM [Contacts] WHERE [CompanyId] = @CompanyId;",
+
+                _ => throw new InvalidDataException("Invalid persistance mode")
+
+            };
+
+            var contacts = await _settings.Connection.QueryAsync<ContactDetails>(contactQuery, new { CompanyId = request.Id });
             company.Contacts = contacts;
 
             return company;

@@ -2,17 +2,18 @@
 using System.Text.Json;
 using Dapper;
 using Microsoft.Extensions.Logging;
+using Sales.Contracts;
 using Sales.Implementation.Domain;
 
 namespace Sales.Implementation.Infrastructure;
 
 public class OrderedItemRepository {
 
-    private readonly IDbConnection _connection;
+    private readonly SalesSettings _settings;
     private readonly ILogger<OrderedItemRepository> _logger;
 
-    public OrderedItemRepository(IDbConnection connection, ILogger<OrderedItemRepository> logger) {
-        _connection = connection;
+    public OrderedItemRepository(SalesSettings settings, ILogger<OrderedItemRepository> logger) {
+        _settings = settings;
         _logger = logger;
     }
 
@@ -20,11 +21,21 @@ public class OrderedItemRepository {
 
         _logger.LogInformation("Getting ordered item with ID: {ID}", id);
 
-        const string query = @"SELECT [Id], [OrderId], [ProductId], [ProductName], [Qty], [Options]
-                                FROM [Sales].[OrderedItems]
-                                WHERE [Id] = @Id;";
+        string query = _settings.PersistanceMode switch {
 
-        var itemDto = await _connection.QuerySingleAsync<Persistance.OrderedItem>(query, new { Id = id });
+            PersistanceMode.SQLServer => @"SELECT [Id], [OrderId], [ProductId], [ProductName], [Qty], [Options]
+                                            FROM [Sales].[OrderedItems]
+                                            WHERE [Id] = @Id;",
+
+            PersistanceMode.SQLite => @"SELECT [Id], [OrderId], [ProductId], [ProductName], [Qty], [Options]
+                                        FROM [OrderedItems]
+                                        WHERE [Id] = @Id;",
+
+            _ => throw new InvalidDataException("Invalid persistance mode")
+
+        };
+
+        var itemDto = await _settings.Connection.QuerySingleAsync<Persistance.OrderedItem>(query, new { Id = id });
 
         var item = new OrderedItem(id, itemDto.ProductId, itemDto.OrderId);
         item.SetQuantity(itemDto.Qty);
@@ -43,14 +54,26 @@ public class OrderedItemRepository {
     }
 
     public async Task Remove(int itemId) {
-        const string command = @"DELETE FROM [Sales].[OrderedItems] WHERE [Id] = @Id;";
-        await _connection.ExecuteAsync(command, new { Id = itemId });
+        
+        string command = _settings.PersistanceMode switch {
+
+            PersistanceMode.SQLServer => @"DELETE FROM [Sales].[OrderedItems] WHERE [Id] = @Id;",
+
+            PersistanceMode.SQLite => @"DELETE FROM [OrderedItems] WHERE [Id] = @Id;",
+
+            _ => throw new InvalidDataException("Invalid persistance mode")
+
+        };
+
+        await _settings.Connection.ExecuteAsync(command, new { Id = itemId });
     }
 
     public async Task Save(OrderedItemContext item) {
 
-        _connection.Open();
-        var trx = _connection.BeginTransaction();
+        if (_settings.Connection is null) return;
+
+        _settings.Connection.Open();
+        var trx = _settings.Connection.BeginTransaction();
 
         var events = item.Events;
         foreach (var e in events) {
@@ -64,31 +87,65 @@ public class OrderedItemRepository {
         }
 
         trx.Commit();
-        _connection.Close();
+        _settings.Connection.Close();
 
         _logger.LogInformation("Applied {EventCount} events to ordered item {Item}", events.Count, item);
 
     }
 
     private async Task ApplyItemQtySet(IDbTransaction trx, OrderedItemContext item, ItemQtySet itemQtySet) {
-        const string query = @"UPDATE [Sales].[OrderedItems]
-                                SET [Qty] = @Qty
-                                WHERE [Id] = @Id;";
-        await _connection.ExecuteAsync(query, new {
+
+        string query = _settings.PersistanceMode switch {
+
+            PersistanceMode.SQLServer => @"UPDATE [Sales].[OrderedItems]
+                                            SET [Qty] = @Qty
+                                            WHERE [Id] = @Id;",
+
+            PersistanceMode.SQLite => @"UPDATE [OrderedItems]
+                                        SET [Qty] = @Qty
+                                        WHERE [Id] = @Id;",
+
+            _ => throw new InvalidDataException("Invalid persistance mode")
+
+        };
+
+        await _settings.Connection.ExecuteAsync(query, new {
             item.Id,
             itemQtySet.Qty,
         }, trx);
     }
 
     private async Task ApplyItemOptionSet(IDbTransaction trx, OrderedItemContext item, ItemOptionSet itemOptionSet) {
-        const string query = @"SELECT [Options]
-                                FROM [Sales].[OrderedItems]
-                                WHERE [Id] = @Id;";
+        
+        string command = _settings.PersistanceMode switch {
 
-        const string command = @"UPDATE [Sales].[OrderedItems]
-                                SET [Options] = @Options 
-                                WHERE [Id] = @Id;";
-        string json = await _connection.QuerySingleAsync<string>(query, new {
+            PersistanceMode.SQLServer => @"UPDATE [Sales].[OrderedItems]
+                                        SET [Options] = @Options 
+                                        WHERE [Id] = @Id;",
+
+            PersistanceMode.SQLite => @"UPDATE [OrderedItems]
+                                        SET [Options] = @Options 
+                                        WHERE [Id] = @Id;",
+
+            _ => throw new InvalidDataException("Invalid persistance mode")
+
+        };
+
+        string query = _settings.PersistanceMode switch {
+
+            PersistanceMode.SQLServer => @"SELECT [Options]
+                                        FROM [Sales].[OrderedItems]
+                                        WHERE [Id] = @Id;",
+
+            PersistanceMode.SQLite => @"SELECT [Options]
+                                        FROM [OrderedItems]
+                                        WHERE [Id] = @Id;",
+
+            _ => throw new InvalidDataException("Invalid persistance mode")
+
+        };
+
+        string json = await _settings.Connection.QuerySingleAsync<string>(query, new {
             item.Id
         }, trx);
 
@@ -96,7 +153,7 @@ public class OrderedItemRepository {
         if (options is not null) {
             options[itemOptionSet.Option] = itemOptionSet.Value;
             json = JsonSerializer.Serialize(options);
-            await _connection.ExecuteAsync(command, new { Options = json }, trx);
+            await _settings.Connection.ExecuteAsync(command, new { Options = json }, trx);
         }
     }
 }

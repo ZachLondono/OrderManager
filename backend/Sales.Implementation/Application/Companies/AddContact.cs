@@ -1,9 +1,9 @@
 ﻿using Dapper;
 using FluentValidation;
 using MediatR;
+using Sales.Contracts;
 using Sales.Implementation.Infrastructure;
 using System.Data;
-using System.Linq;
 
 namespace Sales.Implementation.Application.Companies;
 
@@ -31,11 +31,11 @@ public class AddContact {
     public class Handler : IRequestHandler<Command,int> {
 
         private readonly CompanyRepository _repo;
-        private readonly IDbConnection _connection;
+        private readonly SalesSettings _settings;
 
-        public Handler(CompanyRepository repo, IDbConnection connection) {
+        public Handler(CompanyRepository repo, SalesSettings settings) {
             _repo = repo;
-            _connection = connection;
+            _settings = settings;
         }
 
         public async Task<int> Handle(Command request, CancellationToken cancellationToken) {
@@ -47,11 +47,21 @@ public class AddContact {
             });
             await _repo.Save(company);
 
-            const string query = @"SELECT [Id]
-                                    FROM [Sales].[Contacts]
-                                    WHERE [CompanyId] = @CompanyId And [Name] = @Name;";
+            string query = _settings.PersistanceMode switch {
 
-            IEnumerable<int> newId = await _connection.QueryAsync<int>(query, new {
+                PersistanceMode.SQLServer => @"SELECT [Id]
+                                            FROM [Sales].[Contacts]
+                                            WHERE [CompanyId] = @CompanyId And [Name] = @Name;",
+
+                PersistanceMode.SQLite => @"SELECT [Id]
+                                            FROM [Sales].[Contacts]
+                                            WHERE [CompanyId] = @CompanyId And [Name] = @Name;",
+
+                _ => throw new InvalidDataException("Invalid persistance mode")
+
+            };
+
+            IEnumerable<int> newId = await _settings.Connection.QueryAsync<int>(query, new {
                 CompanyId = company.Id,
                 request.Name
             });

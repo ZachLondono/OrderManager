@@ -6,19 +6,29 @@ namespace Manufacturing.Implementation.Infrastructure;
 
 internal class WorkShopRepository {
 
-    private readonly IDbConnection _connection;
+    private readonly ManufacturingSettings _settings;
 
-    internal WorkShopRepository(IDbConnection connection) {
-        _connection = connection;
+    internal WorkShopRepository(ManufacturingSettings settings) {
+        _settings = settings;
     }
 
     internal async Task<BackLog> GetBackLog() {
 
-        const string query = @"SELECT Id, ProductClass, ProductQty
-                                FROM Manufacturing.Jobs
-                                WHERE WorkCell = NULL";
+        string query = _settings.PersistanceMode switch {
 
-        var jobs =  await _connection.QueryAsync<BackLogItem>(query);
+            PersistanceMode.SQLServer => @"SELECT Id, ProductClass, ProductQty
+                                        FROM Manufacturing.Jobs
+                                        WHERE WorkCell = NULL",
+
+            PersistanceMode.SQLite => @"SELECT Id, ProductClass, ProductQty
+                                        FROM Jobs
+                                        WHERE WorkCell = NULL",
+
+            _ => throw new InvalidDataException("Invalid DataBase mode")
+
+        };
+
+        var jobs =  await _settings.Connection.QueryAsync<BackLogItem>(query);
 
         return new() {
             Count = jobs.Count(),
@@ -29,11 +39,21 @@ internal class WorkShopRepository {
 
     internal async Task<int?> GetJobWorkCellById(int jobId) {
 
-        const string query = @"SELECT WorkCell
-                                FROM Manufacturing.Jobs
-                                WHERE Id = @JobId";
+        string query = _settings.PersistanceMode switch {
 
-        return await _connection.QuerySingleOrDefaultAsync<int?>(query, new { JobId = jobId });
+            PersistanceMode.SQLServer => @"SELECT WorkCell
+                                            FROM Manufacturing.Jobs
+                                            WHERE Id = @JobId",
+
+            PersistanceMode.SQLite => @"SELECT WorkCell
+                                        FROM Jobs
+                                        WHERE Id = @JobId",
+
+            _ => throw new InvalidDataException("Invalid DataBase mode")
+
+        };
+
+        return await _settings.Connection.QuerySingleOrDefaultAsync<int?>(query, new { JobId = jobId });
 
     }
 

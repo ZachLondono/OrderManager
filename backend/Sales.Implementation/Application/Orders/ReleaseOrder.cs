@@ -3,7 +3,6 @@ using FluentValidation;
 using MediatR;
 using Sales.Contracts;
 using Sales.Implementation.Infrastructure;
-using System.Data;
 
 namespace Sales.Implementation.Application.Orders;
 
@@ -26,12 +25,12 @@ public class ReleaseOrder {
     public class Handler : AsyncRequestHandler<Command> {
 
         private readonly OrderRepository _orderRepo;
-        private readonly IDbConnection _connection;
+        private readonly SalesSettings _settings;
         private readonly IPublisher _publisher;
 
-        public Handler(OrderRepository orderRepo, IDbConnection connection, IPublisher publisher) {
+        public Handler(OrderRepository orderRepo, SalesSettings settings, IPublisher publisher) {
             _orderRepo = orderRepo;
-            _connection = connection;
+            _settings = settings;
             _publisher = publisher;
         }
 
@@ -53,17 +52,38 @@ public class ReleaseOrder {
         /// </summary>
         private async Task PublishOrderReleasedNotification(int orderId) {
             
-            const string orderQuery = @"SELECT [Sales].[Orders].[Id], [Sales].[Orders].[Name], [Sales].[Orders].[Number], [Sales].[Companies].[Name] As Customer
-                                        FROM [Sales].[Orders]
-                                        INNER JOIN [Sales].[Companies] ON [Sales].[Orders].[CustomerId]=[Sales].[Companies].[Id]
-                                        WHERE [Sales].[Orders].[Id] = @OrderId;";
+            string orderQuery = _settings.PersistanceMode switch {
 
-            const string productQuery = @"SELECT [ProductId], [ProductClass], [Qty] as [QtyOrdered]
-                                        FROM [Sales].[OrderedItems]
-                                        WHERE [OrderId] = @OrderId;";
+                PersistanceMode.SQLServer => @"SELECT [Sales].[Orders].[Id], [Sales].[Orders].[Name], [Sales].[Orders].[Number], [Sales].[Companies].[Name] As Customer
+                                                FROM [Sales].[Orders]
+                                                INNER JOIN [Sales].[Companies] ON [Sales].[Orders].[CustomerId]=[Sales].[Companies].[Id]
+                                                WHERE [Sales].[Orders].[Id] = @OrderId;",
 
-            var releasedOrder = await _connection.QuerySingleAsync<ReleasedOrder>(orderQuery, new { OrderId = orderId });
-            var products = await _connection.QueryAsync<ProductOrdered>(productQuery, new { OrderId = orderId });
+                PersistanceMode.SQLite => @"SELECT [Orders].[Id], [Orders].[Name], [Orders].[Number], [Companies].[Name] As Customer
+                                            FROM [Orders]
+                                            INNER JOIN [Companies] ON [Orders].[CustomerId]=[Companies].[Id]
+                                            WHERE [Orders].[Id] = @OrderId;",
+
+                _ => throw new InvalidDataException("Invalid persistance mode")
+
+            };
+
+            string productQuery = _settings.PersistanceMode switch {
+
+                PersistanceMode.SQLServer => @"SELECT [ProductId], [ProductClass], [Qty] as [QtyOrdered]
+                                                FROM [Sales].[OrderedItems]
+                                                WHERE [OrderId] = @OrderId;",
+
+                PersistanceMode.SQLite => @"SELECT [ProductId], [ProductClass], [Qty] as [QtyOrdered]
+                                            FROM [OrderedItems]
+                                            WHERE [OrderId] = @OrderId;",
+
+                _ => throw new InvalidDataException("Invalid persistance mode")
+
+            };
+
+            var releasedOrder = await _settings.Connection.QuerySingleAsync<ReleasedOrder>(orderQuery, new { OrderId = orderId });
+            var products = await _settings.Connection.QueryAsync<ProductOrdered>(productQuery, new { OrderId = orderId });
 
             releasedOrder.Products = products;
             await _publisher.Publish(new OrderReleasedNotification(releasedOrder));

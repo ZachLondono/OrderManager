@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using System.Data;
 using Dapper;
+using Sales.Contracts;
 
 namespace Sales.Implementation.Application.Companies;
 
@@ -10,18 +10,27 @@ public class RemoveCompany {
 
     public class Handler : AsyncRequestHandler<Command> {
 
-        private readonly IDbConnection _connection;
-        
-        public Handler(IDbConnection connection) {
-            _connection = connection;
+        private readonly SalesSettings _settings;
+
+        public Handler(SalesSettings settings) {
+            _settings = settings;
         }
 
         protected override async Task Handle(Command request, CancellationToken cancellationToken) {
 
-            const string command = @"DELETE FROM [Sales].[Contacts] WHERE [CompanyId] = @Id;
-                                    DELETE FROM [Sales].[Companies] WHERE [Id] = @Id;";
+            string command = _settings.PersistanceMode switch {
 
-            await _connection.ExecuteAsync(command, new {
+                PersistanceMode.SQLServer => @"DELETE FROM [Sales].[Contacts] WHERE [CompanyId] = @Id;
+                                                DELETE FROM [Sales].[Companies] WHERE [Id] = @Id;",
+
+                PersistanceMode.SQLite => @"DELETE FROM [Contacts] WHERE [CompanyId] = @Id;
+                                            DELETE FROM [Companies] WHERE [Id] = @Id;",
+
+                _ => throw new InvalidDataException("Invalid persistance mode")
+
+            };
+
+            await _settings.Connection.ExecuteAsync(command, new {
                 request.Id
             });
 
