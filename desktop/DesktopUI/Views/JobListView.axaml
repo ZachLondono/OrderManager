@@ -2,9 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="650"
+             xmlns:controls="using:DesktopUI.Controls"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="650"
              x:Class="DesktopUI.Views.JobListView">
-  
   <Grid RowDefinitions="Auto, *, Auto" ColumnDefinitions="*, Auto" Margin="10">
 
     <StackPanel Orientation="Horizontal"
@@ -29,52 +29,51 @@
       </DataGrid.Columns>
     </DataGrid>
 
-    <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center">
-      <Button Height="30">&lt;</Button>
-      <TextBlock Height="30" Padding="5" FontSize="18" Foreground="LightBlue" TextDecorations="Underline">1</TextBlock>
-      <TextBlock Height="30" Padding="5" FontSize="18" Foreground="LightBlue" TextDecorations="Underline">2</TextBlock>
-      <TextBlock Height="30" Padding="5" FontSize="18" >...</TextBlock>
-      <TextBlock Height="30" Padding="5" FontSize="18" Foreground="LightBlue" TextDecorations="Underline">5</TextBlock>
-      <Button Height="30">&gt;</Button>
-    </StackPanel>
+    <controls:PageController PageCount="10" SelectedPage="{ Binding Page, Mode=TwoWay }" Margin="0,0,0,10" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" />
 
-    <StackPanel Grid.Row="1" Grid.Column="1" Margin="10">
+    <ScrollViewer Grid.Row="1" Grid.Column="1" Grid.RowSpan="2">
+      <StackPanel Margin="10">
       
-      <TextBlock Text="Filters"
-                 FontWeight="Bold"
-                 HorizontalAlignment="Left"
-                 FontSize="20"
-                 TextDecorations="Underline"/>
+        <TextBlock Text="Filters"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Left"
+                   FontSize="20"
+                   TextDecorations="Underline"/>
       
-      <TextBlock Text="Vendors"
-                 FontWeight="DemiBold"
-                 HorizontalAlignment="Left"
-                 FontSize="18"/>
-      <CheckBox IsChecked="True" Content="OT"/>
-      <CheckBox IsChecked="True" Content="Hafele"/>
-      <CheckBox IsChecked="True" Content="Richelieu"/>
-      <CheckBox IsChecked="True" Content="Royal"/>
+        <TextBlock Text="Vendors"
+                   FontWeight="DemiBold"
+                   HorizontalAlignment="Left"
+                   FontSize="18"/>
+        <CheckBox IsChecked="True" Content="OT"/>
+        <CheckBox IsChecked="True" Content="Hafele"/>
+        <CheckBox IsChecked="True" Content="Richelieu"/>
+        <CheckBox IsChecked="True" Content="Royal"/>
 
-      <TextBlock Text="Scheduled Date"
-                 FontWeight="DemiBold"
-                 HorizontalAlignment="Left"
-                 FontSize="18"/>
-      <TextBlock Text="Start" />
-      <DatePicker />
-      <TextBlock Text="End" />
-      <DatePicker />
+        <TextBlock Text="Scheduled Date"
+                   FontWeight="DemiBold"
+                   HorizontalAlignment="Left"
+                   FontSize="18"/>
+        <TextBlock Text="Start" />
+        <DatePicker />
+        <TextBlock Text="End" />
+        <DatePicker />
 
-      <TextBlock Text="Sort"
-                 FontWeight="Bold"
-                 HorizontalAlignment="Left"
-                 FontSize="20"
-                 TextDecorations="Underline"/>
+        <TextBlock Text="Sort"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Left"
+                   FontSize="20"
+                   TextDecorations="Underline"/>
       
-      <RadioButton Content="Number" />
-      <RadioButton Content="Name" />
-      <RadioButton Content="Qty" />
+        <RadioButton Content="Number" />
+        <RadioButton Content="Name" />
+        <RadioButton Content="Vendor" />
+        <RadioButton Content="Supplier" />
+        <RadioButton Content="Customer" />
+        <RadioButton Content="Work Cell" />
+        <RadioButton Content="Scheduled Date" />
 
-    </StackPanel>
+      </StackPanel>
+    </ScrollViewer>
 
 
   </Grid>

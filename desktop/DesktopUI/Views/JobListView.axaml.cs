@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 
 namespace DesktopUI.Views;
 public partial class JobListView : UserControl {
+
     public JobListView() {
         InitializeComponent();
     }
@@ -11,4 +12,5 @@ public partial class JobListView : UserControl {
     private void InitializeComponent() {
         AvaloniaXamlLoader.Load(this);
     }
+
 }
