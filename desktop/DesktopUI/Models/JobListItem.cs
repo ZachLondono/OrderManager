@@ -2,7 +2,7 @@
 
 namespace DesktopUI.Models;
 
-public class Job {
+public class JobListItem {
 
     public string Number { get; set; } = string.Empty;
 
