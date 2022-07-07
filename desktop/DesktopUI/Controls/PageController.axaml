@@ -1,0 +1,62 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="DesktopUI.Controls.PageController">
+
+  <StackPanel Orientation="Horizontal">
+    
+    <Button Content="&lt;" Name="PrevPageBtn" Click="OnPrevPageClick" />
+
+    <ItemsControl Name="PageListContainer">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <StackPanel Orientation="Horizontal"/>
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+    </ItemsControl>
+
+    <Button Content="&gt;" Name="NextPageBtn" Click="OnNextPageClick" />
+    
+  </StackPanel>
+
+  <UserControl.Styles>
+
+    <!-- Page Number -->
+    <Style Selector="RadioButton.Page">
+
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate>
+            <Border Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    Margin="{TemplateBinding Margin}">
+              <ContentPresenter Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                Margin="{TemplateBinding Padding}"/>
+            </Border>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+
+      <Setter Property="Background" Value="White"/>
+      <Setter Property="BorderThickness" Value="0,0,0,2"/>
+      
+    </Style>
+
+    <!-- Pointer Over Page Number -->
+    <Style Selector="RadioButton.Page:pointerover">
+      <Setter Property="Foreground" Value="LightBlue" />
+    </Style>
+    
+    <!-- Selected Page Number -->
+    <Style Selector="RadioButton.Page:checked">
+      <Setter Property="Foreground" Value="LightBlue" />
+      <Setter Property="BorderBrush" Value="LightBlue" />
+    </Style>
+    
+  </UserControl.Styles>
+  
+</UserControl>
