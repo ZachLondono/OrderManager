@@ -1,55 +1,66 @@
 ﻿using DesktopUI.Models;
+using OrderManager.Domain.Jobs;
+using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace DesktopUI.ViewModels;
 
 public class JobListViewModel : ViewModelBase {
 
-    public ObservableCollection<Job> Jobs { get; } = new();
+    private JobQuery? _activeQuery;
+    public string? _activeSearch;
+
+    public ObservableCollection<JobListItem> Jobs { get; } = new();
+
+    private int _page = 1;
+    public int Page {
+        get => _page;
+        set {
+            this.RaiseAndSetIfChanged(ref _page, value);
+            UpdateJobList();
+        }
+    }
 
     public JobListViewModel() {
+        UpdateJobList();        
+    }
 
-        Jobs.Add(
-            new() {
-                Number = "OT000",
-                Name = "Kitchen ABC",
-                Vendor = "OT",
-                Customer = "ABC's Cabinets",
-                Qty = 5,
-                ScheduledDate = DateTime.Today,
-                ProductClass = "Drawer Boxes",
-                WorkCell = "Drawer Boxes"
-            });
+    public void ApplySearch(string search) {
+        Page = 1;
+        _activeSearch = search;
+        UpdateJobList();
+    }
 
-        Jobs.Add(
-            new() {
-                Number = "OT001",
-                Name = "Laundry DEF",
-                Vendor = "OT",
-                Customer = "ABC's Cabinets",
-                Qty = 15,
-                ScheduledDate = DateTime.Now,
-                ProductClass = "Drawer Boxes",
-                WorkCell = "Drawer Boxes"
-            });
+    public void ApplyFilter(JobQuery query) {
+        Page = 1;
+        _activeQuery = query;
+        UpdateJobList();
+    }
 
-        Jobs.Add(
-            new() {
-                Number = "OT002",
-                Name = "Closet DEF",
-                Vendor = "Hafele",
-                Customer = "LOL Construction",
-                Qty = 6,
-                ScheduledDate = DateTime.Now,
-                ProductClass = "Drawer Boxes",
-                WorkCell = "Drawer Boxes"
-            });
+    public void UpdateJobList() {
+        // var jobs = jobAPI.GetJobs(_page, _activeFilter, _activeSearch);
 
+        Debug.WriteLine("Updating Order List");
+
+        Jobs.Clear();
+
+        for (int i = (Page - 1) * 10; i < Page * 10; i++) {
+
+            Jobs.Add(
+                new() {
+                    Number = $"OT{i:000}",
+                    Name = "Closet DEF",
+                    Vendor = "Hafele",
+                    Customer = "LOL Construction",
+                    Qty = 6,
+                    ScheduledDate = DateTime.Now,
+                    ProductClass = "Drawer Boxes",
+                    WorkCell = "Drawer Boxes"
+                });
+
+        }
     }
 
 }

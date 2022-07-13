@@ -10,7 +10,26 @@ namespace DesktopUI.ViewModels;
 
 public class RibbonViewModel {
 
-    public RibbonViewModel() {
+    private IToolWindowContentFactory<EmailListView> _emailListWindowFactory;
+    private IToolWindowContentFactory<LabelListView> _labelListWindowFactory;
+    private IToolWindowContentFactory<PluginListView> _pluginListWindowFactory;
+    private IToolWindowContentFactory<ProfileListView> _profileListWindowFactory;
+    private IToolWindowContentFactory<CompanyListView> _companyListWindowFactory;
+    private IToolWindowContentFactory<ProductListView> _productListWindowFactory;
+
+    public RibbonViewModel(IToolWindowContentFactory<EmailListView> emailListWindowFactory,
+                            IToolWindowContentFactory<LabelListView> labelListWindowFactory,
+                            IToolWindowContentFactory<PluginListView> pluginListWindowFactory,
+                            IToolWindowContentFactory<ProfileListView> profileListWindowFactory,
+                            IToolWindowContentFactory<CompanyListView> companyListWindowFactory,
+                            IToolWindowContentFactory<ProductListView> productListWindowFactory) {
+
+        _emailListWindowFactory = emailListWindowFactory;
+        _labelListWindowFactory = labelListWindowFactory;
+        _pluginListWindowFactory = pluginListWindowFactory;
+        _profileListWindowFactory = profileListWindowFactory;
+        _companyListWindowFactory = companyListWindowFactory;
+        _productListWindowFactory = productListWindowFactory;
 
         ListLabelsCommand = ReactiveCommand.CreateFromTask(OpenLabelListDialog);
         ListEmailsCommand = ReactiveCommand.CreateFromTask(OpenEmailListDialog);
@@ -29,70 +48,27 @@ public class RibbonViewModel {
     public ICommand ListProductCommand { get; }
 
     private async Task OpenEmailListDialog() {
-
-        var listvm = App.GetRequiredService<EmailListViewModel>();
-
-        await ToolWindowOpener.OpenDialog(new("Email Templates", 450, 375, new EmailListView {
-            DataContext = listvm
-        }, listvm.LoadData));
-
+        await ToolWindowOpener.OpenDialog(_emailListWindowFactory.Create());
     }
 
     private async Task OpenLabelListDialog() {
-
-        var listvm = App.GetRequiredService<LabelListViewModel>();
-
-        await ToolWindowOpener.OpenDialog(new("Label Templates", 450, 375, new LabelListView {
-            DataContext = listvm
-        }, listvm.LoadData));
-
+        await ToolWindowOpener.OpenDialog(_labelListWindowFactory.Create());
     }
 
     private async Task OpenPluginListDialog() {
-
-        var listvm = App.GetRequiredService<PluginListViewModel>();
-
-        await ToolWindowOpener.OpenDialog(new("Plugins", 450, 375, new PluginListView {
-            DataContext = listvm
-        }, null));
+        await ToolWindowOpener.OpenDialog(_pluginListWindowFactory.Create());
     }
 
     private async Task OpenProfileListDialog() {
-
-        var listvm = App.GetRequiredService<ProfileListViewModel>();
-
-        await ToolWindowOpener.OpenDialog(new("Release Profiles", 450, 375, new ProfileListView {
-            DataContext = listvm
-        }, listvm.LoadData));
-
+        await ToolWindowOpener.OpenDialog(_profileListWindowFactory.Create());
     }
 
     private async Task OpenCompanyListDialog() {
-
-        try {
-            var listvm = App.GetRequiredService<CompanyListViewModel>();
-
-            await ToolWindowOpener.OpenDialog(new("Companies", 450, 375, new CompanyListView {
-                DataContext = listvm
-            }, listvm.LoadData));
-        } catch (Exception ex) {
-            Debug.WriteLine(ex);
-        }
-
+        await ToolWindowOpener.OpenDialog(_companyListWindowFactory.Create());
     }
 
     private async Task OpenProductListDialog() {
-
-        try {
-            var listvm = App.GetRequiredService<ProductListViewModel>();
-
-            await ToolWindowOpener.OpenDialog(new("Products", 450, 375, new ProductListView {
-                DataContext = listvm
-            }, listvm.LoadData));
-        } catch (Exception ex) {
-            Debug.WriteLine(ex);
-        }
-
+        await ToolWindowOpener.OpenDialog(_productListWindowFactory.Create());
     }
 
 }

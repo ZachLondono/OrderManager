@@ -13,10 +13,6 @@ public class LocalJobController : IJobController {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<JobSummary>> GetJobs() {
-        throw new NotImplementedException();
-    }
-
     public Task ReleaseJob(int id) {
         throw new NotImplementedException();
     }
@@ -25,4 +21,7 @@ public class LocalJobController : IJobController {
         throw new NotImplementedException();
     }
 
+    public Task<JobQueryResponse> GetJobs() {
+        throw new NotImplementedException();
+    }
 }

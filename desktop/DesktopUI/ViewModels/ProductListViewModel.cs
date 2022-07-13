@@ -17,9 +17,9 @@ public class ProductListViewModel : ViewModelBase {
 
     public ObservableCollection<ProductSummary> Products { get; } = new();
 
-    private readonly ICatalogAPI _api;
+    private readonly ICatalogController _api;
 
-    public ProductListViewModel(ICatalogAPI api) {
+    public ProductListViewModel(ICatalogController api) {
         _api = api;
 
         ShowDialog = new Interaction<ToolWindowContent, Unit>();

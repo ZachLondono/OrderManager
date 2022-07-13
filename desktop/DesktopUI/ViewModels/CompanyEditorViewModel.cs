@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using static OrderManager.ApplicationCore.Companies.ICompanyAPI;
+using static OrderManager.ApplicationCore.Companies.ICompanyController;
 
 namespace DesktopUI.ViewModels;
 
@@ -127,7 +127,7 @@ public class CompanyEditorViewModel : ViewModelBase {
 
     public ObservableCollection<ContactModel> Contacts { get; set; } = new();
 
-    private readonly ICompanyAPI _api;
+    private readonly ICompanyController _api;
 
     private bool _canSave = false;
     public bool CanSave {
@@ -140,7 +140,7 @@ public class CompanyEditorViewModel : ViewModelBase {
     private bool _vendorRoleChanged = false;
     private bool _supplierRoleChanged = false;
 
-    public CompanyEditorViewModel(ICompanyAPI api) {
+    public CompanyEditorViewModel(ICompanyController api) {
         _api = api;
         
         var canSave = this.WhenAny(x => x.CanSave, x => x.Value);

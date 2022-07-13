@@ -39,9 +39,9 @@ public class ProductDesignerViewModel : ViewModelBase {
 
     private bool _nameChanged;
     
-    private readonly ICatalogAPI _api;
+    private readonly ICatalogController _api;
 
-    public ProductDesignerViewModel(ICatalogAPI api) {
+    public ProductDesignerViewModel(ICatalogController api) {
         _api = api;
 
         var canSave = this.WhenAny(x => x.CanSave, x => x.Value);

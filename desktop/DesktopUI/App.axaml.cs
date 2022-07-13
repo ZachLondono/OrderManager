@@ -58,20 +58,8 @@ public partial class App : Application {
     private static IServiceCollection ConfigureServices(IConfiguration config) {
         var services = new ServiceCollection();
 
-        services.AddTransient<MainWindowViewModel>();
-        services.AddTransient<LabelFieldEditorViewModel>();
-        services.AddTransient<LabelListViewModel>();
-        services.AddTransient<EmailTemplateEditorViewModel>();
-        services.AddTransient<ReleaseProfileEditorViewModel>();
-        services.AddTransient<EmailListViewModel>();
-        services.AddTransient<PluginListViewModel>();
-        services.AddTransient<ProfileListViewModel>();
-        services.AddTransient<CompanyListViewModel>();
-        services.AddTransient<CompanyEditorViewModel>();
-        services.AddTransient<ProductDesignerViewModel>();
-        services.AddTransient<ProductListViewModel>();
-        services.AddTransient<RibbonViewModel>();
-
+        services.AddToolWindows();
+        services.AddViewModels();
         services.AddInfrastructure(config);
 
         return services;

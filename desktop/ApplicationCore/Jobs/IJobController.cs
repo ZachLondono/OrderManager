@@ -18,6 +18,6 @@ public interface IJobController {
     public Task<Job> GetJob(int id);
 
     [Get("/GetJobs")]
-    public Task<IEnumerable<JobSummary>> GetJobs();
+    public Task<JobQueryResponse> GetJobs();
 
 }

@@ -16,10 +16,17 @@ public class EmailListViewModel : ViewModelBase {
 
     private readonly IEmailTemplateRepository _repo;
     private readonly EmailQuery.GetEmailSummaries _query;
+    private readonly EmailQuery.GetEmailDetailsById _emailDetailsById;
+    private readonly IAbstractFactory<EmailTemplateEditorViewModel> _emailTemplateFactory;
 
-    public EmailListViewModel(IEmailTemplateRepository repo, EmailQuery.GetEmailSummaries query) {
+    public EmailListViewModel(IEmailTemplateRepository repo,
+                                EmailQuery.GetEmailSummaries query,
+                                EmailQuery.GetEmailDetailsById emailDetailsById,
+                                IAbstractFactory<EmailTemplateEditorViewModel> emailTemplateFactory) {
         _repo = repo;
         _query = query;
+        _emailDetailsById = emailDetailsById;
+        _emailTemplateFactory = emailTemplateFactory;
 
         DeleteEmailCommand = ReactiveCommand.CreateFromTask<EmailTemplateSummary>(OnDeleteEmail);
         EditEmailCommand = ReactiveCommand.CreateFromTask<EmailTemplateSummary>(OnEditEmail);
@@ -75,16 +82,15 @@ public class EmailListViewModel : ViewModelBase {
 
     private async Task<EmailTemplateDetails?> OpenEmailEditor(int emailId) {
 
-        var query = App.GetRequiredService<EmailQuery.GetEmailDetailsById>();
         EmailTemplateDetails? details = null;
 
-        var editorvm = App.GetRequiredService<EmailTemplateEditorViewModel>();
+        var editorvm = _emailTemplateFactory.Create();
 
         await ShowDialog.Handle(new("Email Editor", 800, 450, new EmailTemplateEditorView {
             DataContext = editorvm
         }, async () => {
 
-            details = await query(emailId);
+            details = await _emailDetailsById(emailId);
             editorvm.SetData(details);
 
         }));

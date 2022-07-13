@@ -17,10 +17,12 @@ public class CompanyListViewModel : ViewModelBase {
 
     public ObservableCollection<CompanySummary> Companies { get; } = new();
 
-    private readonly ICompanyAPI _api;
+    private readonly ICompanyController _api;
+    private readonly IAbstractFactory<CompanyEditorViewModel> _companyEditorFactory;
 
-    public CompanyListViewModel(ICompanyAPI api) {
+    public CompanyListViewModel(ICompanyController api, IAbstractFactory<CompanyEditorViewModel> companyEditorFactory) {
         _api = api;
+        _companyEditorFactory = companyEditorFactory;
 
         ShowDialog = new Interaction<ToolWindowContent, Unit>();
 
@@ -39,7 +41,7 @@ public class CompanyListViewModel : ViewModelBase {
 
         Company? details = null;
 
-        var editorvm = App.GetRequiredService<CompanyEditorViewModel>();
+        var editorvm = _companyEditorFactory.Create();
 
         await ShowDialog.Handle(new("Company Editor", 800, 450, new CompanyEditorView {
             DataContext = editorvm

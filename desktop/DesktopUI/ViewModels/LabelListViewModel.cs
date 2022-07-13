@@ -16,10 +16,17 @@ public class LabelListViewModel : ViewModelBase {
 
     private readonly ILabelFieldMapRepository _repo;
     private readonly LabelQuery.GetLabelSummaries _query;
+    private readonly LabelService _labelService;
+    private readonly LabelQuery.GetLabelDetailsById _getLabelDetailsById;
 
-    public LabelListViewModel(ILabelFieldMapRepository repo, LabelQuery.GetLabelSummaries query) {
+    public LabelListViewModel(ILabelFieldMapRepository repo,
+                                LabelQuery.GetLabelSummaries query,
+                                LabelQuery.GetLabelDetailsById getLabelDetailsById,
+                                LabelService labelService) {
         _repo = repo;
         _query = query;
+        _getLabelDetailsById = getLabelDetailsById;
+        _labelService = labelService;
 
         DeleteLabelCommand = ReactiveCommand.CreateFromTask<LabelFieldMapSummary>(OnDeleteLabel);
         EditLabelCommand = ReactiveCommand.CreateFromTask<LabelFieldMapSummary>(OnEditLabel);
@@ -66,9 +73,8 @@ public class LabelListViewModel : ViewModelBase {
         string? path = await ShowFileDialogAndReturnPath.Handle(Unit.Default);
 
         if (path is null) return;
-
-        var labelService = App.GetRequiredService<LabelService>();
-        var newContext = await labelService.CreateLabelFieldMap(path);
+        
+        var newContext = await _labelService.CreateLabelFieldMap(path);
 
         var details = await OpenLabelEditor(newContext.Id);
         if (details is null) return;
@@ -82,7 +88,6 @@ public class LabelListViewModel : ViewModelBase {
 
     private async Task<LabelFieldMapDetails?> OpenLabelEditor(int labelId) {
 
-        var query = App.GetRequiredService<LabelQuery.GetLabelDetailsById>();
         LabelFieldMapDetails? details = null;
 
         var editorvm = App.GetRequiredService<LabelFieldEditorViewModel>();
@@ -91,7 +96,7 @@ public class LabelListViewModel : ViewModelBase {
             DataContext = editorvm
         }, async () => {
 
-            details = await query(labelId);
+            details = await _getLabelDetailsById(labelId);
             editorvm.SetData(details);
 
         }));
